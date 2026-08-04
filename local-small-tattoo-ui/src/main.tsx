@@ -6,6 +6,7 @@ import "./styles/tokens.css";
 import "./styles/global.css";
 import "./styles/layout.css";
 import "./styles/home.css";
+import "./styles/booking.css";
 
 const rootElement = document.getElementById("root");
 
