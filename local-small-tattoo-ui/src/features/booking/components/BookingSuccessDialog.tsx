@@ -6,11 +6,7 @@ type BookingSuccessDialogProps = {
   onClose: () => void;
 };
 
-export function BookingSuccessDialog({
-  isOpen,
-  bookingCode,
-  onClose,
-}: BookingSuccessDialogProps) {
+export function BookingSuccessDialog({ isOpen, bookingCode, onClose }: BookingSuccessDialogProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -61,8 +57,8 @@ export function BookingSuccessDialog({
           Booking code <strong>{bookingCode}</strong>
         </p>
         <p>
-          Your request has been recorded. The studio will contact you by phone
-          to discuss the details and confirm the appointment.
+          Your request has been recorded. The studio will contact you by phone to discuss the
+          details and confirm the appointment.
         </p>
         <button
           ref={closeButtonRef}

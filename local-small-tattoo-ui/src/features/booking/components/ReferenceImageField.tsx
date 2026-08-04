@@ -35,18 +35,12 @@ export function ReferenceImageField({
         aria-describedby={error ? "referenceImages-error" : undefined}
       />
 
-      <label
-        className={`booking-upload ${error ? "has-error" : ""}`}
-        htmlFor="referenceImages"
-      >
+      <label className={`booking-upload ${error ? "has-error" : ""}`} htmlFor="referenceImages">
         <span className="booking-upload__symbol" aria-hidden="true">
           +
         </span>
         <strong>Choose reference images</strong>
-        <small>
-          JPG, PNG or WebP · Up to {BOOKING_IMAGE_RULES.maxFiles} images · 5 MB
-          each
-        </small>
+        <small>JPG, PNG or WebP · Up to {BOOKING_IMAGE_RULES.maxFiles} images · 5 MB each</small>
       </label>
 
       {error ? (

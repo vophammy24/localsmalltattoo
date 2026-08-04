@@ -9,11 +9,15 @@ export function Footer() {
       <div className="site-footer__main page-shell">
         <section className="site-footer__brand-column">
           <Link className="site-footer__brand" to="/">
-            Local<br />Small<br />Tattoo
+            Local
+            <br />
+            Small
+            <br />
+            Tattoo
           </Link>
           <p>
-            A minimalist tattoo studio focused on precise work, personal stories,
-            and a calm client experience.
+            A minimalist tattoo studio focused on precise work, personal stories, and a calm client
+            experience.
           </p>
         </section>
 
@@ -42,7 +46,9 @@ export function Footer() {
         <section className="site-footer__column site-footer__contact">
           <h2>Contact</h2>
           <address>
-            52–54 Tran Thanh Mai<br />Da Nang, Vietnam
+            52–54 Tran Thanh Mai
+            <br />
+            Da Nang, Vietnam
           </address>
           <a href="tel:+84000000000">+84 946 752 336</a>
           <a href="mailto:hello@localsmalltattoo.com">booking@localsmalltattoo.vn</a>

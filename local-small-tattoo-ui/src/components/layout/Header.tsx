@@ -60,7 +60,10 @@ export function Header() {
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               onClick={() => setIsMenuOpen((current) => !current)}
             >
-              <span className={`menu-button__icon${isMenuOpen ? " is-open" : ""}`} aria-hidden="true">
+              <span
+                className={`menu-button__icon${isMenuOpen ? " is-open" : ""}`}
+                aria-hidden="true"
+              >
                 <i />
                 <i />
                 <i />

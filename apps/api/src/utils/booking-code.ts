@@ -1,13 +1,25 @@
-import { BookingCounterModel } from "../models/booking-counter.model.js";
+import { randomInt } from "node:crypto";
+import { BookingModel } from "../models/booking.model.js";
 
-export async function createBookingCode(date = new Date()) {
-  const datePart = [String(date.getFullYear()).slice(-2), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("");
-  const counter = await BookingCounterModel.findByIdAndUpdate(
-    datePart,
-    { $inc: { sequence: 1 } },
-    { new: true, upsert: true, setDefaultsOnInsert: true },
-  ).lean();
+const BOOKING_CODE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const BOOKING_CODE_LENGTH = 10;
 
-  return `LST-${datePart}-${String(counter.sequence).padStart(3, "0")}`;
+function generateRandomCode() {
+  return Array.from(
+    { length: BOOKING_CODE_LENGTH },
+    () => BOOKING_CODE_CHARACTERS[randomInt(BOOKING_CODE_CHARACTERS.length)],
+  ).join("");
 }
 
+export async function createBookingCode() {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const bookingCode = generateRandomCode();
+    const alreadyExists = await BookingModel.exists({ bookingCode });
+
+    if (!alreadyExists) {
+      return bookingCode;
+    }
+  }
+
+  throw new Error("Unable to generate a unique booking code.");
+}

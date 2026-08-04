@@ -1,10 +1,4 @@
-import {
-  type ChangeEvent,
-  type FormEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type ChangeEvent, type FormEvent, useEffect, useMemo, useState } from "react";
 import type {
   BookingFieldName,
   BookingFormErrors,
@@ -65,9 +59,7 @@ export function useBookingForm({ onSubmit }: UseBookingFormOptions = {}) {
     });
   }
 
-  function updateTextField(
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
+  function updateTextField(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = event.target;
     const fieldName = name as BookingFieldName;
 
@@ -109,9 +101,7 @@ export function useBookingForm({ onSubmit }: UseBookingFormOptions = {}) {
   function removeReferenceImage(index: number) {
     setValues((current) => ({
       ...current,
-      referenceImages: current.referenceImages.filter(
-        (_, fileIndex) => fileIndex !== index,
-      ),
+      referenceImages: current.referenceImages.filter((_, fileIndex) => fileIndex !== index),
     }));
     clearFieldError("referenceImages");
   }
@@ -128,9 +118,8 @@ export function useBookingForm({ onSubmit }: UseBookingFormOptions = {}) {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      const firstInvalidField = event.currentTarget.querySelector<HTMLElement>(
-        "[aria-invalid='true']",
-      );
+      const firstInvalidField =
+        event.currentTarget.querySelector<HTMLElement>("[aria-invalid='true']");
       firstInvalidField?.focus();
       return;
     }

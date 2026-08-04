@@ -1,8 +1,4 @@
-export type BookingTimePeriod =
-  | "morning"
-  | "noon"
-  | "afternoon"
-  | "evening";
+export type BookingTimePeriod = "morning" | "noon" | "afternoon" | "evening";
 
 export type BookingFormValues = {
   fullName: string;

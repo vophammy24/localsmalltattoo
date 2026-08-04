@@ -1,8 +1,5 @@
 import { BOOKING_IMAGE_RULES } from "../data/bookingOptions";
-import type {
-  BookingFormErrors,
-  BookingFormValues,
-} from "../types/booking";
+import type { BookingFormErrors, BookingFormValues } from "../types/booking";
 
 const PHONE_PATTERN = /^[+0-9][0-9\s().-]{7,19}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,9 +34,7 @@ function parseLocalDateInput(value: string): Date | null {
   return parsedDate;
 }
 
-export function validateBookingForm(
-  values: BookingFormValues,
-): BookingFormErrors {
+export function validateBookingForm(values: BookingFormValues): BookingFormErrors {
   const errors: BookingFormErrors = {};
 
   if (!values.fullName.trim()) {

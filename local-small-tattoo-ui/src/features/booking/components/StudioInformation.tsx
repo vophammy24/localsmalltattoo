@@ -21,9 +21,7 @@ export function StudioInformation() {
         <div>
           <dt>Email</dt>
           <dd>
-            <a href="mailto:booking@localsmalltattoo.vn">
-              booking@localsmalltattoo.vn
-            </a>
+            <a href="mailto:booking@localsmalltattoo.vn">booking@localsmalltattoo.vn</a>
           </dd>
         </div>
         <div>
@@ -33,10 +31,7 @@ export function StudioInformation() {
       </dl>
 
       <figure className="booking-studio__image">
-        <img
-          src="/images/studio-location.JPG"
-          alt="Local Small Tattoo studio interior"
-        />
+        <img src="/images/studio-location.JPG" alt="Local Small Tattoo studio interior" />
       </figure>
 
       <a

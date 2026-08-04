@@ -4,13 +4,12 @@ import { customerGallery } from "../../data/home";
 
 export function CustomerGallerySection() {
   return (
-    <section className="section customer-gallery-section" aria-labelledby="customer-gallery-heading">
+    <section
+      className="section customer-gallery-section"
+      aria-labelledby="customer-gallery-heading"
+    >
       <div className="page-shell">
-        <SectionHeading
-          eyebrow="04 / Studio moments"
-          title="With Our Clients."
-          align="center"
-        />
+        <SectionHeading eyebrow="04 / Studio moments" title="With Our Clients." align="center" />
 
         <div className="customer-gallery">
           {customerGallery.map((image) => (

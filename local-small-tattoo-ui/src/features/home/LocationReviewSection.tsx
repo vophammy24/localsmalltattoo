@@ -6,14 +6,17 @@ export function LocationReviewSection() {
     <section className="section location-review-section" aria-labelledby="location-heading">
       <div className="page-shell location-review">
         <div className="location-review__visual">
-          <img src="/images/studio-location.JPG" alt="Placeholder showing the tattoo studio interior" />
+          <img
+            src="/images/studio-location.JPG"
+            alt="Placeholder showing the tattoo studio interior"
+          />
         </div>
 
         <div className="location-review__content">
           <h2 id="location-heading">Da Nang.</h2>
           <p>
-            A private, appointment-led studio designed for focused consultation,
-            careful preparation, and unhurried tattoo sessions.
+            A private, appointment-led studio designed for focused consultation, careful
+            preparation, and unhurried tattoo sessions.
           </p>
 
           <dl className="location-review__details">

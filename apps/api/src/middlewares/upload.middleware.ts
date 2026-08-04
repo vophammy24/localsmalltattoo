@@ -13,3 +13,15 @@ export const bookingImageUpload = multer({
     callback(new multer.MulterError("LIMIT_UNEXPECTED_FILE"));
   },
 });
+
+export const styleImageUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { files: 20, fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_request, file, callback) => {
+    if (acceptedTypes.has(file.mimetype)) {
+      callback(null, true);
+      return;
+    }
+    callback(new multer.MulterError("LIMIT_UNEXPECTED_FILE"));
+  },
+});

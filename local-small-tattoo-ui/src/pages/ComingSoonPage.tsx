@@ -21,8 +21,8 @@ export function ComingSoonPage() {
         <p className="section-heading__eyebrow">UI implementation phase</p>
         <h1>{title}</h1>
         <p>
-          This route is ready in the UI architecture. Its detailed page will be
-          implemented in the next development phase.
+          This route is ready in the UI architecture. Its detailed page will be implemented in the
+          next development phase.
         </p>
         <ButtonLink to="/">Back to home</ButtonLink>
       </div>

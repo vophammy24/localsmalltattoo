@@ -10,12 +10,10 @@ export function ArtistSection() {
         <article className="artist-feature">
           <div className="artist-feature__content">
             <h3 id="artist-heading">Thuan Nguyen</h3>
-            <p className="artist-feature__specialty">
-              Architectural · Fineline · Shadow work
-            </p>
+            <p className="artist-feature__specialty">Architectural · Fineline · Shadow work</p>
             <p>
-              Focused on considered linework and balanced composition. Each piece is
-              developed through consultation, scale studies, and placement testing.
+              Focused on considered linework and balanced composition. Each piece is developed
+              through consultation, scale studies, and placement testing.
             </p>
             <div className="artist-feature__actions">
               <ButtonLink to="/artists/khoi-nguyen">View artist</ButtonLink>
@@ -23,7 +21,10 @@ export function ArtistSection() {
           </div>
 
           <div className="artist-feature__portrait">
-            <img src="/images/artist-thuan.jpg" alt="Portrait placeholder for artist Thuan Nguyen" />
+            <img
+              src="/images/artist-thuan.jpg"
+              alt="Portrait placeholder for artist Thuan Nguyen"
+            />
           </div>
 
           <dl className="artist-feature__facts">

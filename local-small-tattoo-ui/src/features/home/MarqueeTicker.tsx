@@ -1,27 +1,27 @@
 const tickerItems = [
-  "Fineline ",
-  "Ornamental ",
-  "Blackwork ",
-  "Old School / American ",
-  "Japanese ",
-  "Realism ",
-  "Da Nang City ",
-  "Local Small Tattoo ",
-  "Fineline ",
-  "Ornamental ",
-  "Blackwork ",
-  "Old School / American ",
-  "Japanese ",
-  "Realism ",
-  "Da Nang City ",
-  "Local Small Tattoo ",
+  " Fineline ",
+  " Ornamental ",
+  " Blackwork ",
+  " Old School / American ",
+  " Japanese ",
+  " Realism ",
+  " Da Nang City ",
+  " Local Small Tattoo ",
+  " Fineline ",
+  " Ornamental ",
+  " Blackwork ",
+  " Old School / American ",
+  " Japanese ",
+  " Realism ",
+  " Da Nang City ",
+  " Local Small Tattoo ",
 ];
 
 function TickerGroup() {
   return (
     <div className="marquee__group" aria-hidden="true">
       {tickerItems.map((item) => (
-        <span key={item}>{item} · </span>
+        <span key={item}> {item} · </span>
       ))}
     </div>
   );

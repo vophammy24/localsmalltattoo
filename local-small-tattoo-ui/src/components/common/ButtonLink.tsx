@@ -8,12 +8,7 @@ type ButtonLinkProps = {
   className?: string;
 };
 
-export function ButtonLink({
-  to,
-  children,
-  variant = "primary",
-  className = "",
-}: ButtonLinkProps) {
+export function ButtonLink({ to, children, variant = "primary", className = "" }: ButtonLinkProps) {
   return (
     <Link className={`button button--${variant} ${className}`.trim()} to={to}>
       {children}

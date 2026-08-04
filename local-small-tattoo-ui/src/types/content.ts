@@ -3,15 +3,6 @@ export type NavItem = {
   href: string;
 };
 
-export type TattooStyle = {
-  id: string;
-  index: string;
-  name: string;
-  slug: string;
-  image: string;
-  description: string;
-};
-
 export type Review = {
   id: string;
   author: string;

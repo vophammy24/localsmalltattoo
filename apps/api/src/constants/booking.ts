@@ -9,7 +9,12 @@ export const BOOKING_TIME_PERIOD_KEYS = Object.keys(BOOKING_TIME_PERIODS) as Boo
 export type BookingTimePeriod = keyof typeof BOOKING_TIME_PERIODS;
 
 export const BOOKING_STATUSES = [
-  "PENDING", "CONTACTED", "CONFIRMED", "SCHEDULED", "COMPLETED", "CANCELLED", "NO_SHOW",
+  "PENDING",
+  "CONTACTED",
+  "CONFIRMED",
+  "SCHEDULED",
+  "COMPLETED",
+  "CANCELLED",
+  "NO_SHOW",
 ] as const;
 export type BookingStatus = (typeof BOOKING_STATUSES)[number];
-

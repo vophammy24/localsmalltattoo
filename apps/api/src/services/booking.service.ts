@@ -1,6 +1,7 @@
 import { createBooking } from "../repositories/booking.repository.js";
 import type { CreateBookingInput } from "../validators/booking.validator.js";
 import { createBookingCode } from "../utils/booking-code.js";
+import { TattooStyleModel } from "../models/tattoo-style.model.js";
 import { deleteBookingImages, uploadBookingImage } from "./image.service.js";
 
 export async function submitBooking(input: CreateBookingInput, files: Express.Multer.File[]) {
@@ -12,8 +13,19 @@ export async function submitBooking(input: CreateBookingInput, files: Express.Mu
     }
 
     const bookingCode = await createBookingCode();
+    const sourceStyle = input.sourceStyleSlug
+      ? await TattooStyleModel.findOne({
+          slug: input.sourceStyleSlug,
+          isPublished: true,
+          status: "PUBLISHED",
+        }).lean()
+      : null;
     const booking = await createBooking({
       ...input,
+      sourceStyleSlug: undefined,
+      sourceStyle: sourceStyle
+        ? { id: sourceStyle._id, name: sourceStyle.name, slug: sourceStyle.slug }
+        : undefined,
       preferredDate: new Date(`${input.preferredDate}T00:00:00`),
       bookingCode,
       referenceImages: uploadedImages,

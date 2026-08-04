@@ -7,6 +7,8 @@ import "./styles/global.css";
 import "./styles/layout.css";
 import "./styles/home.css";
 import "./styles/booking.css";
+import "./styles/admin.css";
+import "./styles/styles-page.css";
 
 const rootElement = document.getElementById("root");
 

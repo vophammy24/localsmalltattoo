@@ -1,0 +1,285 @@
+.styles-page {
+  padding-top: var(--header-height);
+  background: var(--color-black);
+}
+.styles-page__hero {
+  display: grid;
+  min-height: clamp(30rem, 68vh, 48rem);
+  align-items: end;
+  border-bottom: 1px solid var(--color-border);
+  padding-block: clamp(6rem, 12vw, 10rem);
+}
+.styles-page__hero p {
+  color: var(--color-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.styles-page__hero h1 {
+  max-width: 65rem;
+  margin-block: 1.5rem;
+  color: var(--color-white);
+  font-family: var(--font-brand);
+  font-size: var(--font-size-display-lg);
+  font-weight: 400;
+  line-height: 1;
+}
+.styles-page__hero span {
+  display: block;
+  max-width: 36rem;
+  color: var(--color-muted);
+}
+.styles-page__state {
+  min-height: 20rem;
+  padding-block: 6rem;
+  color: var(--color-muted);
+}
+.styles-page__state--error {
+  color: var(--color-error);
+}
+.style-navigation {
+  position: sticky;
+  z-index: 20;
+  top: var(--header-height);
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(0, 0, 0, 0.94);
+  backdrop-filter: blur(12px);
+}
+.style-navigation__inner {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.style-navigation__inner::-webkit-scrollbar {
+  display: none;
+}
+.style-navigation a {
+  min-width: max-content;
+  border-bottom: 2px solid transparent;
+  padding: 1.2rem 1.3rem;
+  color: var(--color-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.style-navigation a:first-child {
+  padding-left: 0;
+}
+.style-navigation a.is-active {
+  border-bottom-color: var(--color-white);
+  color: var(--color-white);
+}
+.tattoo-style-section {
+  scroll-margin-top: calc(var(--header-height) + 4rem);
+  border-bottom: 1px solid var(--color-border);
+  padding: 4rem 0rem;
+}
+.tattoo-style-section__heading {
+  display: grid;
+  max-width: 60rem;
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+  gap: 1rem;
+}
+.tattoo-style-section__heading > p:first-child {
+  color: var(--color-muted);
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.tattoo-style-section__heading h2 {
+  color: var(--color-white);
+  font-family: var(--font-brand);
+  font-size: var(--font-size-heading-lg);
+  font-weight: 400;
+  line-height: 1;
+}
+.tattoo-style-section__heading > p:last-child {
+  max-width: 38rem;
+  color: var(--color-text-soft);
+  font-size: 1.05rem;
+}
+.tattoo-style-section__cover {
+  overflow: hidden;
+  aspect-ratio: 16/8;
+  background: var(--color-surface);
+}
+.tattoo-style-section__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tattoo-style-section__body {
+  display: grid;
+  align-items: start;
+  margin-block: 2.5rem;
+  gap: 3rem;
+  grid-template-columns: minmax(0, 1.5fr) 1fr;
+}
+.tattoo-style-section__body > p {
+  max-width: 45rem;
+  color: var(--color-muted);
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+.tattoo-style-section__body > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+}
+.style-gallery-preview {
+  position: relative;
+  margin-top: 3rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+}
+.style-gallery-preview__viewport {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  will-change: opacity, transform;
+}
+.style-gallery-preview__viewport--next {
+  animation: style-gallery-slide-next 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.style-gallery-preview__viewport--previous {
+  animation: style-gallery-slide-previous 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.style-gallery-preview__viewport a {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4/5;
+  background: var(--color-surface);
+}
+.style-gallery-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1);
+  transition:
+    filter var(--transition-base),
+    transform 500ms ease;
+}
+.style-gallery-preview__viewport a:hover img,
+.style-gallery-preview__viewport a:focus-visible img {
+  filter: grayscale(0);
+  transform: scale(1.025);
+}
+.style-gallery-preview__control {
+  position: absolute;
+  z-index: 2;
+  top: calc(50% + 0.75rem);
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid var(--color-border-hover);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition:
+    background var(--transition-base),
+    color var(--transition-base),
+    opacity var(--transition-base);
+}
+.style-gallery-preview:hover .style-gallery-preview__control,
+.style-gallery-preview:focus-within .style-gallery-preview__control {
+  opacity: 1;
+  pointer-events: auto;
+}
+.style-gallery-preview__control--previous {
+  left: 1rem;
+}
+.style-gallery-preview__control--next {
+  right: 1rem;
+}
+.style-gallery-preview__control:hover:not(:disabled) {
+  border-color: var(--color-white);
+  background: transparent;
+  color: var(--color-white);
+}
+.style-gallery-preview__control:disabled {
+  cursor: default;
+  opacity: 0.3;
+}
+.style-gallery-preview__control svg {
+  width: 1rem;
+}
+@keyframes style-gallery-slide-next {
+  from {
+    opacity: 0.88;
+    transform: translateX(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes style-gallery-slide-previous {
+  from {
+    opacity: 0.88;
+    transform: translateX(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.styles-booking-cta {
+  padding-block: clamp(6rem, 12vw, 10rem);
+  text-align: center;
+}
+.styles-booking-cta p {
+  color: var(--color-muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+.styles-booking-cta h2 {
+  margin: 1rem auto 2.5rem;
+  color: var(--color-white);
+  font-family: var(--font-brand);
+  font-size: var(--font-size-heading-lg);
+  font-weight: 400;
+}
+.styles-section__state {
+  color: var(--color-muted);
+  text-align: center;
+}
+@media (max-width: 767px) {
+  .styles-page__hero {
+    min-height: 30rem;
+  }
+  .style-navigation a {
+    padding-inline: 0.9rem;
+  }
+  .tattoo-style-section__cover {
+    aspect-ratio: 4/3;
+  }
+  .tattoo-style-section__body {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .tattoo-style-section__body > div {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .style-gallery-preview__viewport {
+    grid-template-columns: 1fr;
+  }
+  .style-gallery-preview__control--previous {
+    left: 0.5rem;
+  }
+  .style-gallery-preview__control--next {
+    right: 0.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .style-gallery-preview__viewport--next,
+  .style-gallery-preview__viewport--previous {
+    animation: none;
+  }
+}

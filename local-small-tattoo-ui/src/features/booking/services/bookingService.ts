@@ -9,7 +9,7 @@ type BookingResponse = {
   };
 };
 
-export async function createBooking(values: BookingSubmission) {
+export async function createBooking(values: BookingSubmission, sourceStyleSlug?: string) {
   const formData = new FormData();
   formData.append("fullName", values.fullName);
   formData.append("phoneNumber", values.phoneNumber);
@@ -20,6 +20,7 @@ export async function createBooking(values: BookingSubmission) {
   });
   formData.append("description", values.description);
   formData.append("consent", String(values.consent));
+  if (sourceStyleSlug) formData.append("sourceStyleSlug", sourceStyleSlug);
   values.referenceImages.forEach((image) => {
     formData.append("referenceImages", image);
   });
@@ -28,11 +29,11 @@ export async function createBooking(values: BookingSubmission) {
     `${import.meta.env.VITE_API_URL ?? "http://localhost:5000"}/api/public/bookings`,
     { method: "POST", body: formData },
   );
-  const result = (await response.json().catch(() => null)) as BookingResponse | { message?: string } | null;
+  const result = (await response.json().catch(() => null)) as
+    BookingResponse | { message?: string } | null;
 
   if (!response.ok || !result || !("data" in result)) {
     throw new Error(result?.message ?? "Unable to submit booking request.");
   }
   return result;
 }
-

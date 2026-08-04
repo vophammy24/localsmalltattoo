@@ -4,4 +4,3 @@ import { bookingImageUpload } from "../middlewares/upload.middleware.js";
 
 export const bookingRouter = Router();
 bookingRouter.post("/", bookingImageUpload.array("referenceImages", 5), createBookingController);
-
