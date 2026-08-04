@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 900" role="img" aria-labelledby="t d">
+<title id="t">Artist portrait placeholder</title><desc id="d">Abstract monochrome portrait placeholder.</desc>
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#444"/><stop offset=".55" stop-color="#171717"/><stop offset="1" stop-color="#050505"/></linearGradient></defs>
+<rect width="700" height="900" fill="url(#b)"/><circle cx="360" cy="265" r="145" fill="#bdbdbd" opacity=".45"/>
+<path d="M125 860C155 610 250 500 360 500C495 500 585 625 615 860Z" fill="#d3d3d3" opacity=".32"/>
+<path d="M255 235C270 120 450 90 494 225C448 178 320 177 255 235Z" fill="#070707" opacity=".86"/>
+<g fill="none" stroke="#eee" stroke-width="2" opacity=".34"><path d="M90 80H610M90 820H610"/><path d="M115 55V845M585 55V845"/></g>
+<text x="50" y="850" fill="#bcbcbc" font-family="Georgia,serif" font-size="28" letter-spacing="6">ARTIST PORTRAIT</text></svg>

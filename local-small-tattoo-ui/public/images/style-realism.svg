@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-label="REALISM placeholder">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2c2c2c"/><stop offset="1" stop-color="#050505"/></linearGradient></defs>
+<rect width="900" height="900" fill="url(#g)"/><g fill="none" stroke="#f0f0f0" stroke-width="5" opacity=".7"><path d="M230 450C300 280 600 250 690 450C600 650 300 650 230 450Z M450 450m-95 0a95 95 0 1 0 190 0a95 95 0 1 0-190 0 M450 450m-32 0a32 32 0 1 0 64 0a32 32 0 1 0-64 0"/></g>
+<text x="52" y="835" fill="#aaa" font-family="Georgia,serif" font-size="34" letter-spacing="8">REALISM</text></svg>
