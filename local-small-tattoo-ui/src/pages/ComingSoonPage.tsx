@@ -18,7 +18,6 @@ export function ComingSoonPage() {
   return (
     <section className="placeholder-page">
       <div className="page-shell placeholder-page__inner">
-        <p className="section-heading__eyebrow">UI implementation phase</p>
         <h1>{title}</h1>
         <p>
           This route is ready in the UI architecture. Its detailed page will be implemented in the

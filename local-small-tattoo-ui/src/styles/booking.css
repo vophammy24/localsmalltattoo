@@ -19,7 +19,6 @@ body.dialog-open {
   gap: var(--space-3);
 }
 
-.booking-hero__eyebrow,
 .booking-form__heading > p,
 .booking-studio__label {
   color: var(--color-muted);
@@ -540,15 +539,6 @@ body.dialog-open {
   padding: clamp(2rem, 6vw, 4.5rem);
 }
 
-.booking-dialog__eyebrow {
-  margin-bottom: var(--space-2);
-  color: var(--color-muted);
-  font-size: var(--font-size-label);
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
 .booking-dialog h2 {
   color: var(--color-white);
   font-family: var(--font-brand);
@@ -557,7 +547,7 @@ body.dialog-open {
   line-height: 1.1;
 }
 
-.booking-dialog p:not(.booking-dialog__eyebrow) {
+.booking-dialog p {
   margin-block: var(--space-2) var(--space-4);
   color: var(--color-muted);
   line-height: 1.75;

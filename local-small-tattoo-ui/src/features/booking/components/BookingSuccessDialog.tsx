@@ -51,7 +51,6 @@ export function BookingSuccessDialog({ isOpen, bookingCode, onClose }: BookingSu
         aria-modal="true"
         aria-labelledby="booking-success-title"
       >
-        <p className="booking-dialog__eyebrow">Request received</p>
         <h2 id="booking-success-title">Thank you for sharing your idea.</h2>
         <p className="booking-dialog__code">
           Booking code <strong>{bookingCode}</strong>

@@ -7,6 +7,9 @@ import {
   signAdminToken,
 } from "../services/auth.service.js";
 import { loginSchema } from "../validators/admin.validator.js";
+import jwt from "jsonwebtoken";
+import { env } from "../config/env.js";
+import { AdminModel } from "../models/admin.model.js";
 
 export const login: RequestHandler = async (request, response, next) => {
   try {
@@ -26,8 +29,22 @@ export const logout: RequestHandler = (_request, response) => {
   response.clearCookie(AUTH_COOKIE_NAME, { path: "/" });
   response.json({ success: true });
 };
-export const me: RequestHandler = (request, response) =>
-  response.json({
-    success: true,
-    data: { admin: { ...request.admin, id: String(request.admin?.id) } },
-  });
+export const me: RequestHandler = async (request, response) => {
+  const token = request.cookies?.[AUTH_COOKIE_NAME] as string | undefined;
+  if (!token) {
+    response.json({ success: true, data: { admin: null } });
+    return;
+  }
+
+  try {
+    const payload = jwt.verify(token, env.JWT_SECRET) as jwt.JwtPayload;
+    const admin = await AdminModel.findById(payload.sub);
+    response.json({
+      success: true,
+      data: { admin: admin?.isActive ? publicAdmin(admin) : null },
+    });
+  } catch {
+    response.clearCookie(AUTH_COOKIE_NAME, { path: "/" });
+    response.json({ success: true, data: { admin: null } });
+  }
+};

@@ -3,33 +3,38 @@ import { useEffect, useRef, useState } from "react";
 import { ButtonLink } from "../../components/common/ButtonLink";
 import { SectionHeading } from "../../components/common/SectionHeading";
 import { useTattooStyles } from "../tattooStyles/hooks/useTattooStyles";
+import { useTouchActivation } from "../../components/common/useTouchActivation";
 
 export function TattooStylesSection() {
   const { data: tattooStyles, isLoading, error } = useTattooStyles(true);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [canScrollBack, setCanScrollBack] = useState(false);
-  const [canScrollForward, setCanScrollForward] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
+  const [direction, setDirection] = useState<"next" | "previous">("next");
+  const [pageSize, setPageSize] = useState(() =>
+    window.matchMedia("(max-width: 767px)").matches ? 1 : 4,
+  );
+  const touchStartX = useRef(0);
+  const { activeKey, shouldRunAction, clearTouchActivation } = useTouchActivation();
 
   useEffect(() => {
-    const carousel = carouselRef.current;
-    if (!carousel) return;
-    const updateControls = () => {
-      setCanScrollBack(carousel.scrollLeft > 1);
-      setCanScrollForward(carousel.scrollLeft + carousel.clientWidth < carousel.scrollWidth - 1);
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updatePageSize = () => {
+      setPageSize(mediaQuery.matches ? 1 : 4);
+      setStartIndex(0);
     };
-    updateControls();
-    carousel.addEventListener("scroll", updateControls, { passive: true });
-    window.addEventListener("resize", updateControls);
-    return () => {
-      carousel.removeEventListener("scroll", updateControls);
-      window.removeEventListener("resize", updateControls);
-    };
-  }, [tattooStyles]);
+    mediaQuery.addEventListener("change", updatePageSize);
+    return () => mediaQuery.removeEventListener("change", updatePageSize);
+  }, []);
+
+  useEffect(() => setStartIndex(0), [tattooStyles]);
+
+  const visibleStyles = Array.from(
+    { length: Math.min(pageSize, tattooStyles.length) },
+    (_, offset) => tattooStyles[(startIndex + offset) % tattooStyles.length],
+  );
 
   function move(direction: -1 | 1) {
-    const carousel = carouselRef.current;
-    if (!carousel) return;
-    carousel.scrollBy({ left: direction * carousel.clientWidth * 0.8, behavior: "smooth" });
+    setDirection(direction === 1 ? "next" : "previous");
+    setStartIndex((current) => (current + direction + tattooStyles.length) % tattooStyles.length);
   }
 
   return (
@@ -41,10 +46,37 @@ export function TattooStylesSection() {
           <p className="styles-section__state">Featured styles are temporarily unavailable.</p>
         ) : null}
         <div className="styles-carousel-shell">
-          <div ref={carouselRef} className="styles-carousel" role="list" aria-label="Tattoo styles">
-            {tattooStyles.map((style) => (
-              <article className="style-card" key={style._id} role="listitem">
-                <a className="style-card__link" href={`/styles#${style.slug}`}>
+          <div
+            key={`${startIndex}-${pageSize}`}
+            className={`styles-carousel styles-carousel--${direction}`}
+            role="list"
+            aria-label="Tattoo styles"
+            aria-live="polite"
+            onTouchStart={(event) => {
+              touchStartX.current = event.touches[0]?.clientX ?? 0;
+            }}
+            onTouchEnd={(event) => {
+              const delta = (event.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
+              if (Math.abs(delta) > 45) {
+                event.preventDefault();
+                clearTouchActivation();
+                move(delta > 0 ? -1 : 1);
+              }
+            }}
+          >
+            {visibleStyles.map((style) => (
+              <article
+                className={`style-card${activeKey === style._id ? " is-touch-active" : ""}`}
+                key={style._id}
+                role="listitem"
+              >
+                <a
+                  className="style-card__link"
+                  href={`/styles#${style.slug}`}
+                  onClick={(event) => {
+                    if (!shouldRunAction(style._id)) event.preventDefault();
+                  }}
+                >
                   <img
                     className="style-card__image"
                     src={style.coverImage?.url}
@@ -63,21 +95,21 @@ export function TattooStylesSection() {
             ))}
           </div>
           {tattooStyles.length > 0 ? (
-            <div className="styles-carousel__controls">
+            <div className="styles-carousel__controls" aria-label="Style carousel controls">
               <button
+                className="styles-carousel__control styles-carousel__control--previous"
                 type="button"
                 title="Previous styles"
                 aria-label="Previous styles"
-                disabled={!canScrollBack}
                 onClick={() => move(-1)}
               >
                 <ChevronLeft />
               </button>
               <button
+                className="styles-carousel__control styles-carousel__control--next"
                 type="button"
                 title="Next styles"
                 aria-label="Next styles"
-                disabled={!canScrollForward}
                 onClick={() => move(1)}
               >
                 <ChevronRight />

@@ -1,37 +1,59 @@
-import { ButtonLink } from "../../components/common/ButtonLink";
 import { googleReviews } from "../../data/home";
+import { useGallery } from "../gallery/hooks/useGallery";
+import { useBusinessSettings } from "../businessSettings/BusinessSettingsContext";
+import { summarizeHours } from "../businessSettings/components/OpeningHours";
 
 export function LocationReviewSection() {
+  const { data: featuredStudio } = useGallery("?type=STUDIO_PHOTO&featured=true&limit=2");
+  const { data: studioFallback } = useGallery("?type=STUDIO_PHOTO&limit=2");
+  const studioImage =
+    featuredStudio.items[1] ??
+    featuredStudio.items[0] ??
+    studioFallback.items[1] ??
+    studioFallback.items[0];
+  const { settings } = useBusinessSettings();
   return (
     <section className="section location-review-section" aria-labelledby="location-heading">
       <div className="page-shell location-review">
         <div className="location-review__visual">
-          <img
-            src="/images/studio-location.JPG"
-            alt="Placeholder showing the tattoo studio interior"
-          />
+          {studioImage ? <img src={studioImage.image.url} alt={studioImage.image.alt} /> : null}
         </div>
 
         <div className="location-review__content">
-          <h2 id="location-heading">Da Nang.</h2>
+          <h2 id="location-heading">{settings?.address.city ?? "Da Nang"}.</h2>
           <p>
-            A private, appointment-led studio designed for focused consultation, careful
-            preparation, and unhurried tattoo sessions.
+            {settings?.description ??
+              "A private, appointment-led studio designed for focused consultation."}
           </p>
 
           <dl className="location-review__details">
             <div>
               <dt>Address</dt>
-              <dd>52–54 Tran Thanh Mai, Da Nang, Vietnam</dd>
+              <dd>
+                {settings
+                  ? [
+                      settings.address.addressLine,
+                      settings.address.city,
+                      settings.address.country,
+                    ].join(", ")
+                  : "Da Nang, Vietnam"}
+              </dd>
             </div>
             <div>
               <dt>Hours</dt>
-              <dd>Mon–Sun · 10:00–20:00</dd>
+              <dd>{settings ? summarizeHours(settings.openingHours) : ""}</dd>
             </div>
           </dl>
 
           <div className="location-review__buttons">
-            <ButtonLink to="/contact">View location</ButtonLink>
+            <a
+              className="button"
+              href={settings?.location.googleMapsUrl || "/contact"}
+              target={settings?.location.googleMapsUrl ? "_blank" : undefined}
+              rel={settings?.location.googleMapsUrl ? "noreferrer" : undefined}
+            >
+              Get Directions
+            </a>
             <a className="button button--secondary" href="#google-reviews">
               Read reviews
             </a>

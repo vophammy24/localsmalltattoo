@@ -1,5 +1,14 @@
 import { NavLink } from "react-router";
-import { BookOpen, Grid2X2, Image, LogOut, Palette, Settings, UserRound } from "lucide-react";
+import {
+  BookOpen,
+  FileText,
+  Grid2X2,
+  Image,
+  LogOut,
+  Palette,
+  Settings,
+  UserRound,
+} from "lucide-react";
 import { useAdminAuth } from "../../features/admin/auth/AdminAuthContext";
 
 export function AdminSidebar() {
@@ -22,14 +31,22 @@ export function AdminSidebar() {
           <Palette />
           Styles
         </NavLink>
-        <span className="is-disabled">
+        <NavLink to="/admin/artists">
+          <UserRound />
+          Artists
+        </NavLink>
+        <NavLink to="/admin/gallery">
           <Image />
           Gallery
-        </span>
-        <span className="is-disabled">
+        </NavLink>
+        <NavLink to="/admin/content/about">
+          <FileText />
+          About CMS
+        </NavLink>
+        <NavLink to="/admin/settings/business">
           <Settings />
           Settings
-        </span>
+        </NavLink>
       </nav>
       <div className="admin-sidebar__user">
         <UserRound />

@@ -1,4 +1,5 @@
 import type { BookingTimePeriod } from "../types/booking";
+import { IMAGE_UPLOAD_RULES } from "../../../utils/imageUpload";
 
 export type BookingTimeOption = {
   value: BookingTimePeriod;
@@ -31,6 +32,5 @@ export const BOOKING_TIME_OPTIONS: BookingTimeOption[] = [
 
 export const BOOKING_IMAGE_RULES = {
   maxFiles: 5,
-  maxFileSizeBytes: 5 * 1024 * 1024,
-  acceptedTypes: ["image/jpeg", "image/png", "image/webp"],
+  ...IMAGE_UPLOAD_RULES,
 } as const;

@@ -1,14 +1,22 @@
 import { ImagePlus, X } from "lucide-react";
 import { useEffect, useState, type ChangeEvent } from "react";
+import { getImageFileError, IMAGE_INPUT_ACCEPT } from "../../utils/imageUpload";
 
 type ImageUploaderProps = {
   file: File | null;
   currentUrl?: string;
   onChange: (file: File | null) => void;
+  label?: string;
 };
 
-export function ImageUploader({ file, currentUrl, onChange }: ImageUploaderProps) {
+export function ImageUploader({
+  file,
+  currentUrl,
+  onChange,
+  label = "Choose cover image",
+}: ImageUploaderProps) {
   const [preview, setPreview] = useState("");
+  const [error, setError] = useState("");
   useEffect(() => {
     if (!file) {
       setPreview("");
@@ -20,7 +28,11 @@ export function ImageUploader({ file, currentUrl, onChange }: ImageUploaderProps
   }, [file]);
 
   function select(event: ChangeEvent<HTMLInputElement>) {
-    onChange(event.target.files?.[0] ?? null);
+    const selectedFile = event.target.files?.[0] ?? null;
+    const validationError = selectedFile ? getImageFileError(selectedFile) : null;
+    setError(validationError ?? "");
+    onChange(validationError ? null : selectedFile);
+    if (validationError) event.target.value = "";
   }
 
   const source = preview || currentUrl;
@@ -36,10 +48,11 @@ export function ImageUploader({ file, currentUrl, onChange }: ImageUploaderProps
       ) : null}
       <label>
         <ImagePlus />
-        <strong>Choose cover image</strong>
-        <span>JPG, PNG or WebP · 5 MB maximum</span>
-        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={select} />
+        <strong>{label}</strong>
+        <span>JPG, JPEG, PNG, WebP, HEIC or HEIF · Under 20 MB</span>
+        <input type="file" accept={IMAGE_INPUT_ACCEPT} onChange={select} />
       </label>
+      {error ? <p className="admin-error">{error}</p> : null}
     </div>
   );
 }

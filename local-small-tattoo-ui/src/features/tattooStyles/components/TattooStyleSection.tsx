@@ -1,21 +1,34 @@
 import { ButtonLink } from "../../../components/common/ButtonLink";
 import type { TattooStyle } from "../types/tattooStyle";
-import { StyleGalleryPreview } from "./StyleGalleryPreview";
+import { StyleGalleryPreview, type StyleCarouselImage } from "./StyleGalleryPreview";
+import { useGallery } from "../../gallery/hooks/useGallery";
+import { useBusinessSettings } from "../../businessSettings/BusinessSettingsContext";
 
-export function TattooStyleSection({ style, index }: { style: TattooStyle; index: number }) {
+export function TattooStyleSection({ style }: { style: TattooStyle }) {
+  const { settings } = useBusinessSettings();
+  const gallery = useGallery(`?style=${encodeURIComponent(style.slug)}&type=TATTOO_WORK&limit=50`);
+  const carouselImages: StyleCarouselImage[] = gallery.data.items.length
+    ? gallery.data.items.map((item) => ({
+        ...item.image,
+        displayOrder: item.displayOrder,
+        title: item.title,
+        author: item.artistId?.displayName || item.artistId?.fullName,
+      }))
+    : (style.galleryImages ?? []);
   return (
     <section className="tattoo-style-section" id={style.slug}>
       <div className="page-shell">
         <header className="tattoo-style-section__heading">
-          <p>
-            {String(index + 1).padStart(2, "0")} / {style.name}
-          </p>
           <h2>{style.name}</h2>
           <p>{style.shortDescription}</p>
         </header>
         {style.coverImage ? (
-          <figure className="tattoo-style-section__cover">
+          <figure className="tattoo-style-section__cover" tabIndex={0}>
             <img src={style.coverImage.url} alt={style.coverImage.alt} loading="lazy" />
+            <figcaption>
+              <strong>{style.coverImage.alt || style.name}</strong>
+              <small>{settings?.businessName ?? "Studio artist"}</small>
+            </figcaption>
           </figure>
         ) : null}
         <div className="tattoo-style-section__body">
@@ -27,7 +40,7 @@ export function TattooStyleSection({ style, index }: { style: TattooStyle; index
             </ButtonLink>
           </div>
         </div>
-        <StyleGalleryPreview images={style.galleryImages ?? []} />
+        <StyleGalleryPreview images={carouselImages} />
       </div>
     </section>
   );

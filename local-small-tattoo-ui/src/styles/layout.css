@@ -277,7 +277,7 @@
   line-height: 0.98;
 }
 
-.placeholder-page p:not(.section-heading__eyebrow) {
+.placeholder-page p {
   max-width: 42rem;
   margin: 2rem 0;
   color: var(--color-muted);

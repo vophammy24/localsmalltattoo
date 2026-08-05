@@ -16,6 +16,7 @@ export type Booking = {
   updatedAt: string;
   referenceImages: { url: string; publicId: string; originalName: string }[];
   sourceStyle?: { id: string; name: string; slug: string };
+  sourceArtist?: { id: string; name: string; slug: string };
   scheduledAppointment?: { startAt: string; endAt: string };
   adminNotes: {
     _id: string;

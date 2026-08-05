@@ -35,6 +35,11 @@
   --space-12: 6rem;
   --space-16: 8rem;
 
+  --spacing-section: clamp(4.5rem, 6vw, 5.5rem);
+  --spacing-section-compact: clamp(3rem, 4vw, 4rem);
+  --spacing-content: clamp(2rem, 3vw, 3rem);
+  --spacing-panel: 1.5rem;
+
   --container-max: 1200px;
   --page-margin: clamp(1rem, 5vw, 4rem);
   --header-height: 4.5rem;

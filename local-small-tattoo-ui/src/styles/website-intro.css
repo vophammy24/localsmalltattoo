@@ -1,0 +1,119 @@
+body.website-intro-open {
+  overflow: hidden;
+}
+
+.website-intro {
+  position: fixed;
+  z-index: 5000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--color-black);
+  color: var(--color-white);
+  animation: website-intro-exit 5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.website-intro__mark {
+  position: relative;
+  display: grid;
+  width: min(68vw, 19rem);
+  aspect-ratio: 1;
+  place-items: center;
+  animation: website-intro-arrive 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.website-intro__orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: website-intro-spin 5s linear infinite;
+}
+
+.website-intro__orbit text {
+  fill: var(--color-white);
+  font-family: var(--font-content);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+}
+
+.website-intro__logo {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 50%;
+  height: 50%;
+  place-items: center;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+}
+
+.website-intro__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transform: translateY(-1.5%) scale(1.03);
+}
+
+.website-intro__logo span {
+  max-width: 7rem;
+  font-family: var(--font-brand);
+  font-size: clamp(0.65rem, 2.5vw, 0.9rem);
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@keyframes website-intro-arrive {
+  from {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes website-intro-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes website-intro-exit {
+  0%,
+  82% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 480px) {
+  .website-intro__mark {
+    width: min(78vw, 17rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .website-intro {
+    animation-duration: 800ms;
+  }
+
+  .website-intro__mark {
+    animation: none;
+  }
+
+  .website-intro__orbit {
+    animation: none;
+  }
+}

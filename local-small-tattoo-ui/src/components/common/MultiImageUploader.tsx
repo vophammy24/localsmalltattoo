@@ -1,5 +1,6 @@
 import { Images } from "lucide-react";
-import type { ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
+import { getImageFileError, IMAGE_INPUT_ACCEPT } from "../../utils/imageUpload";
 
 export function MultiImageUploader({
   onChange,
@@ -8,22 +9,27 @@ export function MultiImageUploader({
   onChange: (files: File[]) => void;
   disabled?: boolean;
 }) {
+  const [error, setError] = useState("");
   function select(event: ChangeEvent<HTMLInputElement>) {
-    onChange(Array.from(event.target.files ?? []));
+    const files = Array.from(event.target.files ?? []);
+    const validationError = files.map(getImageFileError).find(Boolean);
+    setError(validationError ?? "");
+    if (!validationError) onChange(files);
     event.target.value = "";
   }
   return (
     <label className="multi-image-uploader">
       <Images />
       <strong>Add gallery images</strong>
-      <span>Up to 20 images per style · 5 MB each</span>
+      <span>JPG, JPEG, PNG, WebP, HEIC or HEIF · Up to 20 images · Under 20 MB each</span>
       <input
         disabled={disabled}
         type="file"
         multiple
-        accept="image/jpeg,image/png,image/webp"
+        accept={IMAGE_INPUT_ACCEPT}
         onChange={select}
       />
+      {error ? <span className="admin-error">{error}</span> : null}
     </label>
   );
 }

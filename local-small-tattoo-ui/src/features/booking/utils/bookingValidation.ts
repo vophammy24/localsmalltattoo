@@ -1,4 +1,5 @@
 import { BOOKING_IMAGE_RULES } from "../data/bookingOptions";
+import { getImageFileError } from "../../../utils/imageUpload";
 import type { BookingFormErrors, BookingFormValues } from "../types/booking";
 
 const PHONE_PATTERN = /^[+0-9][0-9\s().-]{7,19}$/;
@@ -82,18 +83,8 @@ export function validateBookingForm(values: BookingFormValues): BookingFormError
   if (values.referenceImages.length > BOOKING_IMAGE_RULES.maxFiles) {
     errors.referenceImages = `Upload no more than ${BOOKING_IMAGE_RULES.maxFiles} images.`;
   } else {
-    const unsupportedFile = values.referenceImages.find(
-      (file) => !(BOOKING_IMAGE_RULES.acceptedTypes as readonly string[]).includes(file.type),
-    );
-    const oversizedFile = values.referenceImages.find(
-      (file) => file.size > BOOKING_IMAGE_RULES.maxFileSizeBytes,
-    );
-
-    if (unsupportedFile) {
-      errors.referenceImages = "Only JPG, PNG, and WebP images are accepted.";
-    } else if (oversizedFile) {
-      errors.referenceImages = "Each image must be 5 MB or smaller.";
-    }
+    const fileError = values.referenceImages.map(getImageFileError).find(Boolean);
+    if (fileError) errors.referenceImages = fileError;
   }
 
   return errors;

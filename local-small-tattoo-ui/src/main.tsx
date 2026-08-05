@@ -9,6 +9,16 @@ import "./styles/home.css";
 import "./styles/booking.css";
 import "./styles/admin.css";
 import "./styles/styles-page.css";
+import "./styles/artists.css";
+import "./styles/gallery.css";
+import "./styles/about.css";
+import "./styles/contact.css";
+import "./styles/page-hero.css";
+import "./styles/floating-actions.css";
+import "./styles/mobile-audit.css";
+import "./styles/spacing-system.css";
+import "./styles/button-system.css";
+import "./styles/website-intro.css";
 
 const rootElement = document.getElementById("root");
 

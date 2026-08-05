@@ -1,0 +1,157 @@
+/* Final spacing layer: shared rhythm across public and admin surfaces. */
+.section {
+  padding-block: var(--spacing-section);
+}
+
+.section-heading {
+  margin-bottom: var(--spacing-content);
+}
+
+.section-action {
+  margin-top: var(--spacing-content);
+}
+
+.page-hero {
+  padding-block: 4rem 2.75rem;
+}
+
+.about-cms-hero.page-hero {
+  padding-block: 4rem 2.75rem;
+}
+
+.page-hero__inner {
+  gap: var(--spacing-content);
+}
+
+.tattoo-style-section,
+.artists-list,
+.about-artists,
+.artist-work,
+.artist-portfolio,
+.about-story,
+.about-mission,
+.about-space,
+.about-cms-artists,
+.about-final-cta,
+.contact-main,
+.gallery-browser,
+.gallery-cta,
+.styles-booking-cta {
+  padding-block: var(--spacing-section);
+}
+
+.booking-content {
+  padding-block: var(--spacing-section-compact);
+}
+
+.artists-cta {
+  padding-block: var(--spacing-section);
+}
+
+.about-story,
+.contact-main,
+.booking-content__grid {
+  gap: var(--spacing-content);
+}
+
+.about-space > div,
+.about-values,
+.artist-view-gallery,
+.gallery-pagination,
+.admin-gallery-pages {
+  margin-top: var(--spacing-content);
+}
+
+.about-story__copy h2,
+.about-mission h2,
+.about-space h2,
+.about-cms-artists h2,
+.about-final-cta h2 {
+  margin-block: 0.75rem 1.5rem;
+}
+
+.about-story__images img + img {
+  margin-top: var(--spacing-content);
+}
+
+.site-footer__main {
+  padding-block: var(--spacing-section-compact);
+}
+
+.artist-card__content,
+.admin-panel,
+.admin-detail-card,
+.admin-detail-aside > section,
+.business-form {
+  padding: var(--spacing-panel);
+}
+
+.admin-content {
+  padding: 3rem clamp(1.5rem, 4vw, 4rem);
+}
+
+.admin-page-header,
+.admin-stats {
+  margin-bottom: var(--spacing-content);
+}
+
+.admin-about-section,
+.admin-style-form,
+.business-form,
+.admin-gallery-fields {
+  gap: 1.25rem;
+}
+
+.admin-style-form__actions {
+  margin-top: var(--spacing-content);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --spacing-section: 3.5rem;
+    --spacing-section-compact: 2.75rem;
+    --spacing-content: 2rem;
+    --spacing-panel: 1rem;
+  }
+
+  .section {
+    padding-block: var(--spacing-section);
+  }
+
+  .page-hero {
+    padding-block: 3rem 2.5rem;
+  }
+
+  .about-cms-hero.page-hero {
+    padding-block: 3rem 2.5rem;
+  }
+
+  .about-story,
+  .about-mission,
+  .about-space,
+  .about-cms-artists,
+  .about-final-cta,
+  .contact-main,
+  .gallery-browser,
+  .gallery-cta,
+  .tattoo-style-section,
+  .artists-list,
+  .artists-cta,
+  .artist-work,
+  .booking-content,
+  .styles-booking-cta {
+    padding-block: var(--spacing-section);
+  }
+
+  .admin-content {
+    padding: 2rem 1rem 5rem;
+  }
+
+  .admin-page-header {
+    margin-bottom: 2rem;
+  }
+
+  .site-footer__main {
+    padding-block: var(--spacing-section);
+  }
+}

@@ -14,7 +14,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [admin, setAdmin] = useState<Admin | null>(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    adminRequest<{ admin: Admin }>("/auth/me")
+    adminRequest<{ admin: Admin | null }>("/auth/me")
       .then((data) => setAdmin(data.admin))
       .catch(() => setAdmin(null))
       .finally(() => setLoading(false));

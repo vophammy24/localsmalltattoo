@@ -1,13 +1,21 @@
+import { useBusinessSettings } from "../../businessSettings/BusinessSettingsContext";
+import { summarizeHours } from "../../businessSettings/components/OpeningHours";
+import {
+  createPhoneHref,
+  formatBusinessAddress,
+} from "../../businessSettings/utils/businessSettings";
 export function StudioInformation() {
+  const { settings } = useBusinessSettings();
+  if (!settings) return null;
   return (
     <aside className="booking-studio" aria-labelledby="booking-studio-title">
       <div>
         <p className="booking-studio__label">Atelier location</p>
-        <h2 id="booking-studio-title">Da Nang City</h2>
+        <h2 id="booking-studio-title">{settings.address.city}</h2>
         <address>
-          52–54 Tran Thanh Mai
-          <br />
-          An Hai, Da Nang, Vietnam
+          <a href={settings.location.googleMapsUrl} target="_blank" rel="noreferrer">
+            {formatBusinessAddress(settings.address)}
+          </a>
         </address>
       </div>
 
@@ -15,33 +23,34 @@ export function StudioInformation() {
         <div>
           <dt>Phone</dt>
           <dd>
-            <a href="tel:+84946752336">+84 946 752 336</a>
+            <a href={createPhoneHref(settings.contact.phoneNumber)}>
+              {settings.contact.phoneNumber}
+            </a>
           </dd>
         </div>
         <div>
           <dt>Email</dt>
           <dd>
-            <a href="mailto:booking@localsmalltattoo.vn">booking@localsmalltattoo.vn</a>
+            <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
           </dd>
         </div>
         <div>
           <dt>Studio hours</dt>
-          <dd>10:00 – 20:00 daily</dd>
+          <dd>{summarizeHours(settings.openingHours)}</dd>
         </div>
       </dl>
 
-      <figure className="booking-studio__image">
-        <img src="/images/studio-location.JPG" alt="Local Small Tattoo studio interior" />
-      </figure>
-
       <a
         className="button button--secondary booking-studio__map-link"
-        href="https://www.google.com/maps/search/?api=1&query=52-54+Tran+Thanh+Mai+Da+Nang+Vietnam"
+        href={settings.location.googleMapsUrl}
         target="_blank"
         rel="noreferrer"
       >
-        View map ↗
+        Get Directions ↗
       </a>
+      {settings.bookingNotice ? (
+        <p className="booking-studio__notice">{settings.bookingNotice}</p>
+      ) : null}
     </aside>
   );
 }

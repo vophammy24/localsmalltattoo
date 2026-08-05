@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
 import { useAdminAuth } from "../../features/admin/auth/AdminAuthContext";
+import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
 import { ArrowRight, LockKeyhole } from "lucide-react";
 export function AdminLoginPage() {
   const { admin, loading, login } = useAdminAuth();
+  const { settings } = useBusinessSettings();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState("");
@@ -30,7 +32,7 @@ export function AdminLoginPage() {
     <main className="admin-login">
       <form onSubmit={submit}>
         <header>
-          <h1>Local Small Tattoo</h1>
+          <h1>{settings?.businessName ?? "Studio Admin"}</h1>
         </header>
         <label>
           Email address

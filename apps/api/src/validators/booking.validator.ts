@@ -32,6 +32,11 @@ export const createBookingSchema = z.object({
     .trim()
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
     .optional(),
+  sourceArtistSlug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .optional(),
   consent: z
     .enum(["true", "false"])
     .transform((value) => value === "true")

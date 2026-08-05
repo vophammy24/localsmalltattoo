@@ -1,5 +1,6 @@
 import type { ChangeEvent } from "react";
 import { BOOKING_IMAGE_RULES } from "../data/bookingOptions";
+import { IMAGE_INPUT_ACCEPT } from "../../../utils/imageUpload";
 
 type ReferenceImageFieldProps = {
   error?: string;
@@ -28,7 +29,7 @@ export function ReferenceImageField({
         id="referenceImages"
         name="referenceImages"
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept={IMAGE_INPUT_ACCEPT}
         multiple
         onChange={onChange}
         aria-invalid={Boolean(error)}
@@ -40,7 +41,10 @@ export function ReferenceImageField({
           +
         </span>
         <strong>Choose reference images</strong>
-        <small>JPG, PNG or WebP · Up to {BOOKING_IMAGE_RULES.maxFiles} images · 5 MB each</small>
+        <small>
+          JPG, JPEG, PNG, WebP, HEIC or HEIF · Up to {BOOKING_IMAGE_RULES.maxFiles} images · Under
+          20 MB each
+        </small>
       </label>
 
       {error ? (

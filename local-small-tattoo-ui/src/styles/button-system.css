@@ -1,0 +1,119 @@
+/* Shared square-button interaction. Circular icon controls keep their own behavior. */
+.button,
+.admin-primary,
+.admin-secondary,
+.artist-view-gallery,
+.gallery-pagination button,
+.admin-gallery-pages button,
+.admin-pagination button,
+.admin-gallery-bulk button,
+.admin-gallery-grid nav a,
+.admin-gallery-grid nav button,
+.admin-order-actions button,
+.admin-row-actions button,
+.admin-about-repeat button,
+.admin-about-value button {
+  border-radius: 0;
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base),
+    opacity var(--transition-base);
+}
+
+/* White buttons become transparent. */
+.button--primary,
+.admin-primary {
+  border-color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-black) !important;
+}
+
+.button--primary:hover,
+.button--primary:focus-visible,
+.admin-primary:hover,
+.admin-primary:focus-visible {
+  border-color: var(--color-white);
+  background: transparent;
+  color: var(--color-white) !important;
+  transform: none;
+}
+
+/* Black or transparent buttons become white. */
+.button--secondary,
+.button:not(.button--primary, .button--text),
+.admin-secondary,
+.artist-view-gallery,
+.gallery-pagination button,
+.admin-gallery-pages button,
+.admin-pagination button:not(:disabled),
+.admin-gallery-bulk button,
+.admin-gallery-grid nav a,
+.admin-gallery-grid nav button,
+.admin-order-actions button:not(:disabled),
+.admin-row-actions button:not(:disabled),
+.admin-about-repeat button,
+.admin-about-value button {
+  border-color: var(--color-white);
+  background: transparent;
+  color: var(--color-white);
+}
+
+.button--secondary:hover,
+.button--secondary:focus-visible,
+.button:not(.button--primary, .button--text):hover,
+.button:not(.button--primary, .button--text):focus-visible,
+.admin-secondary:hover,
+.admin-secondary:focus-visible,
+.artist-view-gallery:hover,
+.artist-view-gallery:focus-visible,
+.gallery-pagination button:hover,
+.gallery-pagination button:focus-visible,
+.admin-gallery-pages button:hover,
+.admin-gallery-pages button:focus-visible,
+.admin-pagination button:not(:disabled):hover,
+.admin-pagination button:not(:disabled):focus-visible,
+.admin-gallery-bulk button:hover,
+.admin-gallery-bulk button:focus-visible,
+.admin-gallery-grid nav a:hover,
+.admin-gallery-grid nav a:focus-visible,
+.admin-gallery-grid nav button:hover,
+.admin-gallery-grid nav button:focus-visible,
+.admin-order-actions button:not(:disabled):hover,
+.admin-order-actions button:not(:disabled):focus-visible,
+.admin-row-actions button:not(:disabled):hover,
+.admin-row-actions button:not(:disabled):focus-visible,
+.admin-about-repeat button:hover,
+.admin-about-repeat button:focus-visible,
+.admin-about-value button:hover,
+.admin-about-value button:focus-visible {
+  border-color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-black) !important;
+  transform: none;
+}
+
+/* The login action starts black because it sits on a white surface. */
+.admin-login .admin-primary {
+  border-color: var(--color-black);
+  background: var(--color-black);
+  color: var(--color-white) !important;
+}
+
+.admin-login .admin-primary:hover,
+.admin-login .admin-primary:focus-visible {
+  border-color: var(--color-black);
+  background: var(--color-white);
+  color: var(--color-black) !important;
+}
+
+.button:disabled,
+.admin-primary:disabled,
+.admin-secondary:disabled,
+.gallery-pagination button:disabled,
+.admin-gallery-pages button:disabled,
+.admin-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+}

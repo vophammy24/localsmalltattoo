@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router";
+import { BackToTopButton } from "../common/BackToTopButton";
+import { FloatingContactButtons } from "../common/FloatingContactButtons";
+import { WebsiteIntro } from "../common/WebsiteIntro";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 
@@ -17,11 +20,14 @@ export function PublicLayout() {
   return (
     <>
       <ScrollToTop />
+      <WebsiteIntro />
       <Header />
       <main>
         <Outlet />
       </main>
       <Footer />
+      <FloatingContactButtons />
+      <BackToTopButton />
     </>
   );
 }

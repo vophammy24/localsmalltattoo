@@ -1,6 +1,7 @@
 import { Outlet } from "react-router";
 import { AdminHeader } from "../components/admin/AdminHeader";
 import { AdminSidebar } from "../components/admin/AdminSidebar";
+import { BackToTopButton } from "../components/common/BackToTopButton";
 export function AdminLayout() {
   return (
     <div className="admin-shell">
@@ -11,6 +12,7 @@ export function AdminLayout() {
           <Outlet />
         </main>
       </div>
+      <BackToTopButton />
     </div>
   );
 }

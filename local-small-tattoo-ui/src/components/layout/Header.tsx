@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { navigationItems } from "../../data/navigation";
+import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { settings } = useBusinessSettings();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -30,8 +32,16 @@ export function Header() {
     <>
       <header className="site-header">
         <div className="site-header__inner page-shell">
-          <Link className="site-header__brand" to="/" aria-label="Local Small Tattoo home">
-            Local Small Tattoo
+          <Link
+            className="site-header__brand"
+            to="/"
+            aria-label={`${settings?.businessName ?? "Local Small Tattoo"} home`}
+          >
+            {settings?.logo ? (
+              <img src={settings.logo.url} alt={settings.logo.alt} />
+            ) : (
+              settings?.shortName || settings?.businessName || "Local Small Tattoo"
+            )}
           </Link>
 
           <nav className="site-header__desktop-nav" aria-label="Primary navigation">
@@ -97,8 +107,10 @@ export function Header() {
           </nav>
 
           <div className="mobile-menu__footer">
-            <p>Fine-line atelier in Da Nang, Vietnam.</p>
-            <a href="tel:+84000000000">+84 000 000 000</a>
+            <p>{settings?.description ?? "A private tattoo studio in Da Nang."}</p>
+            <a href={`tel:${settings?.contact.phoneNumber.replace(/\s/g, "") ?? ""}`}>
+              {settings?.contact.phoneNumber ?? ""}
+            </a>
           </div>
         </div>
       </aside>

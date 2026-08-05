@@ -1,38 +1,30 @@
-const tickerItems = [
-  " Fineline ",
-  " Ornamental ",
-  " Blackwork ",
-  " Old School / American ",
-  " Japanese ",
-  " Realism ",
-  " Da Nang City ",
-  " Local Small Tattoo ",
-  " Fineline ",
-  " Ornamental ",
-  " Blackwork ",
-  " Old School / American ",
-  " Japanese ",
-  " Realism ",
-  " Da Nang City ",
-  " Local Small Tattoo ",
-];
+import { useBusinessSettings } from "../businessSettings/BusinessSettingsContext";
+import { useTattooStyles } from "../tattooStyles/hooks/useTattooStyles";
 
-function TickerGroup() {
+function TickerGroup({ items }: { items: string[] }) {
   return (
     <div className="marquee__group" aria-hidden="true">
-      {tickerItems.map((item) => (
-        <span key={item}> {item} · </span>
+      {items.map((item, index) => (
+        <span key={`${item}-${index}`}> {item} · </span>
       ))}
     </div>
   );
 }
 
 export function MarqueeTicker() {
+  const { settings } = useBusinessSettings();
+  const { data: styles } = useTattooStyles();
+  const items = [
+    ...styles.map((style) => style.name),
+    settings?.address.city,
+    settings?.businessName,
+  ].filter((item): item is string => Boolean(item));
+  if (!items.length) return null;
   return (
     <div className="marquee" aria-label="Tattoo styles available at the studio">
       <div className="marquee__track">
-        <TickerGroup />
-        <TickerGroup />
+        <TickerGroup items={items} />
+        <TickerGroup items={items} />
       </div>
     </div>
   );
