@@ -4,6 +4,7 @@ import {
   authenticateAdmin,
   AUTH_COOKIE_NAME,
   publicAdmin,
+  readAdminToken,
   signAdminToken,
 } from "../services/auth.service.js";
 import { loginSchema } from "../validators/admin.validator.js";
@@ -15,12 +16,13 @@ export const login: RequestHandler = async (request, response, next) => {
   try {
     const input = loginSchema.parse(request.body);
     const admin = await authenticateAdmin(input.email, input.password);
+    const token = signAdminToken(String(admin._id), input.rememberMe);
     response.cookie(
       AUTH_COOKIE_NAME,
-      signAdminToken(String(admin._id), input.rememberMe),
+      token,
       authCookieOptions(input.rememberMe),
     );
-    response.json({ success: true, data: { admin: publicAdmin(admin) } });
+    response.json({ success: true, data: { admin: publicAdmin(admin), token } });
   } catch (error) {
     next(error);
   }
@@ -30,7 +32,7 @@ export const logout: RequestHandler = (_request, response) => {
   response.json({ success: true });
 };
 export const me: RequestHandler = async (request, response) => {
-  const token = request.cookies?.[AUTH_COOKIE_NAME] as string | undefined;
+  const token = readAdminToken(request);
   if (!token) {
     response.json({ success: true, data: { admin: null } });
     return;

@@ -1,10 +1,20 @@
 import bcrypt from "bcryptjs";
+import type { Request } from "express";
 import jwt, { type SignOptions } from "jsonwebtoken";
 import { env } from "../config/env.js";
 import { AdminModel } from "../models/admin.model.js";
 import { HttpError } from "../utils/http-error.js";
 
 export const AUTH_COOKIE_NAME = env.COOKIE_NAME;
+
+export function readAdminToken(request: Request) {
+  const cookieToken = request.cookies?.[AUTH_COOKIE_NAME] as string | undefined;
+  const authorization = request.get("authorization");
+  const bearerToken = authorization?.startsWith("Bearer ")
+    ? authorization.slice("Bearer ".length).trim()
+    : undefined;
+  return cookieToken || bearerToken;
+}
 
 export function publicAdmin(admin: {
   _id: unknown;

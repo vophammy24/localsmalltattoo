@@ -2,11 +2,11 @@ import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 import { AdminModel } from "../models/admin.model.js";
-import { AUTH_COOKIE_NAME } from "../services/auth.service.js";
+import { readAdminToken } from "../services/auth.service.js";
 
 export const requireAdmin: RequestHandler = async (request, response, next) => {
   try {
-    const token = request.cookies?.[AUTH_COOKIE_NAME] as string | undefined;
+    const token = readAdminToken(request);
     if (!token) {
       response.status(401).json({ success: false, message: "Authentication required." });
       return;

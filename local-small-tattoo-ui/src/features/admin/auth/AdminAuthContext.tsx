@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { adminAction, adminRequest } from "../adminApi";
+import {
+  adminAction,
+  adminRequest,
+  clearAdminToken,
+  storeAdminToken,
+} from "../adminApi";
 import type { Admin } from "../types";
 
 type AuthContextValue = {
@@ -20,15 +25,20 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false));
   }, []);
   async function login(email: string, password: string, rememberMe: boolean) {
-    const result = await adminRequest<{ admin: Admin }>("/auth/login", {
+    const result = await adminRequest<{ admin: Admin; token: string }>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password, rememberMe }),
     });
+    storeAdminToken(result.token, rememberMe);
     setAdmin(result.admin);
   }
   async function logout() {
-    await adminAction("/auth/logout", { method: "POST" });
-    setAdmin(null);
+    try {
+      await adminAction("/auth/logout", { method: "POST" });
+    } finally {
+      clearAdminToken();
+      setAdmin(null);
+    }
   }
   return (
     <AdminAuthContext.Provider value={{ admin, loading, login, logout }}>
