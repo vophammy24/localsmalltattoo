@@ -16,6 +16,7 @@ import mongoose from "mongoose";
 import { isDatabaseConnected } from "./config/database.js";
 
 export const app = express();
+app.set("trust proxy", 1);
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -27,7 +28,13 @@ app.use(
 );
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin(origin, callback) {
+      if (!origin || env.ALLOWED_ORIGINS.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("Origin is not allowed by CORS."));
+    },
     credentials: true,
   }),
 );
@@ -38,6 +45,8 @@ app.get("/api/health", (_request, response) => {
   const databaseConnected = mongoose.connection.readyState === 1;
   response.status(databaseConnected ? 200 : 503).json({
     success: databaseConnected,
+    message: databaseConnected ? "API is healthy." : "Database is unavailable.",
+    timestamp: new Date().toISOString(),
     data: { database: databaseConnected ? "connected" : "unavailable" },
   });
 });

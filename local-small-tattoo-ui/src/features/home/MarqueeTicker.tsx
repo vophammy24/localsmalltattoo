@@ -25,6 +25,10 @@ export function MarqueeTicker() {
       <div className="marquee__track">
         <TickerGroup items={items} />
         <TickerGroup items={items} />
+        <TickerGroup items={items} />
+        <TickerGroup items={items} />
+        <TickerGroup items={items} />
+        <TickerGroup items={items} />
       </div>
     </div>
   );

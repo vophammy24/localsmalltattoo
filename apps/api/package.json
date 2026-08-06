@@ -3,9 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "engines": {
+    "node": ">=20 <25"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
     "typecheck": "tsc --noEmit",

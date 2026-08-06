@@ -1,25 +1,23 @@
+import { createServer } from "node:http";
 import { app } from "./app.js";
 import { connectDatabase } from "./config/database.js";
 import { env } from "./config/env.js";
 
-async function startServer() {
-  app.listen(env.PORT, () => console.info(`API listening on http://localhost:${env.PORT}`));
+const host = "0.0.0.0";
 
-  while (true) {
-    try {
-      await connectDatabase();
-      console.info("MongoDB connected.");
-      return;
-    } catch (error) {
-      console.error(
-        "MongoDB unavailable; retrying in 10 seconds.",
-        error instanceof Error ? error.message : error,
-      );
-      await new Promise((resolve) => setTimeout(resolve, 10_000));
-    }
+async function startServer(): Promise<void> {
+  try {
+    await connectDatabase();
+    console.info("MongoDB connected.");
+
+    const server = createServer(app);
+    server.listen(env.PORT, host, () => {
+      console.info(`API is running on ${host}:${env.PORT}`);
+    });
+  } catch (error) {
+    console.error("Unable to start API:", error);
+    process.exit(1);
   }
 }
 
-startServer().catch((error) => {
-  console.error("Unable to start API process.", error);
-});
+void startServer();

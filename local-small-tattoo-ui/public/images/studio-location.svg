@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" role="img" aria-labelledby="t d">
-<title id="t">Studio interior placeholder</title><desc id="d">Architectural monochrome studio interior placeholder.</desc>
-<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d0d0ca"/><stop offset="1" stop-color="#55554b"/></linearGradient></defs>
-<rect width="1000" height="800" fill="url(#bg)"/><rect x="70" y="80" width="370" height="510" fill="#f1f1ed" opacity=".65"/>
-<path d="M70 590H930V750H70Z" fill="#171717" opacity=".7"/><rect x="590" y="220" width="250" height="340" fill="#101010" opacity=".72"/>
-<rect x="630" y="250" width="170" height="120" fill="#a9a9a2"/><path d="M510 640H760L700 500H570Z" fill="#252525"/>
-<g fill="none" stroke="#fff" stroke-width="4" opacity=".3"><path d="M70 80V590M255 80V590M440 80V590"/><path d="M70 250H440M70 420H440"/></g>
-<text x="70" y="710" fill="#f5f5f5" font-family="Georgia,serif" font-size="32" letter-spacing="7">DA NANG STUDIO</text></svg>

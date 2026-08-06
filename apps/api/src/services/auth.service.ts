@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { type SignOptions } from "jsonwebtoken";
 import { env } from "../config/env.js";
 import { AdminModel } from "../models/admin.model.js";
 import { HttpError } from "../utils/http-error.js";
 
-export const AUTH_COOKIE_NAME = "lst_admin_session";
+export const AUTH_COOKIE_NAME = env.COOKIE_NAME;
 
 export function publicAdmin(admin: {
   _id: unknown;
@@ -26,14 +26,15 @@ export async function authenticateAdmin(email: string, password: string) {
 }
 
 export function signAdminToken(adminId: string, rememberMe: boolean) {
-  return jwt.sign({ sub: adminId }, env.JWT_SECRET, { expiresIn: rememberMe ? "7d" : "1d" });
+  const expiresIn = (rememberMe ? "7d" : env.JWT_EXPIRES_IN) as SignOptions["expiresIn"];
+  return jwt.sign({ sub: adminId }, env.JWT_SECRET, { expiresIn });
 }
 
 export function authCookieOptions(rememberMe: boolean) {
   return {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
-    sameSite: (env.NODE_ENV === "production" ? "none" : "lax") as "none" | "lax",
+    sameSite: "lax" as const,
     maxAge: (rememberMe ? 7 : 1) * 24 * 60 * 60 * 1000,
     path: "/",
   };
