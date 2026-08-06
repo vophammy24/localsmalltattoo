@@ -20,6 +20,8 @@ services:
         value: 1d
       - key: COOKIE_NAME
         value: local_small_admin
+      - key: COOKIE_SAME_SITE
+        value: none
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
       - key: CLOUDINARY_API_KEY

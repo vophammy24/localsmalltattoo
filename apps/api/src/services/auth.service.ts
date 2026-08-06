@@ -31,10 +31,11 @@ export function signAdminToken(adminId: string, rememberMe: boolean) {
 }
 
 export function authCookieOptions(rememberMe: boolean) {
+  const sameSite = env.COOKIE_SAME_SITE ?? (env.NODE_ENV === "production" ? "none" : "lax");
   return {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
-    sameSite: "lax" as const,
+    sameSite,
     maxAge: (rememberMe ? 7 : 1) * 24 * 60 * 60 * 1000,
     path: "/",
   };

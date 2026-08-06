@@ -12,6 +12,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32, "JWT_SECRET must contain at least 32 characters."),
   JWT_EXPIRES_IN: z.string().min(1).default("1d"),
   COOKIE_NAME: z.string().min(1).default("local_small_admin"),
+  COOKIE_SAME_SITE: z.enum(["lax", "none"]).optional(),
   ADMIN_NAME: z.string().min(1).optional(),
   ADMIN_EMAIL: z.email().optional(),
   ADMIN_PASSWORD: z.string().min(10).optional(),
