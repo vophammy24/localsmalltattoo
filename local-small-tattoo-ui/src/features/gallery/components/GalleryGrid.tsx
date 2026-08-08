@@ -4,12 +4,18 @@ import { GalleryCard } from "./GalleryCard";
 import { GalleryLightbox } from "./GalleryLightbox";
 import { useTouchActivation } from "../../../components/common/useTouchActivation";
 
-export function GalleryGrid({ items }: { items: GalleryItem[] }) {
+export function GalleryGrid({
+  items,
+  className = "",
+}: {
+  items: GalleryItem[];
+  className?: string;
+}) {
   const [open, setOpen] = useState<number | null>(null);
   const { activeKey, shouldRunAction } = useTouchActivation();
   return (
     <>
-      <div className="gallery-grid">
+      <div className={`gallery-grid${className ? ` ${className}` : ""}`}>
         {items.map((item, index) => (
           <GalleryCard
             key={item._id}

@@ -281,3 +281,129 @@ dt {
     bottom: 4.5rem;
   }
 }
+
+/* Phones in landscape need a compact-height layout, not the desktop layout. */
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
+  .page-shell {
+    width: calc(100% - 3rem);
+  }
+
+  .section {
+    padding-block: 3rem;
+  }
+
+  .site-header__inner {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .site-header__brand {
+    grid-column: 2;
+    justify-self: center;
+  }
+
+  .site-header__desktop-nav {
+    display: none;
+  }
+
+  .site-header__actions {
+    grid-column: 3;
+  }
+
+  .home-hero {
+    min-height: 100svh;
+  }
+
+  .home-hero__content {
+    width: min(100% - 3rem, 56rem);
+    padding-top: var(--header-height);
+  }
+
+  .home-hero__title {
+    font-size: clamp(3.25rem, 10vw, 5.75rem);
+    line-height: 0.78;
+  }
+
+  .home-hero__subtitle {
+    margin-top: 0.75rem;
+  }
+
+  .home-hero__actions {
+    margin-top: 1.25rem;
+  }
+
+  .home-hero__actions .button {
+    min-height: 3.25rem;
+    padding: 0.8rem 1.4rem;
+  }
+
+  .home-hero__scroll-hint {
+    display: none;
+  }
+
+  .styles-carousel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .home-featured-gallery .gallery-grid--featured {
+    grid-auto-rows: auto;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-featured-gallery .gallery-grid--featured .gallery-card:nth-child(n) {
+    display: block;
+    height: auto;
+    grid-column: auto;
+    grid-row: auto;
+    aspect-ratio: 3 / 4;
+  }
+
+  .home-featured-gallery .gallery-grid--featured .gallery-card:nth-child(3n + 2) {
+    aspect-ratio: 4 / 5;
+  }
+
+  .home-featured-gallery .gallery-grid--featured .gallery-card:nth-child(n + 9) {
+    display: none;
+  }
+
+  .style-card {
+    min-height: min(19rem, 68svh);
+  }
+
+  .floating-contacts {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .floating-contacts__link,
+  .back-to-top {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+
+  .back-to-top {
+    right: 0.75rem;
+    bottom: 3.75rem;
+  }
+
+  .floating-contacts__link span {
+    display: none;
+  }
+
+  .mobile-menu {
+    overflow-y: auto;
+  }
+
+  .mobile-menu__inner {
+    min-height: 100svh;
+    padding-top: calc(var(--header-height) + 1rem);
+  }
+
+  .mobile-menu__link {
+    padding-block: 0.55rem;
+    font-size: clamp(1.25rem, 5vh, 2rem);
+  }
+}

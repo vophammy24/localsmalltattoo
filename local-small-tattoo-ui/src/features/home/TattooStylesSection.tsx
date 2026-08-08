@@ -9,20 +9,33 @@ export function TattooStylesSection() {
   const { data: tattooStyles, isLoading, error } = useTattooStyles(true);
   const [startIndex, setStartIndex] = useState(0);
   const [direction, setDirection] = useState<"next" | "previous">("next");
-  const [pageSize, setPageSize] = useState(() =>
-    window.matchMedia("(max-width: 767px)").matches ? 1 : 4,
-  );
+  const getPageSize = () => {
+    if (
+      window.matchMedia("(orientation: landscape) and (max-height: 600px) and (pointer: coarse)")
+        .matches
+    )
+      return 2;
+    return window.matchMedia("(max-width: 767px)").matches ? 1 : 4;
+  };
+  const [pageSize, setPageSize] = useState(getPageSize);
   const touchStartX = useRef(0);
   const { activeKey, shouldRunAction, clearTouchActivation } = useTouchActivation();
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const portraitQuery = window.matchMedia("(max-width: 767px)");
+    const landscapeQuery = window.matchMedia(
+      "(orientation: landscape) and (max-height: 600px) and (pointer: coarse)",
+    );
     const updatePageSize = () => {
-      setPageSize(mediaQuery.matches ? 1 : 4);
+      setPageSize(getPageSize());
       setStartIndex(0);
     };
-    mediaQuery.addEventListener("change", updatePageSize);
-    return () => mediaQuery.removeEventListener("change", updatePageSize);
+    portraitQuery.addEventListener("change", updatePageSize);
+    landscapeQuery.addEventListener("change", updatePageSize);
+    return () => {
+      portraitQuery.removeEventListener("change", updatePageSize);
+      landscapeQuery.removeEventListener("change", updatePageSize);
+    };
   }, []);
 
   useEffect(() => setStartIndex(0), [tattooStyles]);
