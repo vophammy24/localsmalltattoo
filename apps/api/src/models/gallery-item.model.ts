@@ -19,11 +19,10 @@ const galleryItemSchema = new Schema(
     caption: { type: String, trim: true, maxlength: 500 },
     image: { type: galleryImageSchema, required: true },
     ownsCloudinaryAsset: { type: Boolean, default: true },
-    sourceCollection: { type: String, enum: ["TattooStyle", "Artist"] },
+    sourceCollection: { type: String, enum: ["TattooStyle"] },
     sourceId: Schema.Types.ObjectId,
     thumbnail: { url: String, publicId: String },
     type: { type: String, enum: GALLERY_TYPES, required: true, index: true },
-    artistId: { type: Schema.Types.ObjectId, ref: "Artist", index: true },
     tattooStyleIds: [{ type: Schema.Types.ObjectId, ref: "TattooStyle" }],
     isFeatured: { type: Boolean, default: false, index: true },
     isPublished: { type: Boolean, default: false, index: true },
@@ -34,7 +33,6 @@ const galleryItemSchema = new Schema(
 );
 
 galleryItemSchema.index({ isPublished: 1, type: 1, displayOrder: 1 });
-galleryItemSchema.index({ artistId: 1, isPublished: 1 });
 galleryItemSchema.index({ tattooStyleIds: 1, isPublished: 1 });
 
 export const GalleryItemModel = model("GalleryItem", galleryItemSchema);

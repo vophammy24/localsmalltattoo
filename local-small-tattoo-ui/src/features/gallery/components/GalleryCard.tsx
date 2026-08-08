@@ -27,9 +27,7 @@ export function GalleryCard({
       <span className="gallery-card__fallback">Image unavailable</span>
       <span className="gallery-card__overlay">
         <strong>{item.title || item.image.alt}</strong>
-        <small>
-          {item.artistId?.displayName || item.artistId?.fullName || item.type.replaceAll("_", " ")}
-        </small>
+        <small>{item.tattooStyleIds.map((style) => style.name).join(" · ")}</small>
       </span>
     </button>
   );

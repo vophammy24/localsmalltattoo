@@ -4,8 +4,6 @@ import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
 import { EMPTY_GALLERY_VALUES, GalleryFields } from "../../features/admin/gallery/GalleryFields";
 import { uploadGallery } from "../../features/gallery/api/galleryApi";
 import type { GalleryFormValues } from "../../features/gallery/types/gallery";
-import { getAdminArtists } from "../../features/artists/api/artistApi";
-import type { Artist } from "../../features/artists/types/artist";
 import { getAdminTattooStyles } from "../../features/tattooStyles/api/tattooStyleApi";
 import type { TattooStyle } from "../../features/tattooStyles/types/tattooStyle";
 import { GalleryMediaLibrary } from "../../features/admin/gallery/GalleryMediaLibrary";
@@ -15,12 +13,10 @@ export function AdminGalleryUploadPage() {
   const [values, setValues] = useState<GalleryFormValues>(EMPTY_GALLERY_VALUES);
   const [files, setFiles] = useState<File[]>([]);
   const [alts, setAlts] = useState<string[]>([]);
-  const [artists, setArtists] = useState<Artist[]>([]);
   const [styles, setStyles] = useState<TattooStyle[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
-    void getAdminArtists().then((data) => setArtists(data.items));
     void getAdminTattooStyles().then((data) => setStyles(data.items));
   }, []);
   const previews = useMemo(() => files.map((file) => URL.createObjectURL(file)), [files]);
@@ -88,13 +84,7 @@ export function AdminGalleryUploadPage() {
       </section>
       <section className="admin-panel">
         <h2>Shared metadata</h2>
-        <GalleryFields
-          values={values}
-          artists={artists}
-          styles={styles}
-          onChange={setValues}
-          hideAlt
-        />
+        <GalleryFields values={values} styles={styles} onChange={setValues} hideAlt />
       </section>
       <GalleryMediaLibrary onDone={() => navigate("/admin/gallery")} onError={setError} />
       {error ? <p className="admin-error">{error}</p> : null}

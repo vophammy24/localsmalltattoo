@@ -143,10 +143,6 @@ export function AdminBookingDetailPage() {
               <span>Source style</span>
               <strong>{booking.sourceStyle?.name ?? "Direct booking"}</strong>
             </div>
-            <div>
-              <span>Source artist</span>
-              <strong>{booking.sourceArtist?.name ?? "Not specified"}</strong>
-            </div>
           </section>
           <section className="admin-panel">
             <h2>Customer information</h2>

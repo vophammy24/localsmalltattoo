@@ -26,32 +26,49 @@ function adminHeaders(init: RequestInit, hasJsonBody: boolean) {
 }
 
 export async function adminRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const hasJsonBody = init.body && !(init.body instanceof FormData);
-  const response = await fetch(`${API_URL}/api/admin${path}`, {
-    ...init,
-    credentials: "include",
-    headers: adminHeaders(init, Boolean(hasJsonBody)),
-  });
-  const result = (await response.json().catch(() => null)) as {
-    success?: boolean;
-    message?: string;
-    data?: T;
-  } | null;
-  if (!response.ok || !result?.data) throw new Error(result?.message ?? "Admin request failed.");
-  return result.data;
+  try {
+    const hasJsonBody = init.body && !(init.body instanceof FormData);
+    const response = await fetch(`${API_URL}/api/admin${path}`, {
+      ...init,
+      credentials: "include",
+      headers: adminHeaders(init, Boolean(hasJsonBody)),
+    });
+    const result = (await response.json().catch(() => null)) as {
+      success?: boolean;
+      message?: string;
+      data?: T;
+    } | null;
+    if (!response.ok || !result?.data) throw new Error(result?.message ?? "Admin request failed.");
+    if ((init.method ?? "GET").toUpperCase() !== "GET") {
+      notifyAdmin({ type: "success", message: result.message ?? "Action completed successfully." });
+    }
+    return result.data;
+  } catch (reason) {
+    const error = reason instanceof Error ? reason : new Error("Admin request failed.");
+    if (path !== "/auth/me") notifyAdmin({ type: "error", message: error.message });
+    throw error;
+  }
 }
 
 export async function adminAction(path: string, init: RequestInit = {}) {
-  const hasJsonBody = init.body && !(init.body instanceof FormData);
-  const response = await fetch(`${API_URL}/api/admin${path}`, {
-    ...init,
-    credentials: "include",
-    headers: adminHeaders(init, Boolean(hasJsonBody)),
-  });
-  const result = (await response.json().catch(() => null)) as {
-    message?: string;
-    data?: unknown;
-  } | null;
-  if (!response.ok) throw new Error(result?.message ?? "Admin request failed.");
-  return result;
+  try {
+    const hasJsonBody = init.body && !(init.body instanceof FormData);
+    const response = await fetch(`${API_URL}/api/admin${path}`, {
+      ...init,
+      credentials: "include",
+      headers: adminHeaders(init, Boolean(hasJsonBody)),
+    });
+    const result = (await response.json().catch(() => null)) as {
+      message?: string;
+      data?: unknown;
+    } | null;
+    if (!response.ok) throw new Error(result?.message ?? "Admin request failed.");
+    notifyAdmin({ type: "success", message: result?.message ?? "Action completed successfully." });
+    return result;
+  } catch (reason) {
+    const error = reason instanceof Error ? reason : new Error("Admin request failed.");
+    notifyAdmin({ type: "error", message: error.message });
+    throw error;
+  }
 }
+import { notifyAdmin } from "./notifications/adminNotifications";

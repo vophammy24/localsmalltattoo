@@ -1,10 +1,13 @@
 import { Schema, model } from "mongoose";
 
-const imageReference = {
-  type: Schema.Types.ObjectId,
-  ref: "GalleryItem",
-  set: (value: unknown) => (value === "" || value == null ? undefined : value),
-};
+const sectionImageSchema = new Schema(
+  {
+    url: { type: String, required: true },
+    publicId: { type: String, required: true },
+    alt: { type: String, trim: true, maxlength: 200, default: "" },
+  },
+  { _id: false },
+);
 const valueSchema = new Schema(
   {
     title: { type: String, required: true, trim: true, maxlength: 80 },
@@ -15,11 +18,27 @@ const valueSchema = new Schema(
 );
 
 const aboutFields = {
+  home: {
+    hero: {
+      isVisible: { type: Boolean, default: true },
+      headingLines: [{ type: String, required: true, trim: true, maxlength: 80 }],
+      subtitle: { type: String, trim: true, maxlength: 150 },
+      buttonLabel: { type: String, trim: true, maxlength: 80 },
+      buttonUrl: { type: String, trim: true, maxlength: 500 },
+      image: sectionImageSchema,
+    },
+    location: {
+      isVisible: { type: Boolean, default: true },
+      heading: { type: String, required: true, trim: true, maxlength: 150 },
+      description: { type: String, trim: true, maxlength: 2000 },
+      image: sectionImageSchema,
+    },
+  },
   hero: {
     isVisible: { type: Boolean, default: true },
     heading: { type: String, required: true, trim: true, maxlength: 150 },
     description: { type: String, required: true, trim: true, maxlength: 1500 },
-    imageId: imageReference,
+    image: sectionImageSchema,
     primaryCtaLabel: { type: String, trim: true, maxlength: 80 },
     primaryCtaUrl: { type: String, trim: true, maxlength: 500 },
   },
@@ -28,27 +47,31 @@ const aboutFields = {
     label: { type: String, trim: true, maxlength: 100 },
     heading: { type: String, required: true, trim: true, maxlength: 150 },
     paragraphs: [{ type: String, trim: true, maxlength: 5000 }],
-    primaryImageId: imageReference,
-    secondaryImageId: imageReference,
+    signature: { type: String, trim: true, maxlength: 150 },
+    primaryImage: sectionImageSchema,
+    secondaryImage: sectionImageSchema,
   },
   mission: {
     isVisible: { type: Boolean, default: true },
     heading: { type: String, required: true, trim: true, maxlength: 150 },
     description: { type: String, required: true, trim: true, maxlength: 5000 },
     values: { type: [valueSchema], default: [] },
-    imageId: imageReference,
+    image: sectionImageSchema,
   },
   studioSpace: {
     isVisible: { type: Boolean, default: true },
     heading: { type: String, required: true, trim: true, maxlength: 150 },
     description: { type: String, trim: true, maxlength: 2000 },
-    galleryItemIds: [{ type: Schema.Types.ObjectId, ref: "GalleryItem" }],
+    images: { type: [sectionImageSchema], default: [] },
   },
-  artistSection: {
+  founderSection: {
     isVisible: { type: Boolean, default: true },
+    name: { type: String, required: true, trim: true, maxlength: 120 },
+    role: { type: String, trim: true, maxlength: 120 },
     heading: { type: String, required: true, trim: true, maxlength: 150 },
-    description: { type: String, trim: true, maxlength: 2000 },
-    artistIds: [{ type: Schema.Types.ObjectId, ref: "Artist" }],
+    paragraphs: [{ type: String, required: true, trim: true, maxlength: 5000 }],
+    signature: { type: String, trim: true, maxlength: 150 },
+    image: sectionImageSchema,
   },
   finalCta: {
     isVisible: { type: Boolean, default: true },
@@ -56,7 +79,7 @@ const aboutFields = {
     description: { type: String, trim: true, maxlength: 1500 },
     buttonLabel: { type: String, required: true, trim: true, maxlength: 80 },
     buttonUrl: { type: String, required: true, trim: true, maxlength: 500 },
-    imageId: imageReference,
+    image: sectionImageSchema,
   },
 };
 

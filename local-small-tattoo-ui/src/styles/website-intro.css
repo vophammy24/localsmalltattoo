@@ -60,15 +60,6 @@ body.website-intro-open {
   transform: translateY(-1.5%) scale(1.03);
 }
 
-.website-intro__logo span {
-  max-width: 7rem;
-  font-family: var(--font-brand);
-  font-size: clamp(0.65rem, 2.5vw, 0.9rem);
-  line-height: 1.2;
-  text-align: center;
-  text-transform: uppercase;
-}
-
 @keyframes website-intro-arrive {
   from {
     opacity: 0;

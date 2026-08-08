@@ -1,10 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import {
-  adminAction,
-  adminRequest,
-  clearAdminToken,
-  storeAdminToken,
-} from "../adminApi";
+import { adminAction, adminRequest, clearAdminToken, storeAdminToken } from "../adminApi";
 import type { Admin } from "../types";
 
 type AuthContextValue = {

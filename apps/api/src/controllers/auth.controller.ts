@@ -17,11 +17,7 @@ export const login: RequestHandler = async (request, response, next) => {
     const input = loginSchema.parse(request.body);
     const admin = await authenticateAdmin(input.email, input.password);
     const token = signAdminToken(String(admin._id), input.rememberMe);
-    response.cookie(
-      AUTH_COOKIE_NAME,
-      token,
-      authCookieOptions(input.rememberMe),
-    );
+    response.cookie(AUTH_COOKIE_NAME, token, authCookieOptions(input.rememberMe));
     response.json({ success: true, data: { admin: publicAdmin(admin), token } });
   } catch (error) {
     next(error);

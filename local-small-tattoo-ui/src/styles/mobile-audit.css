@@ -88,16 +88,14 @@ dt {
 
   .contact-actions,
   .booking-form__actions,
-  .admin-style-form__actions,
-  .artist-profile__actions {
+  .admin-style-form__actions {
     align-items: stretch;
     flex-direction: column;
   }
 
   .contact-actions .button,
   .booking-form__actions .button,
-  .admin-style-form__actions button,
-  .artist-profile__actions .button {
+  .admin-style-form__actions button {
     width: 100%;
   }
 
@@ -131,15 +129,6 @@ dt {
   .gallery-lightbox__close {
     right: 0.75rem;
     top: 0.5rem;
-  }
-
-  .artist-detail-hero .artist-profile {
-    padding-inline: 1rem;
-  }
-
-  .artist-gallery-modal__dialog {
-    width: calc(100% - 1rem);
-    max-height: calc(100dvh - 1rem);
   }
 
   .site-footer__main {
@@ -192,18 +181,15 @@ dt {
 
   .admin-filters,
   .admin-style-filters,
-  .admin-artist-filters,
   .admin-gallery-filters,
   .admin-about-fields,
   .admin-gallery-fields,
-  .artist-media-grid,
   .business-hours-editor > div {
     grid-template-columns: 1fr;
   }
 
   .admin-filters > *,
   .admin-style-filters > *,
-  .admin-artist-filters > *,
   .admin-gallery-filters > * {
     width: 100%;
   }
@@ -260,23 +246,8 @@ dt {
     font-size: 2.5rem;
   }
 
-  .gallery-grid,
-  .artist-masonry,
-  .artist-masonry--all {
+  .gallery-grid {
     columns: 1;
-  }
-
-  .artist-profile {
-    grid-template-columns: 1fr;
-    text-align: left;
-  }
-
-  .artist-profile__image {
-    width: 6.5rem;
-  }
-
-  .artist-detail-hero .artist-profile__content {
-    transform: none;
   }
 
   .admin-stats,

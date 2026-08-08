@@ -7,7 +7,6 @@ import { PageHero } from "../components/common/PageHero";
 export function BookingPage() {
   const [searchParams] = useSearchParams();
   const sourceStyleSlug = searchParams.get("style") ?? undefined;
-  const sourceArtistSlug = searchParams.get("artist") ?? undefined;
   return (
     <div className="booking-page">
       <PageHero
@@ -18,9 +17,7 @@ export function BookingPage() {
       <section className="booking-content" aria-label="Booking request form">
         <div className="page-shell booking-content__grid">
           <StudioInformation />
-          <BookingForm
-            onSubmit={(submission) => createBooking(submission, sourceStyleSlug, sourceArtistSlug)}
-          />
+          <BookingForm onSubmit={(submission) => createBooking(submission, sourceStyleSlug)} />
         </div>
       </section>
     </div>

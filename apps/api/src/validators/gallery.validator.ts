@@ -9,7 +9,6 @@ export const galleryFieldsSchema = z.object({
   caption: optionalText(500),
   alt: z.string().trim().max(200).default(""),
   type: z.enum(GALLERY_TYPES),
-  artistId: optionalText(50),
   tattooStyleIds: z.preprocess(
     (value) => (Array.isArray(value) ? value : value ? [value] : []),
     z.array(z.string().min(1)),
@@ -23,8 +22,6 @@ export const galleryFieldsSchema = z.object({
 export const galleryListQuerySchema = z.object({
   search: z.string().trim().optional(),
   type: z.enum(GALLERY_TYPES).optional(),
-  artist: z.string().trim().optional(),
-  artistId: z.string().trim().optional(),
   style: z.string().trim().optional(),
   styleId: z.string().trim().optional(),
   featured: z.enum(["true", "false"]).optional(),
@@ -48,7 +45,6 @@ export const galleryBulkActionSchema = z.object({
     "UNFEATURE",
     "DELETE",
     "SET_TYPE",
-    "SET_ARTIST",
     "ADD_STYLE",
   ]),
   value: z.string().optional(),

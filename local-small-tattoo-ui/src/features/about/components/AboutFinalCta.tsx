@@ -7,7 +7,7 @@ export function AboutFinalCta({ content }: { content: AboutContent["finalCta"] }
       style={
         content.image
           ? {
-              backgroundImage: `linear-gradient(rgba(0,0,0,.62), rgba(0,0,0,.84)), url(${content.image.image.url})`,
+              backgroundImage: `linear-gradient(rgba(0,0,0,.62), rgba(0,0,0,.84)), url(${content.image.url})`,
             }
           : undefined
       }

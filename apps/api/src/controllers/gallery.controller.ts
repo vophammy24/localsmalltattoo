@@ -1,6 +1,5 @@
 import type { RequestHandler } from "express";
 import { isValidObjectId } from "mongoose";
-import { ArtistModel } from "../models/artist.model.js";
 import { GalleryItemModel } from "../models/gallery-item.model.js";
 import { TattooStyleModel } from "../models/tattoo-style.model.js";
 import {
@@ -17,10 +16,7 @@ import {
   galleryToggleSchema,
 } from "../validators/gallery.validator.js";
 
-const populate = [
-  { path: "artistId", select: "fullName displayName slug" },
-  { path: "tattooStyleIds", select: "name slug" },
-];
+const populate = [{ path: "tattooStyleIds", select: "name slug" }];
 
 async function resolveFilter(
   query: ReturnType<typeof galleryListQuerySchema.parse>,
@@ -37,16 +33,6 @@ async function resolveFilter(
       { caption: { $regex: escaped, $options: "i" } },
     ];
   }
-  if (query.artistId) filter.artistId = query.artistId;
-  if (query.artist) {
-    const artist = await ArtistModel.findOne({
-      slug: query.artist,
-      ...(admin ? {} : { isPublished: true }),
-    })
-      .select("_id")
-      .lean();
-    filter.artistId = artist?._id ?? null;
-  }
   if (query.styleId) filter.tattooStyleIds = query.styleId;
   if (query.style) {
     const style = await TattooStyleModel.findOne({
@@ -61,32 +47,20 @@ async function resolveFilter(
 }
 
 async function validateReferences(fields: ReturnType<typeof galleryFieldsSchema.parse>) {
-  if (fields.artistId && !isValidObjectId(fields.artistId))
-    throw new HttpError(400, "Invalid artist.");
   if (fields.tattooStyleIds.some((id) => !isValidObjectId(id)))
     throw new HttpError(400, "Invalid tattoo style.");
-  const [artistCount, styleCount] = await Promise.all([
-    fields.artistId
-      ? ArtistModel.countDocuments({ _id: fields.artistId, status: { $ne: "ARCHIVED" } })
-      : Promise.resolve(0),
-    fields.tattooStyleIds.length
-      ? TattooStyleModel.countDocuments({
-          _id: { $in: fields.tattooStyleIds },
-          status: { $ne: "ARCHIVED" },
-        })
-      : Promise.resolve(0),
-  ]);
-  if (fields.artistId && !artistCount) throw new HttpError(400, "Artist does not exist.");
+  const styleCount = await (fields.tattooStyleIds.length
+    ? TattooStyleModel.countDocuments({
+        _id: { $in: fields.tattooStyleIds },
+        status: { $ne: "ARCHIVED" },
+      })
+    : Promise.resolve(0));
   if (styleCount !== fields.tattooStyleIds.length)
     throw new HttpError(400, "One or more tattoo styles do not exist.");
   if (fields.isPublished && !fields.alt)
     throw new HttpError(400, "Alt text is required before publishing.");
-  if (
-    fields.isPublished &&
-    fields.type === "TATTOO_WORK" &&
-    (!fields.artistId || !fields.tattooStyleIds.length)
-  ) {
-    throw new HttpError(400, "Published tattoo work requires an artist and at least one style.");
+  if (fields.isPublished && fields.type === "TATTOO_WORK" && !fields.tattooStyleIds.length) {
+    throw new HttpError(400, "Published tattoo work requires at least one style.");
   }
 }
 
@@ -164,12 +138,9 @@ export const getAdminGalleryItem: RequestHandler = async (request, response, nex
 
 export const getAdminGalleryMediaLibrary: RequestHandler = async (_request, response, next) => {
   try {
-    const [styles, artists, used] = await Promise.all([
+    const [styles, used] = await Promise.all([
       TattooStyleModel.find({ status: { $ne: "ARCHIVED" } })
         .select("name coverImage galleryImages")
-        .lean(),
-      ArtistModel.find({ status: { $ne: "ARCHIVED" } })
-        .select("fullName displayName profileImage coverImage")
         .lean(),
       GalleryItemModel.find().select("image.publicId").lean(),
     ]);
@@ -191,22 +162,6 @@ export const getAdminGalleryMediaLibrary: RequestHandler = async (_request, resp
             alreadyLinked: usedIds.has(image!.publicId!),
           })),
       ),
-      ...artists.flatMap((artist) =>
-        [artist.profileImage, artist.coverImage]
-          .filter((image) => image?.url && image.publicId)
-          .map((image) => ({
-            image: {
-              url: image!.url,
-              publicId: image!.publicId,
-              alt: image!.alt || artist.displayName || artist.fullName,
-            },
-            sourceCollection: "Artist",
-            sourceId: artist._id,
-            sourceLabel: artist.displayName || artist.fullName,
-            artistId: artist._id,
-            alreadyLinked: usedIds.has(image!.publicId),
-          })),
-      ),
     ];
     response.json({ success: true, data: { items } });
   } catch (error) {
@@ -218,9 +173,8 @@ export const linkAdminGalleryMedia: RequestHandler = async (request, response, n
   try {
     type MediaEntry = {
       image?: { url?: string; publicId?: string; alt?: string };
-      sourceCollection?: "TattooStyle" | "Artist";
+      sourceCollection?: "TattooStyle";
       sourceId?: string;
-      artistId?: string;
       tattooStyleIds?: string[];
     };
     const entries: MediaEntry[] = Array.isArray(request.body.items) ? request.body.items : [];
@@ -243,8 +197,7 @@ export const linkAdminGalleryMedia: RequestHandler = async (request, response, n
         )
         .map((entry, index) => ({
           image: entry.image,
-          type: entry.sourceCollection === "Artist" ? "STUDIO_PHOTO" : "TATTOO_WORK",
-          artistId: entry.artistId,
+          type: "TATTOO_WORK",
           tattooStyleIds: entry.tattooStyleIds ?? [],
           ownsCloudinaryAsset: false,
           sourceCollection: entry.sourceCollection,
@@ -268,7 +221,6 @@ export const createAdminGalleryItem: RequestHandler = async (request, response, 
     try {
       const item = await GalleryItemModel.create({
         ...fields,
-        artistId: fields.artistId || undefined,
         photographedAt: fields.photographedAt || undefined,
         image: { ...uploaded, alt: fields.alt },
       });
@@ -306,7 +258,6 @@ export const createAdminGalleryBulk: RequestHandler = async (request, response, 
       const items = await GalleryItemModel.insertMany(
         uploaded.map((image, index) => ({
           ...fields,
-          artistId: fields.artistId || undefined,
           photographedAt: fields.photographedAt || undefined,
           displayOrder: fields.displayOrder + startOrder + index,
           image: { ...image, alt: String(altValues[index] ?? fields.alt).trim() },
@@ -330,7 +281,6 @@ export const updateAdminGalleryItem: RequestHandler = async (request, response, 
       request.params.galleryItemId,
       {
         ...fields,
-        artistId: fields.artistId || null,
         photographedAt: fields.photographedAt || null,
         "image.alt": fields.alt,
       },
@@ -365,7 +315,6 @@ export const publishAdminGalleryItem: RequestHandler = async (request, response,
         galleryFieldsSchema.parse({
           ...item.toObject(),
           alt: item.image.alt,
-          artistId: item.artistId?.toString(),
           tattooStyleIds: item.tattooStyleIds.map(String),
           isPublished: true,
         }),
@@ -420,13 +369,12 @@ export const bulkAdminGallery: RequestHandler = async (request, response, next) 
         const items = await GalleryItemModel.find({ _id: { $in: ids } });
         const invalid = items.find(
           (item) =>
-            !item.image.alt.trim() ||
-            (item.type === "TATTOO_WORK" && (!item.artistId || !item.tattooStyleIds.length)),
+            !item.image.alt.trim() || (item.type === "TATTOO_WORK" && !item.tattooStyleIds.length),
         );
         if (invalid) {
           throw new HttpError(
             400,
-            "Every published image needs alt text; tattoo work also needs an artist and style.",
+            "Every published image needs alt text; tattoo work also needs a style.",
           );
         }
       }
@@ -435,7 +383,6 @@ export const bulkAdminGallery: RequestHandler = async (request, response, next) 
         updates.isPublished = action === "PUBLISH";
       if (action === "FEATURE" || action === "UNFEATURE") updates.isFeatured = action === "FEATURE";
       if (action === "SET_TYPE") updates.type = value;
-      if (action === "SET_ARTIST") updates.artistId = value || null;
       if (action === "ADD_STYLE") updates.$addToSet = { tattooStyleIds: value };
       await GalleryItemModel.updateMany({ _id: { $in: ids } }, updates);
     }

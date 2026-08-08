@@ -1,37 +1,25 @@
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
-import { AboutArtistPicker } from "../../features/admin/about/AboutArtistPicker";
-import { AboutImagePicker } from "../../features/admin/about/AboutImagePicker";
 import { SectionVisibility } from "../../features/admin/about/SectionVisibility";
+import { SectionImageField } from "../../features/admin/about/SectionImageField";
 import {
+  deleteSectionImage,
   getAdminAbout,
   publishAdminAbout,
   saveAdminAbout,
 } from "../../features/about/api/aboutApi";
 import type { AboutContent } from "../../features/about/types/about";
-import { getAdminArtists } from "../../features/artists/api/artistApi";
-import type { Artist } from "../../features/artists/types/artist";
-import { getAdminGallery } from "../../features/gallery/api/galleryApi";
-import type { GalleryItem } from "../../features/gallery/types/gallery";
 
 export function AdminAboutPage() {
   const [content, setContent] = useState<AboutContent>();
-  const [images, setImages] = useState<GalleryItem[]>([]);
-  const [artists, setArtists] = useState<Artist[]>([]);
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   useEffect(() => {
-    void Promise.all([
-      getAdminAbout(),
-      getAdminGallery("?type=STUDIO_PHOTO&limit=50"),
-      getAdminArtists("?publication=published"),
-    ])
-      .then(([about, gallery, artistData]) => {
+    void Promise.all([getAdminAbout()])
+      .then(([about]) => {
         setContent(about.content);
-        setImages(gallery.items);
-        setArtists(artistData.items);
       })
       .catch((reason: Error) => setError(reason.message));
   }, []);
@@ -70,7 +58,7 @@ export function AdminAboutPage() {
     <>
       <AdminPageHeader
         title="About Us CMS"
-        description="Edit the fixed About page structure and publish changes when ready."
+        description="Edit About Us sections, structured text, and fixed section images."
         action={
           <span className={`admin-publication ${content.isPublished ? "is-published" : ""}`}>
             {content.isPublished ? "Published" : "Draft only"}
@@ -122,11 +110,12 @@ export function AdminAboutPage() {
             />
           </label>
         </div>
-        <h3>Hero image</h3>
-        <AboutImagePicker
-          items={images}
-          selectedIds={content.hero.imageId ? [content.hero.imageId] : []}
-          onChange={(ids) => section("hero", { ...content.hero, imageId: ids[0] ?? "" })}
+        <SectionImageField
+          section="about-hero"
+          label="Fixed hero image"
+          image={content.hero.image}
+          alt={content.hero.heading}
+          onChange={(image) => section("hero", { ...content.hero, image })}
         />
       </section>
       <section className="admin-panel admin-about-section">
@@ -150,6 +139,14 @@ export function AdminAboutPage() {
             <input
               value={content.story.heading}
               onChange={(e) => section("story", { ...content.story, heading: e.target.value })}
+            />
+          </label>
+          <label>
+            Signature
+            <input
+              maxLength={150}
+              value={content.story.signature}
+              onChange={(e) => section("story", { ...content.story, signature: e.target.value })}
             />
           </label>
         </div>
@@ -190,17 +187,19 @@ export function AdminAboutPage() {
           <Plus />
           Add paragraph
         </button>
-        <h3>Primary image</h3>
-        <AboutImagePicker
-          items={images}
-          selectedIds={content.story.primaryImageId ? [content.story.primaryImageId] : []}
-          onChange={(ids) => section("story", { ...content.story, primaryImageId: ids[0] ?? "" })}
+        <SectionImageField
+          section="about-story-primary"
+          label="Fixed primary image"
+          image={content.story.primaryImage}
+          alt={content.story.heading}
+          onChange={(primaryImage) => section("story", { ...content.story, primaryImage })}
         />
-        <h3>Secondary image</h3>
-        <AboutImagePicker
-          items={images}
-          selectedIds={content.story.secondaryImageId ? [content.story.secondaryImageId] : []}
-          onChange={(ids) => section("story", { ...content.story, secondaryImageId: ids[0] ?? "" })}
+        <SectionImageField
+          section="about-story-secondary"
+          label="Fixed secondary image"
+          image={content.story.secondaryImage}
+          alt={content.story.heading}
+          onChange={(secondaryImage) => section("story", { ...content.story, secondaryImage })}
         />
       </section>
       <section className="admin-panel admin-about-section">
@@ -293,11 +292,12 @@ export function AdminAboutPage() {
           <Plus />
           Add value
         </button>
-        <h3>Mission image</h3>
-        <AboutImagePicker
-          items={images}
-          selectedIds={content.mission.imageId ? [content.mission.imageId] : []}
-          onChange={(ids) => section("mission", { ...content.mission, imageId: ids[0] })}
+        <SectionImageField
+          section="about-mission"
+          label="Fixed mission image"
+          image={content.mission.image}
+          alt={content.mission.heading}
+          onChange={(image) => section("mission", { ...content.mission, image })}
         />
       </section>
       <section className="admin-panel admin-about-section">
@@ -328,49 +328,152 @@ export function AdminAboutPage() {
             />
           </label>
         </div>
-        <AboutImagePicker
-          multiple
-          items={images}
-          selectedIds={content.studioSpace.galleryItemIds}
-          onChange={(ids) =>
-            section("studioSpace", { ...content.studioSpace, galleryItemIds: ids })
-          }
+        <div className="admin-section-image-list">
+          {content.studioSpace.images.map((image) => (
+            <figure key={image.publicId}>
+              <img src={image.url} alt={image.alt} />
+              <button
+                type="button"
+                disabled={busy === `studio-image-${image.publicId}`}
+                onClick={() => {
+                  setBusy(`studio-image-${image.publicId}`);
+                  void deleteSectionImage(image.publicId)
+                    .then(() =>
+                      section("studioSpace", {
+                        ...content.studioSpace,
+                        images: content.studioSpace.images.filter(
+                          (item) => item.publicId !== image.publicId,
+                        ),
+                      }),
+                    )
+                    .catch((reason: Error) => setError(reason.message))
+                    .finally(() => setBusy(""));
+                }}
+              >
+                Remove
+              </button>
+            </figure>
+          ))}
+        </div>
+        <SectionImageField
+          section="about-studio-space"
+          label="Add fixed studio image"
+          alt={content.studioSpace.heading}
+          onChange={(image) => {
+            if (!image) return;
+            section("studioSpace", {
+              ...content.studioSpace,
+              images: [...content.studioSpace.images, image],
+            });
+          }}
         />
       </section>
       <section className="admin-panel admin-about-section">
         <div className="admin-about-section__header">
-          <h2>Artists</h2>
+          <h2>Founder</h2>
           <SectionVisibility
-            checked={content.artistSection.isVisible !== false}
+            checked={content.founderSection.isVisible !== false}
             onChange={(isVisible) =>
-              section("artistSection", { ...content.artistSection, isVisible })
+              section("founderSection", { ...content.founderSection, isVisible })
             }
           />
         </div>
         <div className="admin-about-fields">
           <label>
-            Heading *
+            Founder name *
             <input
-              value={content.artistSection.heading}
+              required
+              maxLength={120}
+              value={content.founderSection.name}
               onChange={(e) =>
-                section("artistSection", { ...content.artistSection, heading: e.target.value })
+                section("founderSection", { ...content.founderSection, name: e.target.value })
               }
             />
           </label>
-          <label className="is-full">
-            Description
-            <textarea
-              value={content.artistSection.description}
+          <label>
+            Role
+            <input
+              maxLength={120}
+              value={content.founderSection.role}
               onChange={(e) =>
-                section("artistSection", { ...content.artistSection, description: e.target.value })
+                section("founderSection", { ...content.founderSection, role: e.target.value })
+              }
+            />
+          </label>
+          <label>
+            Heading *
+            <input
+              value={content.founderSection.heading}
+              onChange={(e) =>
+                section("founderSection", {
+                  ...content.founderSection,
+                  heading: e.target.value,
+                })
+              }
+            />
+          </label>
+          <label>
+            Signature
+            <input
+              value={content.founderSection.signature}
+              onChange={(e) =>
+                section("founderSection", {
+                  ...content.founderSection,
+                  signature: e.target.value,
+                })
               }
             />
           </label>
         </div>
-        <AboutArtistPicker
-          artists={artists}
-          selectedIds={content.artistSection.artistIds}
-          onChange={(ids) => section("artistSection", { ...content.artistSection, artistIds: ids })}
+        <h3>Introduction paragraphs</h3>
+        {content.founderSection.paragraphs.map((paragraph, index) => (
+          <div className="admin-about-repeat" key={index}>
+            <textarea
+              rows={4}
+              value={paragraph}
+              onChange={(e) =>
+                section("founderSection", {
+                  ...content.founderSection,
+                  paragraphs: content.founderSection.paragraphs.map((value, position) =>
+                    position === index ? e.target.value : value,
+                  ),
+                })
+              }
+            />
+            <button
+              title="Remove paragraph"
+              onClick={() =>
+                section("founderSection", {
+                  ...content.founderSection,
+                  paragraphs: content.founderSection.paragraphs.filter(
+                    (_, position) => position !== index,
+                  ),
+                })
+              }
+            >
+              <Trash2 />
+            </button>
+          </div>
+        ))}
+        <button
+          className="admin-secondary"
+          onClick={() =>
+            section("founderSection", {
+              ...content.founderSection,
+              paragraphs: [...content.founderSection.paragraphs, ""],
+            })
+          }
+        >
+          <Plus />
+          Add paragraph
+        </button>
+        <h3>Founder image</h3>
+        <SectionImageField
+          section="founder"
+          label="Fixed founder image"
+          image={content.founderSection.image}
+          alt={content.founderSection.name}
+          onChange={(image) => section("founderSection", { ...content.founderSection, image })}
         />
       </section>
       <section className="admin-panel admin-about-section">
@@ -419,11 +522,12 @@ export function AdminAboutPage() {
             />
           </label>
         </div>
-        <h3>Background image</h3>
-        <AboutImagePicker
-          items={images}
-          selectedIds={content.finalCta.imageId ? [content.finalCta.imageId] : []}
-          onChange={(ids) => section("finalCta", { ...content.finalCta, imageId: ids[0] })}
+        <SectionImageField
+          section="about-final-cta"
+          label="Fixed background image"
+          image={content.finalCta.image}
+          alt={content.finalCta.heading}
+          onChange={(image) => section("finalCta", { ...content.finalCta, image })}
         />
       </section>
       <div className="admin-style-form__actions">

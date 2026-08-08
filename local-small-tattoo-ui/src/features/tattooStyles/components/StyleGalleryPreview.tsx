@@ -1,17 +1,20 @@
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { TattooStyleImage } from "../types/tattooStyle";
-import { useBusinessSettings } from "../../businessSettings/BusinessSettingsContext";
 import { useTouchActivation } from "../../../components/common/useTouchActivation";
 
 const MOBILE_QUERY = "(max-width: 767px)";
 export type StyleCarouselImage = TattooStyleImage & {
   title?: string;
-  author?: string;
 };
 
-export function StyleGalleryPreview({ images }: { images: StyleCarouselImage[] }) {
-  const { settings } = useBusinessSettings();
+export function StyleGalleryPreview({
+  images,
+  tattooStyle,
+}: {
+  images: StyleCarouselImage[];
+  tattooStyle: string;
+}) {
   const orderedImages = useMemo(
     () => [...images].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)),
     [images],
@@ -110,7 +113,7 @@ export function StyleGalleryPreview({ images }: { images: StyleCarouselImage[] }
               <img src={image.url} alt={image.alt} loading="lazy" />
               <span className="style-gallery-preview__meta">
                 <strong>{image.title || image.alt}</strong>
-                <small>{image.author || settings?.businessName || "Studio artist"}</small>
+                <small>{tattooStyle}</small>
               </span>
             </button>
           ))}
@@ -180,7 +183,7 @@ export function StyleGalleryPreview({ images }: { images: StyleCarouselImage[] }
             <aside>
               <p>Tattoo work</p>
               <h2>{openImage.title || openImage.alt}</h2>
-              <span>{openImage.author || settings?.businessName || "Studio artist"}</span>
+              <span>{tattooStyle}</span>
               <small>
                 {(openIndex ?? 0) + 1} / {orderedImages.length}
               </small>

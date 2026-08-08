@@ -46,7 +46,7 @@ export function StudioInformation() {
         target="_blank"
         rel="noreferrer"
       >
-        Get Directions ↗
+        Get Directions
       </a>
       {settings.bookingNotice ? (
         <p className="booking-studio__notice">{settings.bookingNotice}</p>

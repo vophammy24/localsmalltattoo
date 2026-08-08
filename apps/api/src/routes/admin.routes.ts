@@ -37,18 +37,11 @@ import {
   linkAdminGalleryMedia,
 } from "../controllers/gallery.controller.js";
 import {
-  archiveAdminArtist,
-  createAdminArtist,
-  getAdminArtist,
-  listAdminArtists,
-  publishAdminArtist,
-  reorderAdminArtists,
-  updateAdminArtist,
-} from "../controllers/artist.controller.js";
-import {
   getAdminAbout,
+  deleteAdminSectionImage,
   publishAdminAbout,
   updateAdminAbout,
+  uploadAdminSectionImage,
 } from "../controllers/about.controller.js";
 import {
   deleteAdminBusinessLogo,
@@ -80,29 +73,9 @@ adminRouter.post(
   styleImageUpload.array("galleryImages", 20),
   addAdminGalleryImages,
 );
+adminRouter.delete("/pages/section-images", deleteAdminSectionImage);
 adminRouter.delete("/tattoo-styles/:id/images/:imageId", deleteAdminGalleryImage);
 adminRouter.patch("/tattoo-styles/:id/images/reorder", reorderAdminGalleryImages);
-adminRouter.get("/artists", listAdminArtists);
-adminRouter.post(
-  "/artists",
-  styleImageUpload.fields([
-    { name: "profileImage", maxCount: 1 },
-    { name: "coverImage", maxCount: 1 },
-  ]),
-  createAdminArtist,
-);
-adminRouter.patch("/artists/reorder", reorderAdminArtists);
-adminRouter.get("/artists/:artistId", getAdminArtist);
-adminRouter.patch(
-  "/artists/:artistId",
-  styleImageUpload.fields([
-    { name: "profileImage", maxCount: 1 },
-    { name: "coverImage", maxCount: 1 },
-  ]),
-  updateAdminArtist,
-);
-adminRouter.patch("/artists/:artistId/publish", publishAdminArtist);
-adminRouter.delete("/artists/:artistId", archiveAdminArtist);
 adminRouter.get("/gallery", listAdminGallery);
 adminRouter.get("/gallery/media-library", getAdminGalleryMediaLibrary);
 adminRouter.post("/gallery/link-media", linkAdminGalleryMedia);
@@ -122,6 +95,11 @@ adminRouter.patch("/gallery/:galleryItemId/featured", featureAdminGalleryItem);
 adminRouter.get("/pages/about", getAdminAbout);
 adminRouter.patch("/pages/about", updateAdminAbout);
 adminRouter.patch("/pages/about/publish", publishAdminAbout);
+adminRouter.post(
+  "/pages/section-images/:section",
+  styleImageUpload.single("image"),
+  uploadAdminSectionImage,
+);
 adminRouter.get("/business-settings", getAdminBusinessSettings);
 adminRouter.patch("/business-settings", updateAdminBusinessSettings);
 adminRouter.patch(

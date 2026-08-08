@@ -10,7 +10,7 @@ export function AboutHero({ content }: { content: AboutContent["hero"] }) {
       style={
         content.image
           ? {
-              backgroundImage: `linear-gradient(90deg, rgba(0,0,0,.88), rgba(0,0,0,.3)), url(${content.image.image.url})`,
+              backgroundImage: `linear-gradient(90deg, rgba(0,0,0,.88), rgba(0,0,0,.3)), url(${content.image.url})`,
             }
           : undefined
       }

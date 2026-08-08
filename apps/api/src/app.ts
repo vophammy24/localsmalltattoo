@@ -8,7 +8,6 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import { bookingRouter } from "./routes/booking.routes.js";
 import { adminRouter } from "./routes/admin.routes.js";
 import { publicTattooStyleRouter } from "./routes/tattoo-style.routes.js";
-import { publicArtistRouter } from "./routes/artist.routes.js";
 import { publicGalleryRouter } from "./routes/gallery.routes.js";
 import { publicPageRouter } from "./routes/page.routes.js";
 import { publicBusinessSettingsRouter } from "./routes/business-settings.routes.js";
@@ -52,7 +51,6 @@ app.get("/api/health", (_request, response) => {
 });
 app.use("/api/public/bookings", bookingRouter);
 app.use("/api/public/tattoo-styles", publicTattooStyleRouter);
-app.use("/api/public/artists", publicArtistRouter);
 app.use("/api/public/gallery", publicGalleryRouter);
 app.use("/api/public/pages", publicPageRouter);
 app.use("/api/public/business-settings", publicBusinessSettingsRouter);

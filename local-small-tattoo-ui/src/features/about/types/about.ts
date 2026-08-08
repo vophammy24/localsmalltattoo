@@ -1,15 +1,29 @@
-import type { Artist } from "../../artists/types/artist";
-import type { GalleryItem } from "../../gallery/types/gallery";
+export type SectionImage = { url: string; publicId: string; alt: string };
 
 export interface AboutContent {
   version: number;
   isPublished?: boolean;
+  home: {
+    hero: {
+      isVisible: boolean;
+      headingLines: string[];
+      subtitle: string;
+      buttonLabel: string;
+      buttonUrl: string;
+      image?: SectionImage;
+    };
+    location: {
+      isVisible: boolean;
+      heading: string;
+      description: string;
+      image?: SectionImage;
+    };
+  };
   hero: {
     isVisible: boolean;
     heading: string;
     description: string;
-    imageId?: string;
-    image?: GalleryItem;
+    image?: SectionImage;
     primaryCtaLabel: string;
     primaryCtaUrl: string;
   };
@@ -18,32 +32,31 @@ export interface AboutContent {
     label: string;
     heading: string;
     paragraphs: string[];
-    primaryImageId?: string;
-    secondaryImageId?: string;
-    primaryImage?: GalleryItem;
-    secondaryImage?: GalleryItem;
+    signature: string;
+    primaryImage?: SectionImage;
+    secondaryImage?: SectionImage;
   };
   mission: {
     isVisible: boolean;
     heading: string;
     description: string;
     values: { title: string; description: string; displayOrder: number }[];
-    imageId?: string;
-    image?: GalleryItem;
+    image?: SectionImage;
   };
   studioSpace: {
     isVisible: boolean;
     heading: string;
     description: string;
-    galleryItemIds: string[];
-    images?: GalleryItem[];
+    images: SectionImage[];
   };
-  artistSection: {
+  founderSection: {
     isVisible: boolean;
+    name: string;
+    role: string;
     heading: string;
-    description: string;
-    artistIds: string[];
-    artists?: Artist[];
+    paragraphs: string[];
+    signature: string;
+    image?: SectionImage;
   };
   finalCta: {
     isVisible: boolean;
@@ -51,8 +64,7 @@ export interface AboutContent {
     description: string;
     buttonLabel: string;
     buttonUrl: string;
-    imageId?: string;
-    image?: GalleryItem;
+    image?: SectionImage;
   };
   updatedAt?: string;
   publishedAt?: string;

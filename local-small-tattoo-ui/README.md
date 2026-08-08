@@ -7,7 +7,7 @@ Starter frontend for the agreed public sitemap. This phase implements:
 - Shared Footer
 - Design tokens
 - Complete Home page
-- Placeholder routes for Booking, Styles, About Us, Artist, Gallery, and Contact
+- Public pages for Booking, Styles, About Us, Gallery, and Contact
 
 ## Stack
 
@@ -53,7 +53,7 @@ src/
 │   ├── home.ts
 │   └── navigation.ts
 ├── features/home/
-│   ├── ArtistSection.tsx
+│   ├── FounderSection.tsx
 │   ├── CustomerGallerySection.tsx
 │   ├── FinalCtaSection.tsx
 │   ├── HeroSection.tsx
@@ -90,8 +90,6 @@ All files inside `public/images/` are temporary SVG placeholders. Replace them w
 /booking             Placeholder
 /styles              Placeholder
 /about               Placeholder
-/artists              Placeholder
-/artists/:slug        Placeholder
 /gallery              Placeholder
 /contact              Placeholder
 ```
@@ -101,7 +99,7 @@ All files inside `public/images/` are temporary SVG placeholders. Replace them w
 1. Booking page and booking form UI
 2. Styles page rendered from dynamic category data
 3. About page
-4. Artist listing and artist detail
+4. Singleton founder profile managed through the About CMS
 5. Filterable Gallery
 6. Contact page with map
 7. Admin authentication and dashboard

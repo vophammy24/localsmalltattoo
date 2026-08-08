@@ -70,11 +70,6 @@ export function GalleryLightbox({
           <p>{item.type.replaceAll("_", " ")}</p>
           <h2>{item.title || item.image.alt}</h2>
           {item.caption ? <span>{item.caption}</span> : null}
-          {item.artistId ? (
-            <Link to={`/artists/${item.artistId.slug}`}>
-              View {item.artistId.displayName || item.artistId.fullName}
-            </Link>
-          ) : null}
           <div>
             {item.tattooStyleIds.map((style) => (
               <Link key={style._id} to={`/styles#${style.slug}`}>
@@ -82,10 +77,7 @@ export function GalleryLightbox({
               </Link>
             ))}
           </div>
-          <Link
-            className="button"
-            to={`/booking${item.artistId ? `?artist=${item.artistId.slug}` : ""}`}
-          >
+          <Link className="button" to="/booking">
             Book appointment
           </Link>
         </aside>

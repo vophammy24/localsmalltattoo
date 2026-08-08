@@ -1,30 +1,25 @@
 import { googleReviews } from "../../data/home";
-import { useGallery } from "../gallery/hooks/useGallery";
+import { useAboutPage } from "../about/hooks/useAboutPage";
 import { useBusinessSettings } from "../businessSettings/BusinessSettingsContext";
 import { summarizeHours } from "../businessSettings/components/OpeningHours";
 
 export function LocationReviewSection() {
-  const { data: featuredStudio } = useGallery("?type=STUDIO_PHOTO&featured=true&limit=2");
-  const { data: studioFallback } = useGallery("?type=STUDIO_PHOTO&limit=2");
-  const studioImage =
-    featuredStudio.items[1] ??
-    featuredStudio.items[0] ??
-    studioFallback.items[1] ??
-    studioFallback.items[0];
+  const { data } = useAboutPage();
+  const location = data?.home.location;
   const { settings } = useBusinessSettings();
+  if (location?.isVisible === false) return null;
   return (
     <section className="section location-review-section" aria-labelledby="location-heading">
       <div className="page-shell location-review">
         <div className="location-review__visual">
-          {studioImage ? <img src={studioImage.image.url} alt={studioImage.image.alt} /> : null}
+          {location?.image ? <img src={location.image.url} alt={location.image.alt} /> : null}
         </div>
 
         <div className="location-review__content">
-          <h2 id="location-heading">{settings?.address.city ?? "Da Nang"}.</h2>
-          <p>
-            {settings?.description ??
-              "A private, appointment-led studio designed for focused consultation."}
-          </p>
+          <h2 id="location-heading">
+            {location?.heading || `${settings?.address.city ?? "Da Nang"}.`}
+          </h2>
+          <p>{location?.description || settings?.description}</p>
 
           <dl className="location-review__details">
             <div>

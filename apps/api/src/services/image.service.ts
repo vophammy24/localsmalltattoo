@@ -42,19 +42,6 @@ export function uploadTattooStyleImage(file: Express.Multer.File, folder: string
   });
 }
 
-export function uploadArtistImage(file: Express.Multer.File, folder: string) {
-  return new Promise<{ url: string; publicId: string }>((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: `local-small-tattoo/artists/${folder}`, resource_type: "image" },
-      (error, result) => {
-        if (error || !result) return reject(error ?? new Error("Cloudinary upload failed."));
-        resolve({ url: getBrowserCompatibleUrl(result.secure_url), publicId: result.public_id });
-      },
-    );
-    Readable.from(file.buffer).pipe(stream);
-  });
-}
-
 export function uploadGalleryImage(file: Express.Multer.File, folder: string) {
   return new Promise<{ url: string; publicId: string; width?: number; height?: number }>(
     (resolve, reject) => {
@@ -73,6 +60,20 @@ export function uploadGalleryImage(file: Express.Multer.File, folder: string) {
       Readable.from(file.buffer).pipe(stream);
     },
   );
+}
+
+export function uploadPageSectionImage(file: Express.Multer.File, section: string) {
+  return new Promise<{ url: string; publicId: string }>((resolve, reject) => {
+    const safeSection = section.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: `local-small-tattoo/page-sections/${safeSection}`, resource_type: "image" },
+      (error, result) => {
+        if (error || !result) return reject(error ?? new Error("Cloudinary upload failed."));
+        resolve({ url: getBrowserCompatibleUrl(result.secure_url), publicId: result.public_id });
+      },
+    );
+    Readable.from(file.buffer).pipe(stream);
+  });
 }
 export function uploadBusinessLogo(file: Express.Multer.File) {
   return new Promise<{ url: string; publicId: string }>((resolve, reject) => {

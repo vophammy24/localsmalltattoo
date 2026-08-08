@@ -9,7 +9,6 @@ import "./styles/home.css";
 import "./styles/booking.css";
 import "./styles/admin.css";
 import "./styles/styles-page.css";
-import "./styles/artists.css";
 import "./styles/gallery.css";
 import "./styles/about.css";
 import "./styles/contact.css";

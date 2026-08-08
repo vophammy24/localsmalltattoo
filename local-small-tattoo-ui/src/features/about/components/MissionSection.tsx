@@ -9,7 +9,7 @@ export function MissionSection({ content }: { content: AboutContent["mission"] }
             <p>{content.description}</p>
           </div>
           {content.image ? (
-            <img src={content.image.image.url} alt={content.image.image.alt} loading="lazy" />
+            <img src={content.image.url} alt={content.image.alt} loading="lazy" />
           ) : null}
         </div>
         <div className="about-values">

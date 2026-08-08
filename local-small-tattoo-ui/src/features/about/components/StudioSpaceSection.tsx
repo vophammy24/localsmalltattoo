@@ -9,7 +9,7 @@ export function StudioSpaceSection({ content }: { content: AboutContent["studioS
       </header>
       <div>
         {content.images.map((item) => (
-          <img key={item._id} src={item.image.url} alt={item.image.alt} loading="lazy" />
+          <img key={item.publicId} src={item.url} alt={item.alt} loading="lazy" />
         ))}
       </div>
     </section>

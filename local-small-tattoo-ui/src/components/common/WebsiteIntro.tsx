@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from "react";
 import { useLocation } from "react-router";
 import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
+import { BrandLogo } from "./BrandLogo";
 
 const INTRO_SESSION_KEY = "lst-home-intro-viewed";
 const INTRO_DURATION = 5_000;
@@ -51,11 +52,7 @@ export function WebsiteIntro() {
           </text>
         </svg>
         <div className="website-intro__logo">
-          {settings?.logo ? (
-            <img src={settings.logo.url} alt={settings.logo.alt || businessName} />
-          ) : (
-            <span>{settings?.shortName || businessName}</span>
-          )}
+          <BrandLogo />
         </div>
       </div>
     </div>

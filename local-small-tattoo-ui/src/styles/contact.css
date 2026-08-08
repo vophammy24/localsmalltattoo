@@ -6,7 +6,7 @@
 }
 .contact-page {
   background: #050505;
-  color: #f5f2eb;
+  color: var(--color-text);
   min-height: 100vh;
   padding-top: var(--header-height);
 }
@@ -82,7 +82,7 @@
 }
 .contact-socials a {
   border-bottom: 1px solid #777;
-  color: #fff;
+  color: var(--color-white);
 }
 .contact-actions {
   display: flex;
@@ -101,7 +101,7 @@
 .google-map iframe {
   border: 0;
   display: block;
-  filter: grayscale(1) contrast(1.05);
+  filter: var(--filter-image-vintage);
   height: 100%;
   min-height: 680px;
   width: 100%;
@@ -136,7 +136,7 @@
 .business-logo > input {
   background: #0b0b0b;
   border: 1px solid #444;
-  color: #fff;
+  color: var(--color-white);
   padding: 0.75rem;
 }
 .business-hours-editor {
@@ -158,7 +158,7 @@
 .business-hours-editor input[type="time"] {
   background: #0b0b0b;
   border: 1px solid #444;
-  color: #fff;
+  color: var(--color-white);
   padding: 0.6rem;
 }
 .business-map-preview {

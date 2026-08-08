@@ -24,14 +24,9 @@
 }
 
 .tattoo-style-section,
-.artists-list,
-.about-artists,
-.artist-work,
-.artist-portfolio,
 .about-story,
 .about-mission,
 .about-space,
-.about-cms-artists,
 .about-final-cta,
 .contact-main,
 .gallery-browser,
@@ -44,10 +39,6 @@
   padding-block: var(--spacing-section-compact);
 }
 
-.artists-cta {
-  padding-block: var(--spacing-section);
-}
-
 .about-story,
 .contact-main,
 .booking-content__grid {
@@ -56,7 +47,6 @@
 
 .about-space > div,
 .about-values,
-.artist-view-gallery,
 .gallery-pagination,
 .admin-gallery-pages {
   margin-top: var(--spacing-content);
@@ -65,7 +55,6 @@
 .about-story__copy h2,
 .about-mission h2,
 .about-space h2,
-.about-cms-artists h2,
 .about-final-cta h2 {
   margin-block: 0.75rem 1.5rem;
 }
@@ -78,7 +67,6 @@
   padding-block: var(--spacing-section-compact);
 }
 
-.artist-card__content,
 .admin-panel,
 .admin-detail-card,
 .admin-detail-aside > section,
@@ -129,15 +117,11 @@
   .about-story,
   .about-mission,
   .about-space,
-  .about-cms-artists,
   .about-final-cta,
   .contact-main,
   .gallery-browser,
   .gallery-cta,
   .tattoo-style-section,
-  .artists-list,
-  .artists-cta,
-  .artist-work,
   .booking-content,
   .styles-booking-cta {
     padding-block: var(--spacing-section);

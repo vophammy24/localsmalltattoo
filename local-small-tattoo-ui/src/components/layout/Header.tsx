@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { navigationItems } from "../../data/navigation";
 import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
+import { BrandLogo } from "../common/BrandLogo";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,11 +38,7 @@ export function Header() {
             to="/"
             aria-label={`${settings?.businessName ?? "Local Small Tattoo"} home`}
           >
-            {settings?.logo ? (
-              <img src={settings.logo.url} alt={settings.logo.alt} />
-            ) : (
-              settings?.shortName || settings?.businessName || "Local Small Tattoo"
-            )}
+            <BrandLogo />
           </Link>
 
           <nav className="site-header__desktop-nav" aria-label="Primary navigation">

@@ -4,7 +4,6 @@ import { GalleryFilters } from "../features/gallery/components/GalleryFilters";
 import { GalleryGrid } from "../features/gallery/components/GalleryGrid";
 import { GallerySkeleton } from "../features/gallery/components/GallerySkeleton";
 import { useGallery } from "../features/gallery/hooks/useGallery";
-import { useArtists } from "../features/artists/hooks/useArtists";
 import { useTattooStyles } from "../features/tattooStyles/hooks/useTattooStyles";
 import { ButtonLink } from "../components/common/ButtonLink";
 import { PageHero } from "../components/common/PageHero";
@@ -18,7 +17,6 @@ export function GalleryPage() {
     return `?${next}`;
   }, [params]);
   const { data, isLoading, error } = useGallery(query);
-  const { data: artists } = useArtists();
   const { data: styles } = useTattooStyles();
   function change(key: string, value: string) {
     const next = new URLSearchParams(params);
@@ -36,9 +34,7 @@ export function GalleryPage() {
       <section className="page-shell gallery-browser">
         <GalleryFilters
           type={params.get("type") === "customers" ? "CUSTOMER_PHOTO" : (params.get("type") ?? "")}
-          artist={params.get("artist") ?? ""}
           style={params.get("style") ?? ""}
-          artists={artists}
           styles={styles}
           onChange={change}
         />

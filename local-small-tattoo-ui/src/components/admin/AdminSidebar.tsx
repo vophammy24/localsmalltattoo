@@ -31,17 +31,17 @@ export function AdminSidebar() {
           <Palette />
           Styles
         </NavLink>
-        <NavLink to="/admin/artists">
-          <UserRound />
-          Artists
-        </NavLink>
         <NavLink to="/admin/gallery">
           <Image />
           Gallery
         </NavLink>
+        <NavLink to="/admin/content/home">
+          <FileText />
+          Home CMS
+        </NavLink>
         <NavLink to="/admin/content/about">
           <FileText />
-          About CMS
+          About Us CMS
         </NavLink>
         <NavLink to="/admin/settings/business">
           <Settings />

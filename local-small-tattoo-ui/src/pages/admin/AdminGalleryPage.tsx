@@ -8,19 +8,15 @@ import {
   getAdminGallery,
 } from "../../features/gallery/api/galleryApi";
 import type { GalleryItem } from "../../features/gallery/types/gallery";
-import { getAdminArtists } from "../../features/artists/api/artistApi";
-import type { Artist } from "../../features/artists/types/artist";
 import { getAdminTattooStyles } from "../../features/tattooStyles/api/tattooStyleApi";
 import type { TattooStyle } from "../../features/tattooStyles/types/tattooStyle";
 
 export function AdminGalleryPage() {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
-  const [artists, setArtists] = useState<Artist[]>([]);
   const [styles, setStyles] = useState<TattooStyle[]>([]);
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
-  const [artistId, setArtistId] = useState("");
   const [styleId, setStyleId] = useState("");
   const [publication, setPublication] = useState("all");
   const [page, setPage] = useState(1);
@@ -31,7 +27,6 @@ export function AdminGalleryPage() {
     const params = new URLSearchParams({ page: String(page), limit: "16", publication });
     if (search) params.set("search", search);
     if (type) params.set("type", type);
-    if (artistId) params.set("artistId", artistId);
     if (styleId) params.set("styleId", styleId);
     return getAdminGallery(`?${params}`)
       .then((data) => {
@@ -40,12 +35,11 @@ export function AdminGalleryPage() {
         setSelected([]);
       })
       .catch((reason: Error) => setError(reason.message));
-  }, [artistId, page, publication, search, styleId, type]);
+  }, [page, publication, search, styleId, type]);
   useEffect(() => {
     void load();
   }, [load]);
   useEffect(() => {
-    void getAdminArtists().then((data) => setArtists(data.items));
     void getAdminTattooStyles().then((data) => setStyles(data.items));
   }, []);
   async function action(actionName: string) {
@@ -109,20 +103,6 @@ export function AdminGalleryPage() {
           <option value="TATTOO_WORK">Tattoo work</option>
           <option value="CUSTOMER_PHOTO">Customers</option>
           <option value="STUDIO_PHOTO">Studio</option>
-        </select>
-        <select
-          value={artistId}
-          onChange={(event) => {
-            setArtistId(event.target.value);
-            setPage(1);
-          }}
-        >
-          <option value="">All artists</option>
-          {artists.map((artist) => (
-            <option key={artist._id} value={artist._id}>
-              {artist.displayName || artist.fullName}
-            </option>
-          ))}
         </select>
         <select
           value={styleId}
@@ -192,7 +172,7 @@ export function AdminGalleryPage() {
             <div>
               <p>{item.type.replaceAll("_", " ")}</p>
               <h3>{item.title || item.image.alt || "Untitled draft"}</h3>
-              <span>{item.artistId?.displayName || item.artistId?.fullName || "No artist"}</span>
+              <span>{item.tattooStyleIds.map((style) => style.name).join(", ") || "No style"}</span>
               <small>
                 {item.tattooStyleIds.map((style) => style.name).join(" · ") || "No styles"}
               </small>

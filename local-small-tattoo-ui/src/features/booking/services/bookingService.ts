@@ -9,11 +9,7 @@ type BookingResponse = {
   };
 };
 
-export async function createBooking(
-  values: BookingSubmission,
-  sourceStyleSlug?: string,
-  sourceArtistSlug?: string,
-) {
+export async function createBooking(values: BookingSubmission, sourceStyleSlug?: string) {
   const formData = new FormData();
   formData.append("fullName", values.fullName);
   formData.append("phoneNumber", values.phoneNumber);
@@ -25,7 +21,6 @@ export async function createBooking(
   formData.append("description", values.description);
   formData.append("consent", String(values.consent));
   if (sourceStyleSlug) formData.append("sourceStyleSlug", sourceStyleSlug);
-  if (sourceArtistSlug) formData.append("sourceArtistSlug", sourceArtistSlug);
   values.referenceImages.forEach((image) => {
     formData.append("referenceImages", image);
   });

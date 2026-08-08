@@ -2,25 +2,25 @@ import type { GalleryImage, Review } from "../types/content";
 
 export const googleReviews: Review[] = [
   {
-    id: "review-01",
-    author: "Linh Nguyen",
+    id: "review-03",
+    author: "Niamh Cullen",
     rating: 5,
-    text: "The studio was calm, clean, and professional. Every detail was explained clearly.",
-    relativeDate: "2 weeks ago",
+    text: "I went to this tattoo studio in Da Nang. It was a small tattoo studio. The tattoo artist Thuan was very nice and thorough. Myself and my friend got a small tattoo. We paid 400,000 dong each for the tattoo which €16. I would highly recommend coming to this tattoo studio. 10/10 experience.",
+    relativeDate: "4 weeks ago",
+  },
+  {
+    id: "review-01",
+    author: "Greg Harriss",
+    rating: 5,
+    text: "Amazing work - so professional, clean & friendly - came with a rough picture and some ideas but so happy with the personal design and extra work ….. highly recommend to anyone travelling to Da Nang !",
+    relativeDate: "3 days ago",
   },
   {
     id: "review-02",
-    author: "Minh Tran",
+    author: "Phúc Nguyễn",
     rating: 5,
-    text: "Thoughtful consultation and beautiful fine-line work. The result feels completely personal.",
-    relativeDate: "1 month ago",
-  },
-  {
-    id: "review-03",
-    author: "Anna Lee",
-    rating: 5,
-    text: "A welcoming experience from the first message through aftercare guidance.",
-    relativeDate: "2 months ago",
+    text: "I'm very satisfied with my experience here. The staff are extremely friendly and enthusiastic, and their advice was very thoughtful, so I felt at ease right from the start. The prices are reasonable and commensurate with the quality. The space is clean, and the work is done carefully and professionally. The tattoo turned out beautifully, exactly as expected.",
+    relativeDate: "4 days ago",
   },
 ];
 
@@ -40,7 +40,7 @@ export const customerGallery: GalleryImage[] = [
   {
     id: "customer-03",
     src: "/images/customer-3.JPG",
-    alt: "Tattoo artist with a customer in the studio",
+    alt: "Founder with a customer in the studio",
     size: "landscape",
   },
   {

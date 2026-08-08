@@ -1,4 +1,3 @@
-import type { Artist } from "../../artists/types/artist";
 import type { TattooStyle } from "../../tattooStyles/types/tattooStyle";
 
 export type GalleryType = "TATTOO_WORK" | "CUSTOMER_PHOTO" | "STUDIO_PHOTO";
@@ -9,7 +8,6 @@ export interface GalleryItem {
   caption?: string;
   image: { url: string; publicId: string; width?: number; height?: number; alt: string };
   type: GalleryType;
-  artistId?: Pick<Artist, "_id" | "fullName" | "displayName" | "slug">;
   tattooStyleIds: Pick<TattooStyle, "_id" | "name" | "slug">[];
   isFeatured: boolean;
   isPublished: boolean;
@@ -29,7 +27,6 @@ export interface GalleryFormValues {
   caption: string;
   alt: string;
   type: GalleryType;
-  artistId: string;
   tattooStyleIds: string[];
   isFeatured: boolean;
   isPublished: boolean;
@@ -39,10 +36,9 @@ export interface GalleryFormValues {
 
 export interface GalleryMediaItem {
   image: { url: string; publicId: string; alt: string };
-  sourceCollection: "TattooStyle" | "Artist";
+  sourceCollection: "TattooStyle";
   sourceId: string;
   sourceLabel: string;
-  artistId?: string;
   tattooStyleIds?: string[];
   alreadyLinked: boolean;
 }

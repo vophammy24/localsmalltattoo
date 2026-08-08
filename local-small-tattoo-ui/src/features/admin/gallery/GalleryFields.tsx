@@ -1,4 +1,3 @@
-import type { Artist } from "../../artists/types/artist";
 import type { TattooStyle } from "../../tattooStyles/types/tattooStyle";
 import type { GalleryFormValues } from "../../gallery/types/gallery";
 
@@ -7,7 +6,6 @@ export const EMPTY_GALLERY_VALUES: GalleryFormValues = {
   caption: "",
   alt: "",
   type: "TATTOO_WORK",
-  artistId: "",
   tattooStyleIds: [],
   isFeatured: false,
   isPublished: false,
@@ -17,13 +15,11 @@ export const EMPTY_GALLERY_VALUES: GalleryFormValues = {
 
 export function GalleryFields({
   values,
-  artists,
   styles,
   onChange,
   hideAlt = false,
 }: {
   values: GalleryFormValues;
-  artists: Artist[];
   styles: TattooStyle[];
   onChange: (values: GalleryFormValues) => void;
   hideAlt?: boolean;
@@ -38,17 +34,6 @@ export function GalleryFields({
           <option value="TATTOO_WORK">Tattoo work</option>
           <option value="CUSTOMER_PHOTO">Customer photo</option>
           <option value="STUDIO_PHOTO">Studio photo</option>
-        </select>
-      </label>
-      <label>
-        Artist
-        <select value={values.artistId} onChange={(event) => field("artistId", event.target.value)}>
-          <option value="">No artist</option>
-          {artists.map((artist) => (
-            <option key={artist._id} value={artist._id}>
-              {artist.displayName || artist.fullName}
-            </option>
-          ))}
         </select>
       </label>
       <fieldset>

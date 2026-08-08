@@ -43,11 +43,6 @@ const bookingSchema = new Schema(
       name: String,
       slug: String,
     },
-    sourceArtist: {
-      id: { type: Schema.Types.ObjectId, ref: "Artist" },
-      name: String,
-      slug: String,
-    },
     consent: { type: Boolean, required: true },
     status: { type: String, enum: BOOKING_STATUSES, default: "PENDING", index: true },
     scheduledAppointment: {

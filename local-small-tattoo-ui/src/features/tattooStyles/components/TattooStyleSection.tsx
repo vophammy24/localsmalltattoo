@@ -2,17 +2,14 @@ import { ButtonLink } from "../../../components/common/ButtonLink";
 import type { TattooStyle } from "../types/tattooStyle";
 import { StyleGalleryPreview, type StyleCarouselImage } from "./StyleGalleryPreview";
 import { useGallery } from "../../gallery/hooks/useGallery";
-import { useBusinessSettings } from "../../businessSettings/BusinessSettingsContext";
 
 export function TattooStyleSection({ style }: { style: TattooStyle }) {
-  const { settings } = useBusinessSettings();
   const gallery = useGallery(`?style=${encodeURIComponent(style.slug)}&type=TATTOO_WORK&limit=50`);
   const carouselImages: StyleCarouselImage[] = gallery.data.items.length
     ? gallery.data.items.map((item) => ({
         ...item.image,
         displayOrder: item.displayOrder,
         title: item.title,
-        author: item.artistId?.displayName || item.artistId?.fullName,
       }))
     : (style.galleryImages ?? []);
   return (
@@ -27,7 +24,7 @@ export function TattooStyleSection({ style }: { style: TattooStyle }) {
             <img src={style.coverImage.url} alt={style.coverImage.alt} loading="lazy" />
             <figcaption>
               <strong>{style.coverImage.alt || style.name}</strong>
-              <small>{settings?.businessName ?? "Studio artist"}</small>
+              <small>{style.name}</small>
             </figcaption>
           </figure>
         ) : null}
@@ -40,7 +37,7 @@ export function TattooStyleSection({ style }: { style: TattooStyle }) {
             </ButtonLink>
           </div>
         </div>
-        <StyleGalleryPreview images={carouselImages} />
+        <StyleGalleryPreview images={carouselImages} tattooStyle={style.name} />
       </div>
     </section>
   );

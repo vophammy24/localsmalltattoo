@@ -5,13 +5,17 @@
   --color-surface: #131313;
   --color-surface-soft: #1b1b1b;
   --color-card: #09090b;
-  --color-white: #ffffff;
-  --color-text: #e2e2e2;
-  --color-text-soft: #c4c7c8;
-  --color-muted: #a1a1aa;
-  --color-border: #27272a;
-  --color-border-hover: #52525b;
+  --color-white: #eadfca;
+  --color-text: #ded0b7;
+  --color-text-soft: #cbb996;
+  --color-muted: #a99470;
+  --color-border: #3b3224;
+  --color-border-hover: #806b43;
   --color-error: #ffb4ab;
+
+  --filter-image-vintage: grayscale(0.16) sepia(0.42) saturate(0.86) contrast(1.06) brightness(0.92);
+  --filter-image-vintage-hover: grayscale(0.04) sepia(0.3) saturate(0.98) contrast(1.04)
+    brightness(0.98);
 
   --font-brand: "DejaVu Serif";
   --font-content: "Merriweather", Calibri;

@@ -30,9 +30,7 @@ export function GalleryMediaLibrary({
   return (
     <section className="admin-panel">
       <h2>Existing media</h2>
-      <p className="admin-muted">
-        Reuse Style or Artist images without duplicating the Cloudinary asset.
-      </p>
+      <p className="admin-muted">Reuse Style images without duplicating the Cloudinary asset.</p>
       <div className="admin-gallery-library">
         {items.map((item) => (
           <label className={item.alreadyLinked ? "is-disabled" : ""} key={item.image.publicId}>

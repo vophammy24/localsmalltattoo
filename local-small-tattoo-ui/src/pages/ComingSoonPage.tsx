@@ -5,14 +5,13 @@ const pageTitles: Record<string, string> = {
   "/booking": "Reserve Your Session.",
   "/styles": "Tattoo Styles.",
   "/about": "Our Studio. Our Story.",
-  "/artists": "Artists of Precision.",
   "/gallery": "Selected Work.",
   "/contact": "Visit the Atelier.",
 };
 
 export function ComingSoonPage() {
   const { pathname } = useLocation();
-  const normalizedPath = pathname.startsWith("/artists/") ? "/artists" : pathname;
+  const normalizedPath = pathname;
   const title = pageTitles[normalizedPath] ?? "Page Not Found.";
 
   return (

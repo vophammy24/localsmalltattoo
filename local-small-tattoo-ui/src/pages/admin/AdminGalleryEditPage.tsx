@@ -4,8 +4,6 @@ import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
 import { EMPTY_GALLERY_VALUES, GalleryFields } from "../../features/admin/gallery/GalleryFields";
 import { getAdminGalleryItem, updateGalleryItem } from "../../features/gallery/api/galleryApi";
 import type { GalleryFormValues } from "../../features/gallery/types/gallery";
-import { getAdminArtists } from "../../features/artists/api/artistApi";
-import type { Artist } from "../../features/artists/types/artist";
 import { getAdminTattooStyles } from "../../features/tattooStyles/api/tattooStyleApi";
 import type { TattooStyle } from "../../features/tattooStyles/types/tattooStyle";
 
@@ -14,27 +12,20 @@ export function AdminGalleryEditPage() {
   const navigate = useNavigate();
   const [values, setValues] = useState<GalleryFormValues>(EMPTY_GALLERY_VALUES);
   const [image, setImage] = useState("");
-  const [artists, setArtists] = useState<Artist[]>([]);
   const [styles, setStyles] = useState<TattooStyle[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   useEffect(() => {
-    void Promise.all([
-      getAdminGalleryItem(galleryItemId),
-      getAdminArtists(),
-      getAdminTattooStyles(),
-    ])
-      .then(([gallery, artistData, styleData]) => {
+    void Promise.all([getAdminGalleryItem(galleryItemId), getAdminTattooStyles()])
+      .then(([gallery, styleData]) => {
         const item = gallery.item;
         setImage(item.image.url);
-        setArtists(artistData.items);
         setStyles(styleData.items);
         setValues({
           title: item.title ?? "",
           caption: item.caption ?? "",
           alt: item.image.alt,
           type: item.type,
-          artistId: item.artistId?._id ?? "",
           tattooStyleIds: item.tattooStyleIds.map((style) => style._id),
           isFeatured: item.isFeatured,
           isPublished: item.isPublished,
@@ -63,7 +54,7 @@ export function AdminGalleryEditPage() {
       />
       <section className="admin-panel admin-gallery-edit">
         <img src={image} alt="" />
-        <GalleryFields values={values} artists={artists} styles={styles} onChange={setValues} />
+        <GalleryFields values={values} styles={styles} onChange={setValues} />
       </section>
       {error ? <p className="admin-error">{error}</p> : null}
       <div className="admin-style-form__actions">
