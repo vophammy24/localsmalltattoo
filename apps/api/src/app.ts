@@ -69,6 +69,6 @@ app.use("/api/admin", (request, response, next) => {
   }
   next();
 });
-app.use("/api/admin", adminRouter);
 app.use("/api/admin", googleReviewAdminRouter);
+app.use("/api/admin", adminRouter);
 app.use(errorHandler);
