@@ -46,4 +46,7 @@ export const saveGoogleReviewModeration = (
   });
 export const disconnectGoogleBusiness = () =>
   adminAction("/google-business/disconnect", { method: "POST" });
-export const googleBusinessConnectUrl = `${API_URL}/api/admin/google-business/connect`;
+export const getGoogleBusinessAuthorizationUrl = () =>
+  adminRequest<{ url: string }>("/google-business/connect", {
+    headers: { Accept: "application/json" },
+  });

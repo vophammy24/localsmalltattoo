@@ -3,8 +3,8 @@ import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
 import {
   disconnectGoogleBusiness,
   getAdminGoogleReviews,
+  getGoogleBusinessAuthorizationUrl,
   getGoogleBusinessStatus,
-  googleBusinessConnectUrl,
   saveGoogleReviewModeration,
   syncGoogleReviews,
   type GoogleReview,
@@ -33,6 +33,17 @@ export function AdminReviewsPage() {
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Unable to sync reviews.");
     } finally {
+      setBusy(false);
+    }
+  }
+  async function connect() {
+    setBusy(true);
+    setError("");
+    try {
+      const { url } = await getGoogleBusinessAuthorizationUrl();
+      window.location.assign(url);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Unable to start Google connection.");
       setBusy(false);
     }
   }
@@ -84,9 +95,9 @@ export function AdminReviewsPage() {
             </button>
           </>
         ) : (
-          <a className="admin-primary" href={googleBusinessConnectUrl}>
-            Connect Google
-          </a>
+          <button className="admin-primary" disabled={busy} onClick={() => void connect()}>
+            {busy ? "Connecting…" : "Connect Google"}
+          </button>
         )}
       </section>
       <section className="admin-panel">

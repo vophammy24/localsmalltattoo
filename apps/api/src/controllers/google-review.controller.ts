@@ -9,7 +9,7 @@ import {
   syncGoogleReviews,
 } from "../services/google-business.service.js";
 
-export const connectGoogleBusiness: RequestHandler = (_req, res, next) => {
+export const connectGoogleBusiness: RequestHandler = (req, res, next) => {
   try {
     const state = randomUUID();
     res.cookie("google_business_oauth_state", state, {
@@ -18,7 +18,12 @@ export const connectGoogleBusiness: RequestHandler = (_req, res, next) => {
       secure: process.env.NODE_ENV === "production",
       maxAge: 600_000,
     });
-    res.redirect(getGoogleAuthorizationUrl(state));
+    const url = getGoogleAuthorizationUrl(state);
+    if (req.accepts("json")) {
+      res.json({ success: true, data: { url } });
+      return;
+    }
+    res.redirect(url);
   } catch (error) {
     next(error);
   }
