@@ -7,6 +7,7 @@ import {
   LogOut,
   Palette,
   Settings,
+  Star,
   UserRound,
 } from "lucide-react";
 import { useAdminAuth } from "../../features/admin/auth/AdminAuthContext";
@@ -34,6 +35,10 @@ export function AdminSidebar() {
         <NavLink to="/admin/gallery">
           <Image />
           Gallery
+        </NavLink>
+        <NavLink to="/admin/reviews">
+          <Star />
+          Reviews
         </NavLink>
         <NavLink to="/admin/content/home">
           <FileText />

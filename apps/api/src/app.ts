@@ -13,6 +13,10 @@ import { publicPageRouter } from "./routes/page.routes.js";
 import { publicBusinessSettingsRouter } from "./routes/business-settings.routes.js";
 import mongoose from "mongoose";
 import { isDatabaseConnected } from "./config/database.js";
+import {
+  googleReviewAdminRouter,
+  publicGoogleReviewRouter,
+} from "./routes/google-review.routes.js";
 
 export const app = express();
 app.set("trust proxy", 1);
@@ -54,6 +58,7 @@ app.use("/api/public/tattoo-styles", publicTattooStyleRouter);
 app.use("/api/public/gallery", publicGalleryRouter);
 app.use("/api/public/pages", publicPageRouter);
 app.use("/api/public/business-settings", publicBusinessSettingsRouter);
+app.use("/api/public/reviews", publicGoogleReviewRouter);
 app.use("/api/admin", (request, response, next) => {
   if (!isDatabaseConnected()) {
     response.status(503).json({
@@ -65,4 +70,5 @@ app.use("/api/admin", (request, response, next) => {
   next();
 });
 app.use("/api/admin", adminRouter);
+app.use("/api/admin", googleReviewAdminRouter);
 app.use(errorHandler);

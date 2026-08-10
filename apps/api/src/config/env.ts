@@ -16,6 +16,9 @@ const envSchema = z.object({
   ADMIN_NAME: z.string().min(1).optional(),
   ADMIN_EMAIL: z.email().optional(),
   ADMIN_PASSWORD: z.string().min(10).optional(),
+  GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+  GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
+  GOOGLE_REDIRECT_URI: z.string().url().optional(),
 });
 
 const parsedEnv = envSchema.parse(process.env);

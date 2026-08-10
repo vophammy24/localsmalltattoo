@@ -24,6 +24,7 @@ import { ContactPage } from "../pages/ContactPage";
 import { AdminBusinessSettingsPage } from "../pages/admin/AdminBusinessSettingsPage";
 import { AdminHomeContentPage } from "../pages/admin/AdminHomeContentPage";
 import { AdminNotificationProvider } from "../features/admin/notifications/AdminNotificationProvider";
+import { AdminReviewsPage } from "../pages/admin/AdminReviewsPage";
 
 export function App() {
   return (
@@ -55,6 +56,7 @@ export function App() {
                 <Route path="content/about" element={<AdminAboutPage />} />
                 <Route path="content/home" element={<AdminHomeContentPage />} />
                 <Route path="settings/business" element={<AdminBusinessSettingsPage />} />
+                <Route path="reviews" element={<AdminReviewsPage />} />
               </Route>
             </Route>
           </Routes>

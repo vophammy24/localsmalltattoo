@@ -1,9 +1,24 @@
-import { googleReviews } from "../../data/home";
+import { useEffect, useState } from "react";
+import {
+  getPublicGoogleReviews,
+  type GoogleReview,
+  type ReviewSummary,
+} from "../reviews/api/googleReviewsApi";
 import { useAboutPage } from "../about/hooks/useAboutPage";
 import { useBusinessSettings } from "../businessSettings/BusinessSettingsContext";
 import { summarizeHours } from "../businessSettings/components/OpeningHours";
 
 export function LocationReviewSection() {
+  const [reviews, setReviews] = useState<GoogleReview[]>([]);
+  const [summary, setSummary] = useState<ReviewSummary>(null);
+  useEffect(() => {
+    void getPublicGoogleReviews()
+      .then((result) => {
+        setReviews(result.reviews);
+        setSummary(result.summary);
+      })
+      .catch(() => undefined);
+  }, []);
   const { data } = useAboutPage();
   const location = data?.home.location;
   const { settings } = useBusinessSettings();
@@ -59,22 +74,31 @@ export function LocationReviewSection() {
       <div id="google-reviews" className="page-shell review-panel">
         <div className="review-panel__summary">
           <p>Google Maps Reviews</p>
-          <strong>5.0</strong>
-          <span aria-label="5 out of 5 stars">★★★★★</span>
-          <small>Based on selected customer feedback</small>
+          <strong>{summary?.averageRating?.toFixed(1) ?? "—"}</strong>
+          <span aria-label="Google rating">★★★★★</span>
+          <small>
+            {summary
+              ? `Based on ${summary.totalReviewCount} Google reviews`
+              : "Selected customer feedback"}
+          </small>
         </div>
 
         <div className="review-panel__list">
-          {googleReviews.map((review) => (
-            <article className="review-card" key={review.id}>
+          {reviews.map((review) => (
+            <article className="review-card" key={review._id}>
               <div className="review-card__header">
-                <strong>{review.author}</strong>
-                <span aria-label={`${review.rating} out of 5 stars`}>
-                  {"★".repeat(review.rating)}
+                <strong>{review.reviewer.displayName || "Google user"}</strong>
+                <span aria-label={`${review.starRating} out of 5 stars`}>
+                  {"★".repeat(review.starRating)}
                 </span>
               </div>
-              <p>“{review.text}”</p>
-              <small>{review.relativeDate}</small>
+              <p>“{review.comment}”</p>
+              <small>
+                Google
+                {review.reviewCreatedAt
+                  ? ` · ${new Date(review.reviewCreatedAt).toLocaleDateString()}`
+                  : ""}
+              </small>
             </article>
           ))}
         </div>
