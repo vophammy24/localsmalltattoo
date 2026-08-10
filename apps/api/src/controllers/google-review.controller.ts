@@ -1,5 +1,7 @@
 import type { RequestHandler } from "express";
 import { randomUUID } from "node:crypto";
+import jwt from "jsonwebtoken";
+import { env } from "../config/env.js";
 import { GoogleBusinessConnectionModel } from "../models/google-business-connection.model.js";
 import { GoogleReviewModel } from "../models/google-review.model.js";
 import {
@@ -11,13 +13,11 @@ import {
 
 export const connectGoogleBusiness: RequestHandler = (req, res, next) => {
   try {
-    const state = randomUUID();
-    res.cookie("google_business_oauth_state", state, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 600_000,
-    });
+    const state = jwt.sign(
+      { purpose: "google-business-connect", nonce: randomUUID() },
+      env.JWT_SECRET,
+      { subject: req.admin!.id.toString(), expiresIn: "10m" },
+    );
     const url = getGoogleAuthorizationUrl(state);
     if (req.accepts("json")) {
       res.json({ success: true, data: { url } });
@@ -32,13 +32,12 @@ export const googleBusinessCallback: RequestHandler = async (req, res, next) => 
   try {
     if (typeof req.query.error === "string")
       throw new Error(`Google authorization was declined: ${req.query.error}`);
-    if (
-      typeof req.query.code !== "string" ||
-      req.query.state !== req.cookies.google_business_oauth_state
-    )
+    if (typeof req.query.code !== "string" || typeof req.query.state !== "string")
+      throw new Error("Invalid Google OAuth callback.");
+    const state = jwt.verify(req.query.state, env.JWT_SECRET) as jwt.JwtPayload;
+    if (state.purpose !== "google-business-connect" || typeof state.sub !== "string")
       throw new Error("Invalid Google OAuth callback state.");
-    await connectFromCode(req.query.code, req.admin!.id.toString());
-    res.clearCookie("google_business_oauth_state");
+    await connectFromCode(req.query.code, state.sub);
     res.redirect(
       `${process.env.CLIENT_URL?.split(",")[0] ?? "http://localhost:5173"}/admin/reviews?connected=1`,
     );

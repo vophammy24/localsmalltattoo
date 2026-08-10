@@ -12,7 +12,7 @@ import {
 import { requireAdmin } from "../middlewares/auth.middleware.js";
 export const googleReviewAdminRouter = Router();
 googleReviewAdminRouter.get("/google-business/connect", requireAdmin, connectGoogleBusiness);
-googleReviewAdminRouter.get("/google-business/callback", requireAdmin, googleBusinessCallback);
+googleReviewAdminRouter.get("/google-business/callback", googleBusinessCallback);
 googleReviewAdminRouter.get("/google-business/status", requireAdmin, googleBusinessStatus);
 googleReviewAdminRouter.post("/google-business/disconnect", requireAdmin, disconnectGoogleBusiness);
 googleReviewAdminRouter.post("/google-reviews/sync", requireAdmin, syncReviews);
