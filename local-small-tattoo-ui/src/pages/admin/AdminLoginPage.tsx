@@ -40,7 +40,7 @@ export function AdminLoginPage() {
             type="email"
             required
             autoComplete="username"
-            placeholder="atelier@localsmalltattoo.com"
+            placeholder="booking.localsmalltattoo@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />

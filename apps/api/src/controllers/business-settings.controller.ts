@@ -3,6 +3,7 @@ import { BusinessSettingsModel, BUSINESS_DAYS } from "../models/business-setting
 import { deleteCloudinaryImage, uploadBusinessLogo } from "../services/image.service.js";
 import { businessSettingsSchema } from "../validators/business-settings.validator.js";
 import { isDatabaseConnected } from "../config/database.js";
+const BUSINESS_EMAIL = "booking.localsmalltattoo@gmail.com";
 export const DEFAULT_SETTINGS = {
   businessName: "Local Small Tattoo",
   shortName: "LOCAL SMALL",
@@ -10,7 +11,7 @@ export const DEFAULT_SETTINGS = {
   contact: {
     phoneNumber: "+84 946 752 336",
     secondaryPhoneNumber: "",
-    email: "booking@localsmalltattoo.vn",
+    email: BUSINESS_EMAIL,
   },
   address: {
     addressLine: "52-54 Tran Thanh Mai",
@@ -45,9 +46,12 @@ export const DEFAULT_SETTINGS = {
 async function getSettings() {
   if (!isDatabaseConnected()) return DEFAULT_SETTINGS;
   try {
-    return (
-      (await BusinessSettingsModel.findOne({ settingsKey: "business" }).lean()) ?? DEFAULT_SETTINGS
-    );
+    const settings =
+      (await BusinessSettingsModel.findOne({ settingsKey: "business" }).lean()) ?? DEFAULT_SETTINGS;
+    return {
+      ...settings,
+      contact: { ...settings.contact, email: BUSINESS_EMAIL },
+    };
   } catch (error) {
     console.warn(
       "Business settings database lookup failed; using defaults.",
@@ -67,6 +71,7 @@ export const getAdminBusinessSettings: RequestHandler = getPublicBusinessSetting
 export const updateAdminBusinessSettings: RequestHandler = async (req, res, next) => {
   try {
     const fields = businessSettingsSchema.parse(req.body);
+    fields.contact.email = BUSINESS_EMAIL;
     const settings =
       (await BusinessSettingsModel.findOne({ settingsKey: "business" })) ??
       new BusinessSettingsModel({ settingsKey: "business" });
