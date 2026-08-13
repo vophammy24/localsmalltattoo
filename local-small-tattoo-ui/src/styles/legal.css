@@ -1,0 +1,111 @@
+.legal-document {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: clamp(0px, 3vw, 32px);
+}
+
+.legal-document__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 78%);
+  backdrop-filter: blur(6px);
+}
+
+.legal-document__panel {
+  position: relative;
+  width: min(900px, 100%);
+  max-height: min(900px, 100vh);
+  overflow-y: auto;
+  background: var(--color-background, #f4f1ea);
+  color: var(--color-text, #171717);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 40%);
+}
+
+.legal-document__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(24px, 5vw, 48px);
+  padding-bottom: 24px;
+  background: inherit;
+  border-bottom: 1px solid rgb(0 0 0 / 16%);
+}
+
+.legal-document__header p,
+.legal-document__header h1 {
+  margin: 0;
+}
+
+.legal-document__header p {
+  margin-bottom: 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.legal-document__header h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1;
+}
+
+.legal-document__header small {
+  display: block;
+  margin-top: 12px;
+  opacity: 0.65;
+}
+
+.legal-document__close {
+  display: grid;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.legal-document__content {
+  max-width: 760px;
+  padding: 32px clamp(24px, 5vw, 48px) 64px;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.legal-document__content h2 {
+  margin: 40px 0 10px;
+  font-size: 1.3rem;
+  line-height: 1.3;
+}
+
+.legal-document__content p,
+.legal-document__content ul {
+  margin: 0 0 16px;
+}
+
+.legal-document__content li + li {
+  margin-top: 6px;
+}
+
+.legal-document__content a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .legal-document__panel {
+    height: 100vh;
+    max-height: none;
+  }
+
+  .legal-document__header {
+    align-items: flex-start;
+  }
+}

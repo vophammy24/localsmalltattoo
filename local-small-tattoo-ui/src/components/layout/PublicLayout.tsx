@@ -5,6 +5,7 @@ import { FloatingContactButtons } from "../common/FloatingContactButtons";
 import { WebsiteIntro } from "../common/WebsiteIntro";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
+import { LegalDocuments } from "../legal/LegalDocuments";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -28,6 +29,7 @@ export function PublicLayout() {
       <Footer />
       <FloatingContactButtons />
       <BackToTopButton />
+      <LegalDocuments />
     </>
   );
 }

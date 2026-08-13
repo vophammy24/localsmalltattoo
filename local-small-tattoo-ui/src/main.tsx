@@ -18,6 +18,7 @@ import "./styles/mobile-audit.css";
 import "./styles/spacing-system.css";
 import "./styles/button-system.css";
 import "./styles/website-intro.css";
+import "./styles/legal.css";
 
 const rootElement = document.getElementById("root");
 

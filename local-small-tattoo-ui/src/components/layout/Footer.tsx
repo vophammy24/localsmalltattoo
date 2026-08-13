@@ -71,8 +71,8 @@ export function Footer() {
           © {new Date().getFullYear()} {name}
         </p>
         <div>
-          <a href="#privacy">Privacy</a>
-          <a href="#terms">Terms</a>
+          <Link to="/#privacy">Privacy</Link>
+          <Link to="/#terms">Terms</Link>
           {socialLinks.map(({ name: socialName, url }) => (
             <a href={url} key={socialName} target="_blank" rel="noreferrer">
               {socialName}
