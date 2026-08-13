@@ -1,4 +1,5 @@
 import type { GalleryItem } from "../types/gallery";
+import { getCloudinaryImageUrl, getCloudinarySrcSet } from "../../../utils/cloudinaryImage";
 
 export function GalleryCard({
   item,
@@ -16,9 +17,14 @@ export function GalleryCard({
       onClick={onActivate}
     >
       <img
-        src={item.image.url}
+        src={getCloudinaryImageUrl(item.image.url, { width: 800 })}
+        srcSet={getCloudinarySrcSet(item.image.url)}
+        sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
         alt={item.image.alt}
         loading="lazy"
+        decoding="async"
+        width={item.image.width}
+        height={item.image.height}
         onError={(event) => {
           event.currentTarget.hidden = true;
           event.currentTarget.parentElement?.classList.add("has-image-error");

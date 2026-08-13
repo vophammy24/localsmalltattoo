@@ -1,5 +1,6 @@
 import { ButtonLink } from "../../components/common/ButtonLink";
 import { useAboutPage } from "../about/hooks/useAboutPage";
+import { getCloudinaryImageUrl, getCloudinarySrcSet } from "../../utils/cloudinaryImage";
 
 export function HeroSection() {
   const { data } = useAboutPage();
@@ -9,7 +10,16 @@ export function HeroSection() {
   return (
     <section className="home-hero" aria-labelledby="home-hero-title">
       <div className="home-hero__media" aria-hidden="true">
-        {hero?.image ? <img src={hero.image.url} alt={hero.image.alt} /> : null}
+        {hero?.image ? (
+          <img
+            src={getCloudinaryImageUrl(hero.image.url, { width: 1600, quality: "auto:good" })}
+            srcSet={getCloudinarySrcSet(hero.image.url, [800, 1200, 1600])}
+            sizes="100vw"
+            alt={hero.image.alt}
+            fetchPriority="high"
+            decoding="async"
+          />
+        ) : null}
       </div>
       <div className="home-hero__overlay" aria-hidden="true" />
       <div className="home-hero__content page-shell">

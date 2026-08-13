@@ -3,11 +3,17 @@ import { StyleNavigation } from "../features/tattooStyles/components/StyleNaviga
 import { TattooStyleSection } from "../features/tattooStyles/components/TattooStyleSection";
 import { useTattooStyles } from "../features/tattooStyles/hooks/useTattooStyles";
 import { PageHero } from "../components/common/PageHero";
+import { Seo } from "../components/seo/Seo";
 
 export function StylesPage() {
   const { data, isLoading, error } = useTattooStyles();
   return (
     <div className="styles-page">
+      <Seo
+        title="Tattoo Styles in Da Nang | Local Small Tattoo"
+        description="Explore fine line, ornamental, blackwork and other tattoo styles available at Local Small Tattoo in Da Nang."
+        path="/styles"
+      />
       <PageHero
         className="styles-page__hero"
         title="Tattoo styles"

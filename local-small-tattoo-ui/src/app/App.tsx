@@ -25,6 +25,7 @@ import { AdminBusinessSettingsPage } from "../pages/admin/AdminBusinessSettingsP
 import { AdminHomeContentPage } from "../pages/admin/AdminHomeContentPage";
 import { AdminNotificationProvider } from "../features/admin/notifications/AdminNotificationProvider";
 import { AdminReviewsPage } from "../pages/admin/AdminReviewsPage";
+import { AdminSeo } from "../components/seo/AdminSeo";
 
 export function App() {
   return (
@@ -41,8 +42,23 @@ export function App() {
               <Route path="contact" element={<ContactPage />} />
               <Route path="*" element={<ComingSoonPage />} />
             </Route>
-            <Route path="admin/login" element={<AdminLoginPage />} />
-            <Route element={<ProtectedAdminRoute />}>
+            <Route
+              path="admin/login"
+              element={
+                <>
+                  <AdminSeo />
+                  <AdminLoginPage />
+                </>
+              }
+            />
+            <Route
+              element={
+                <>
+                  <AdminSeo />
+                  <ProtectedAdminRoute />
+                </>
+              }
+            >
               <Route path="admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboardPage />} />
                 <Route path="bookings" element={<AdminBookingsPage />} />

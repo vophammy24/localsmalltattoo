@@ -25,12 +25,6 @@ export function BusinessSettingsProvider({ children }: { children: ReactNode }) 
     void refresh();
   }, []);
 
-  useEffect(() => {
-    if (!settings) return;
-
-    document.title = settings.businessName || "Local Small Tattoo";
-  }, [settings]);
-
   const value = useMemo(() => ({ settings, isLoading, refresh }), [settings, isLoading]);
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

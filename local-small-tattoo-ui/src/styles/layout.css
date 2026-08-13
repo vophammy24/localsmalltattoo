@@ -11,13 +11,21 @@
 }
 
 .site-header__inner {
-  display: grid;
+  display: flex;
   height: 100%;
   align-items: center;
-  grid-template-columns: minmax(11rem, 1fr) auto minmax(11rem, 1fr);
+  gap: 1rem;
+}
+
+.site-header__identity {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
 }
 
 .site-header__brand {
+  display: inline-flex;
   width: fit-content;
   color: var(--color-white);
   font-family: var(--font-brand);
@@ -26,14 +34,25 @@
   text-transform: uppercase;
 }
 
+.site-header__brand-name {
+  color: var(--color-text-soft);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .site-header__desktop-nav {
   display: flex;
   align-items: center;
   gap: clamp(1rem, 2vw, 2rem);
+  margin-inline: auto;
 }
 
 .site-header__nav-link,
 .site-header__booking,
+.site-header__phone,
 .menu-button {
   position: relative;
   color: var(--color-text-soft);
@@ -42,6 +61,20 @@
   letter-spacing: 0.11em;
   text-transform: uppercase;
   transition: color var(--transition-fast);
+}
+
+.site-header__phone {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.site-header__phone:hover {
+  color: var(--color-white);
+}
+
+.site-header__phone--mobile {
+  display: none;
 }
 
 .site-header__nav-link::after,
@@ -285,16 +318,26 @@
 
 @media (max-width: 1100px) {
   .site-header__inner {
-    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    justify-content: flex-start;
   }
 
-  .site-header__brand {
-    grid-column: 2;
-    justify-self: center;
+  .site-header__identity {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .site-header__brand-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .site-header__phone {
+    margin-left: 0;
   }
 
   .site-header__actions {
-    grid-column: 3;
+    margin-left: auto;
   }
 
   .site-header__desktop-nav {

@@ -8,6 +8,9 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { settings } = useBusinessSettings();
+  const businessName = settings?.businessName ?? "Local Small Tattoo";
+  const phoneNumber = settings?.contact.phoneNumber ?? "+84 123 456 789";
+  const phoneHref = `tel:${phoneNumber.replace(/\s/g, "")}`;
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -33,13 +36,19 @@ export function Header() {
     <>
       <header className="site-header">
         <div className="site-header__inner page-shell">
-          <Link
-            className="site-header__brand"
-            to="/"
-            aria-label={`${settings?.businessName ?? "Local Small Tattoo"} home`}
-          >
-            <BrandLogo />
-          </Link>
+          <div className="site-header__identity">
+            <Link
+              className="site-header__brand"
+              to="/"
+              aria-label={`${businessName} home`}
+            >
+              <BrandLogo />
+            </Link>
+            <span className="site-header__brand-name">{businessName}</span>
+            <a className="site-header__phone site-header__phone--mobile" href={phoneHref}>
+              {phoneNumber}
+            </a>
+          </div>
 
           <nav className="site-header__desktop-nav" aria-label="Primary navigation">
             {navigationItems
@@ -57,6 +66,10 @@ export function Header() {
                 </NavLink>
               ))}
           </nav>
+
+          <a className="site-header__phone site-header__phone--desktop" href={phoneHref}>
+            {phoneNumber}
+          </a>
 
           <div className="site-header__actions">
             <button

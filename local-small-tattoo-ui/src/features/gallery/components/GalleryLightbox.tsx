@@ -39,11 +39,12 @@ export function GalleryLightbox({
       aria-label="Gallery image viewer"
       onClick={onClose}
     >
-      <button className="gallery-lightbox__close" title="Close" onClick={onClose}>
+      <button type="button" className="gallery-lightbox__close" title="Close" onClick={onClose}>
         <X />
       </button>
       {items.length > 1 ? (
         <button
+          type="button"
           className="gallery-lightbox__prev"
           title="Previous image"
           onClick={(event) => {
@@ -84,6 +85,7 @@ export function GalleryLightbox({
       </div>
       {items.length > 1 ? (
         <button
+          type="button"
           className="gallery-lightbox__next"
           title="Next image"
           onClick={(event) => {

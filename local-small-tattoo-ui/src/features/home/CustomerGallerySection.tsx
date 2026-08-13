@@ -1,6 +1,7 @@
 import { ButtonLink } from "../../components/common/ButtonLink";
 import { SectionHeading } from "../../components/common/SectionHeading";
 import { useGallery } from "../gallery/hooks/useGallery";
+import { getCloudinaryImageUrl, getCloudinarySrcSet } from "../../utils/cloudinaryImage";
 
 export function CustomerGallerySection() {
   const { data } = useGallery("?type=CUSTOMER_PHOTO&featured=true&limit=6");
@@ -19,7 +20,16 @@ export function CustomerGallerySection() {
               className={`customer-gallery__item customer-gallery__item--${index % 3 === 0 ? "large" : "small"}`}
               key={item._id}
             >
-              <img src={item.image.url} alt={item.image.alt} loading="lazy" />
+              <img
+                src={getCloudinaryImageUrl(item.image.url, { width: 800 })}
+                srcSet={getCloudinarySrcSet(item.image.url)}
+                sizes="(max-width: 767px) 100vw, 50vw"
+                alt={item.image.alt}
+                loading="lazy"
+                decoding="async"
+                width={item.image.width}
+                height={item.image.height}
+              />
             </figure>
           ))}
         </div>

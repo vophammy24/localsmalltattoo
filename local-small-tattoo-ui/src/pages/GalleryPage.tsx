@@ -7,6 +7,7 @@ import { useGallery } from "../features/gallery/hooks/useGallery";
 import { useTattooStyles } from "../features/tattooStyles/hooks/useTattooStyles";
 import { ButtonLink } from "../components/common/ButtonLink";
 import { PageHero } from "../components/common/PageHero";
+import { Seo } from "../components/seo/Seo";
 
 export function GalleryPage() {
   const [params, setParams] = useSearchParams();
@@ -24,8 +25,20 @@ export function GalleryPage() {
     next.delete("page");
     setParams(next);
   }
+  function changePage(page: number) {
+    const next = new URLSearchParams(params);
+    if (page <= 1) next.delete("page");
+    else next.set("page", String(page));
+    setParams(next);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
   return (
     <main className="gallery-page">
+      <Seo
+        title="Tattoo Gallery | Local Small Tattoo Da Nang"
+        description="Browse tattoo work, client photos and studio moments from Local Small Tattoo in Da Nang."
+        path="/gallery"
+      />
       <PageHero
         className="gallery-hero"
         title="Gallery"
@@ -47,8 +60,9 @@ export function GalleryPage() {
         {data.pagination.totalPages > 1 ? (
           <nav className="gallery-pagination" aria-label="Gallery pages">
             <button
+              type="button"
               disabled={data.pagination.page <= 1}
-              onClick={() => change("page", String(data.pagination.page - 1))}
+              onClick={() => changePage(data.pagination.page - 1)}
             >
               Previous
             </button>
@@ -56,8 +70,9 @@ export function GalleryPage() {
               {data.pagination.page} / {data.pagination.totalPages}
             </span>
             <button
+              type="button"
               disabled={data.pagination.page >= data.pagination.totalPages}
-              onClick={() => change("page", String(data.pagination.page + 1))}
+              onClick={() => changePage(data.pagination.page + 1)}
             >
               Next
             </button>

@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { TattooStyleImage } from "../types/tattooStyle";
 import { useTouchActivation } from "../../../components/common/useTouchActivation";
+import { getCloudinaryImageUrl, getCloudinarySrcSet } from "../../../utils/cloudinaryImage";
 
 const MOBILE_QUERY = "(max-width: 767px)";
 export type StyleCarouselImage = TattooStyleImage & {
@@ -110,7 +111,14 @@ export function StyleGalleryPreview({
                   setOpenIndex(orderedImages.findIndex((item) => item.publicId === image.publicId));
               }}
             >
-              <img src={image.url} alt={image.alt} loading="lazy" />
+              <img
+                src={getCloudinaryImageUrl(image.url, { width: 800 })}
+                srcSet={getCloudinarySrcSet(image.url)}
+                sizes="(max-width: 767px) 100vw, 33vw"
+                alt={image.alt}
+                loading="lazy"
+                decoding="async"
+              />
               <span className="style-gallery-preview__meta">
                 <strong>{image.title || image.alt}</strong>
                 <small>{tattooStyle}</small>

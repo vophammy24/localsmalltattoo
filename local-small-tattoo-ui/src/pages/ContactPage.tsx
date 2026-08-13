@@ -8,20 +8,41 @@ import {
   formatBusinessAddress,
   getBusinessSocialLinks,
 } from "../features/businessSettings/utils/businessSettings";
+import { Seo } from "../components/seo/Seo";
 export function ContactPage() {
   const { settings, isLoading } = useBusinessSettings();
+  const seo = (
+    <Seo
+      title="Contact Local Small Tattoo | Da Nang"
+      description="Contact Local Small Tattoo in Da Nang for studio directions, opening hours, tattoo questions and appointment requests."
+      path="/contact"
+    />
+  );
   if (isLoading)
-    return <main className="contact-state page-shell">Loading contact information...</main>;
+    return (
+      <>
+        {seo}
+        <main className="contact-state page-shell">Loading contact information...</main>
+      </>
+    );
   if (!settings)
     return (
-      <main className="contact-state page-shell">
-        Contact information is temporarily unavailable.
-      </main>
+      <>
+        {seo}
+        <main className="contact-state page-shell">
+          Contact information is temporarily unavailable.
+        </main>
+      </>
     );
   const address = formatBusinessAddress(settings.address);
   const socials = getBusinessSocialLinks(settings);
   return (
     <main className="contact-page">
+      <Seo
+        title="Contact Local Small Tattoo | Da Nang"
+        description="Contact Local Small Tattoo in Da Nang for studio directions, opening hours, tattoo questions and appointment requests."
+        path="/contact"
+      />
       <PageHero
         className="contact-hero"
         title="Let's create something permanent"

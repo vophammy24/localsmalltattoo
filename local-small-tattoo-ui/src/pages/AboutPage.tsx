@@ -5,13 +5,37 @@ import { StudioSpaceSection } from "../features/about/components/StudioSpaceSect
 import { StudioStorySection } from "../features/about/components/StudioStorySection";
 import { useAboutPage } from "../features/about/hooks/useAboutPage";
 import { FounderSection } from "../features/home/FounderSection";
+import { Seo } from "../components/seo/Seo";
 export function AboutPage() {
   const { data, isLoading, error } = useAboutPage();
-  if (isLoading) return <main className="about-page-state page-shell">Loading About Us...</main>;
+  const seo = (
+    <Seo
+      title="About Local Small Tattoo | Da Nang Tattoo Studio"
+      description="Meet Local Small Tattoo and discover the story, values and creative approach behind our tattoo studio in Da Nang."
+      path="/about"
+    />
+  );
+  if (isLoading)
+    return (
+      <>
+        {seo}
+        <main className="about-page-state page-shell">Loading About Us...</main>
+      </>
+    );
   if (error || !data)
-    return <main className="about-page-state page-shell">Unable to load About Us.</main>;
+    return (
+      <>
+        {seo}
+        <main className="about-page-state page-shell">Unable to load About Us.</main>
+      </>
+    );
   return (
     <main className="about-page">
+      <Seo
+        title="About Local Small Tattoo | Da Nang Tattoo Studio"
+        description="Meet Local Small Tattoo and discover the story, values and creative approach behind our tattoo studio in Da Nang."
+        path="/about"
+      />
       {data.hero.isVisible !== false ? <AboutHero content={data.hero} /> : null}
       {data.story.isVisible !== false ? <StudioStorySection content={data.story} /> : null}
       {data.mission.isVisible !== false ? <MissionSection content={data.mission} /> : null}
