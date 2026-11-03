@@ -1,3 +1,4 @@
+import { SITE_CONFIG } from "../config/siteConfig";
 import { Link } from "react-router";
 import { GoogleMapEmbed } from "../features/businessSettings/components/GoogleMapEmbed";
 import { OpeningHours } from "../features/businessSettings/components/OpeningHours";
@@ -35,7 +36,7 @@ export function ContactPage() {
       </>
     );
   const address = formatBusinessAddress(settings.address);
-  const socials = getBusinessSocialLinks(settings);
+  const socials = getBusinessSocialLinks();
   return (
     <main className="contact-page">
       <Seo
@@ -51,14 +52,14 @@ export function ContactPage() {
       <section className="contact-main page-shell">
         <div className="contact-details">
           <p>Visit or contact</p>
-          <h2>{settings.businessName}</h2>
+          <h2>{SITE_CONFIG.businessName}</h2>
           <address>
-            <a href={settings.location.googleMapsUrl} target="_blank" rel="noreferrer">
+            <a href={SITE_CONFIG.links.googleMaps} target="_blank" rel="noreferrer">
               {address}
             </a>
           </address>
-          <a href={createPhoneHref(settings.contact.phoneNumber)}>{settings.contact.phoneNumber}</a>
-          <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
+          <a href={createPhoneHref(SITE_CONFIG.contact.phone)}>{SITE_CONFIG.contact.phone}</a>
+          <a href={`mailto:${SITE_CONFIG.contact.email}`}>{SITE_CONFIG.contact.email}</a>
           <h3>Opening hours</h3>
           <OpeningHours hours={settings.openingHours} />
           <div className="contact-socials">
@@ -69,18 +70,18 @@ export function ContactPage() {
             ))}
           </div>
           <div className="contact-actions">
-            <a className="button" href={createPhoneHref(settings.contact.phoneNumber)}>
+            <a className="button" href={createPhoneHref(SITE_CONFIG.contact.phone)}>
               Call now
             </a>
             <a
               className="button button--secondary"
-              href={settings.location.googleMapsUrl}
+              href={SITE_CONFIG.links.googleMaps}
               target="_blank"
               rel="noreferrer"
             >
               Get directions
             </a>
-            <Link className="button button--secondary" to="/booking">
+            <Link className="button button--secondary" to={SITE_CONFIG.links.booking}>
               Book An Appointment
             </Link>
           </div>
@@ -88,7 +89,7 @@ export function ContactPage() {
         <div className="contact-map-wrap">
           <GoogleMapEmbed
             url={settings.location.googleMapsEmbedUrl}
-            title={settings.businessName}
+            title={SITE_CONFIG.businessName}
           />
         </div>
       </section>

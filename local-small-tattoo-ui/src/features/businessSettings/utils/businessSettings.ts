@@ -1,3 +1,4 @@
+import { SITE_CONFIG } from "../../../config/siteConfig";
 import type { BusinessSettings } from "../types/businessSettings";
 
 export function formatBusinessAddress(address: BusinessSettings["address"]) {
@@ -17,9 +18,8 @@ export function createPhoneHref(phoneNumber: string) {
   return `tel:${phoneNumber.replace(/[^+\d]/g, "")}`;
 }
 
-export function getBusinessSocialLinks(settings?: BusinessSettings) {
-  if (!settings) return [];
-  return Object.entries(settings.socialLinks)
-    .filter((entry): entry is [string, string] => Boolean(entry[1]))
+export function getBusinessSocialLinks() {
+  return Object.entries(SITE_CONFIG.social)
+    .filter((entry) => Boolean(entry[1]))
     .map(([name, url]) => ({ name, url }));
 }

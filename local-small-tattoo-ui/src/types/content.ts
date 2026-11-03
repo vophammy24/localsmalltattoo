@@ -3,14 +3,6 @@ export type NavItem = {
   href: string;
 };
 
-export type Review = {
-  id: string;
-  author: string;
-  rating: number;
-  text: string;
-  relativeDate: string;
-};
-
 export type GalleryImage = {
   id: string;
   src: string;

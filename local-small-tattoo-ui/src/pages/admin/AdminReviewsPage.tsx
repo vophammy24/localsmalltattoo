@@ -1,157 +1,238 @@
 import { useEffect, useState } from "react";
 import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
 import {
-  disconnectGoogleBusiness,
-  getAdminGoogleReviews,
-  getGoogleBusinessAuthorizationUrl,
-  getGoogleBusinessStatus,
-  saveGoogleReviewModeration,
-  syncGoogleReviews,
-  type GoogleReview,
-} from "../../features/reviews/api/googleReviewsApi";
+  deleteTestimonial,
+  getAdminReviews,
+  updateTestimonial,
+} from "../../features/reviews/api/testimonialApi";
+import type { AdminReviewResult, AdminTestimonial } from "../../features/reviews/types/testimonial";
+import { TestimonialForm } from "../../features/reviews/components/TestimonialForm";
+import { TestimonialCard } from "../../features/reviews/components/TestimonialCard";
+import { formatReviewDate, publicationStatus } from "../../features/reviews/utils/testimonialTime";
 
 export function AdminReviewsPage() {
-  const [reviews, setReviews] = useState<GoogleReview[]>([]);
-  const [status, setStatus] = useState<Awaited<ReturnType<typeof getGoogleBusinessStatus>>>();
-  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<AdminReviewResult>();
+  const [status, setStatus] = useState("all");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("order");
+  const [page, setPage] = useState(1);
+  const [revision, setRevision] = useState(0);
+  const [editor, setEditor] = useState<AdminTestimonial | "new" | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const load = () =>
-    Promise.all([getGoogleBusinessStatus(), getAdminGoogleReviews()])
-      .then(([connection, data]) => {
-        setStatus(connection);
-        setReviews(data.reviews);
-      })
-      .catch((reason: Error) => setError(reason.message));
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
   useEffect(() => {
-    void load();
-  }, []);
-  async function sync() {
-    setBusy(true);
-    try {
-      await syncGoogleReviews();
-      await load();
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to sync reviews.");
-    } finally {
-      setBusy(false);
-    }
-  }
-  async function connect() {
+    let active = true;
+    setLoading(true);
+    setError("");
+    const timer = window.setTimeout(() => {
+      void getAdminReviews(
+        new URLSearchParams({ status, search, sort, page: String(page), limit: "12" }).toString(),
+      )
+        .then((data) => {
+          if (!active) return;
+          if (page > data.pagination.totalPages) setPage(data.pagination.totalPages);
+          else setResult(data);
+        })
+        .catch((reason: Error) => {
+          if (active) setError(reason.message);
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+    }, 200);
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [status, search, sort, page, revision]);
+  async function action(task: () => Promise<unknown>) {
     setBusy(true);
     setError("");
     try {
-      const { url } = await getGoogleBusinessAuthorizationUrl();
-      window.location.assign(url);
+      await task();
+      setRevision((value) => value + 1);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to start Google connection.");
+      setError(reason instanceof Error ? reason.message : "Action failed.");
+    } finally {
       setBusy(false);
-    }
-  }
-  async function moderate(review: GoogleReview, change: Partial<GoogleReview["moderation"]>) {
-    try {
-      const result = await saveGoogleReviewModeration(review._id, {
-        ...review.moderation,
-        ...change,
-      });
-      setReviews((items) => items.map((item) => (item._id === review._id ? result.review : item)));
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to save review.");
     }
   }
   return (
     <>
       <AdminPageHeader
-        title="Google Reviews"
-        description="Sync Google feedback, then decide which reviews appear publicly."
-      />
-      {error ? <p className="admin-error">{error}</p> : null}
-      <section className="admin-panel">
-        <h2>Google Business Profile</h2>
-        {!status?.configured ? (
-          <p>
-            Add GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GOOGLE_REDIRECT_URI to the API
-            environment first.
-          </p>
-        ) : status.connection ? (
-          <>
-            <p>
-              Connected: <strong>{status.connection.accountName}</strong> —{" "}
-              {status.connection.locationName}
-            </p>
-            <p>
-              Last sync:{" "}
-              {status.connection.lastSyncedAt
-                ? new Date(status.connection.lastSyncedAt).toLocaleString()
-                : "Never"}
-            </p>
-            <button className="admin-primary" disabled={busy} onClick={() => void sync()}>
-              {busy ? "Syncing…" : "Sync from Google"}
-            </button>
-            <button
-              className="admin-secondary"
-              onClick={() => void disconnectGoogleBusiness().then(load)}
-            >
-              Disconnect
-            </button>
-          </>
-        ) : (
-          <button className="admin-primary" disabled={busy} onClick={() => void connect()}>
-            {busy ? "Connecting…" : "Connect Google"}
+        title="Customer testimonials"
+        description="Manually authorized customer feedback. No Google synchronization."
+        action={
+          <button className="admin-primary" onClick={() => setEditor("new")}>
+            + Add testimonial
           </button>
-        )}
-      </section>
-      <section className="admin-panel">
-        <h2>Review moderation</h2>
-        <p>New reviews are hidden until an admin publishes them.</p>
-        <div className="admin-review-list">
-          {reviews.map((review) => (
-            <article className="admin-review-card" key={review._id}>
-              <strong>{review.reviewer.displayName || "Google user"}</strong>
-              <span>{"★".repeat(review.starRating)}</span>
-              <p>{review.comment || "No written review."}</p>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={review.moderation.isPublic}
-                  onChange={(e) =>
-                    void moderate(review, {
-                      isPublic: e.target.checked,
-                      isFeatured: e.target.checked ? review.moderation.isFeatured : false,
-                    })
-                  }
-                />{" "}
-                Public
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  disabled={!review.moderation.isPublic}
-                  checked={review.moderation.isFeatured}
-                  onChange={(e) => void moderate(review, { isFeatured: e.target.checked })}
-                />{" "}
-                Featured
-              </label>
-              <label>
-                Order{" "}
-                <input
-                  type="number"
-                  value={review.moderation.displayOrder}
-                  onChange={(e) => void moderate(review, { displayOrder: Number(e.target.value) })}
-                />
-              </label>
-              {review.resourceName ? (
-                <a
-                  href={`https://business.google.com/reviews/${review.resourceName.split("/").pop()}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View on Google
+        }
+      />
+      {editor ? (
+        <TestimonialForm
+          key={editor === "new" ? "new" : editor._id}
+          item={editor === "new" ? undefined : editor}
+          onCancel={() => setEditor(null)}
+          onSaved={() => {
+            setEditor(null);
+            setRevision((value) => value + 1);
+          }}
+        />
+      ) : null}
+      {result ? (
+        <section className="admin-stats">
+          {Object.entries(result.counts).map(([label, value]) => (
+            <article key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
+            </article>
+          ))}
+        </section>
+      ) : null}
+      <div className="admin-filters">
+        <label>
+          Status
+          <select
+            value={status}
+            onChange={(event) => {
+              setStatus(event.target.value);
+              setPage(1);
+            }}
+          >
+            {["all", "published", "draft", "scheduled", "expired", "featured"].map((value) => (
+              <option key={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Search
+          <input
+            type="search"
+            placeholder="Customer name or content"
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
+          />
+        </label>
+        <label>
+          Sort
+          <select
+            value={sort}
+            onChange={(event) => {
+              setSort(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="order">Display order</option>
+            <option value="date">Review date</option>
+            <option value="name">Customer name</option>
+          </select>
+        </label>
+      </div>
+      {error ? (
+        <p className="admin-error" role="alert">
+          {error}
+        </p>
+      ) : null}
+      {loading ? (
+        <p role="status">Loading testimonials…</p>
+      ) : !error && !result?.items.length ? (
+        <p className="admin-panel">
+          No testimonials match. Add authorized customer feedback to begin.
+        </p>
+      ) : null}
+      {!loading ? (
+        <div className="admin-testimonial-list">
+          {result?.items.map((item) => (
+            <article className="admin-panel" key={item._id}>
+              <div className="review-card__header">
+                <strong>{item.customerName}</strong>
+                <span aria-label={`${item.rating} out of 5 stars`}>{"★".repeat(item.rating)}</span>
+              </div>
+              <p className="testimonial-excerpt">{item.content}</p>
+              <p>
+                Review date: {formatReviewDate(item.reviewDate)} · {publicationStatus(item)}
+                {item.isFeatured ? " · Featured" : ""} · Order: {item.displayOrder}
+              </p>
+              {item.sourceUrl ? (
+                <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">
+                  View on Google Maps ↗
                 </a>
               ) : null}
+              <div className="testimonial-actions">
+                <button className="admin-secondary" disabled={busy} onClick={() => setEditor(item)}>
+                  Edit
+                </button>
+                <button
+                  className="admin-secondary"
+                  onClick={() => setPreview(preview === item._id ? null : item._id)}
+                  aria-expanded={preview === item._id}
+                >
+                  Preview
+                </button>
+                <button
+                  className="admin-secondary"
+                  disabled={busy || (!item.isPublic && !item.permissionConfirmed)}
+                  title={
+                    !item.permissionConfirmed
+                      ? "Edit and confirm permission before publishing"
+                      : undefined
+                  }
+                  onClick={() =>
+                    void action(() => updateTestimonial(item._id, { isPublic: !item.isPublic }))
+                  }
+                >
+                  {item.isPublic ? "Hide" : "Publish"}
+                </button>
+                <button
+                  className="admin-secondary"
+                  disabled={busy || !item.isPublic}
+                  onClick={() =>
+                    void action(() => updateTestimonial(item._id, { isFeatured: !item.isFeatured }))
+                  }
+                >
+                  {item.isFeatured ? "Unfeature" : "Feature"}
+                </button>
+                <button
+                  className="admin-secondary"
+                  disabled={busy}
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        `Delete testimonial by ${item.customerName}? This cannot be undone.`,
+                      )
+                    )
+                      void action(() => deleteTestimonial(item._id));
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+              {preview === item._id ? <TestimonialCard item={item} /> : null}
             </article>
           ))}
         </div>
-      </section>
+      ) : null}
+      {result && result.pagination.totalPages > 1 ? (
+        <nav className="gallery-pagination" aria-label="Admin testimonial pages">
+          <button disabled={loading || page <= 1} onClick={() => setPage(page - 1)}>
+            Previous
+          </button>
+          <span>
+            {page} / {result.pagination.totalPages}
+          </span>
+          <button
+            disabled={loading || page >= result.pagination.totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </button>
+        </nav>
+      ) : null}
     </>
   );
 }

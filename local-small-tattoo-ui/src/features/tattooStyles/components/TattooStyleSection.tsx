@@ -1,4 +1,5 @@
 import { ButtonLink } from "../../../components/common/ButtonLink";
+import { SITE_CONFIG } from "../../../config/siteConfig";
 import type { TattooStyle } from "../types/tattooStyle";
 import { StyleGalleryPreview, type StyleCarouselImage } from "./StyleGalleryPreview";
 import { useGallery } from "../../gallery/hooks/useGallery";
@@ -31,7 +32,9 @@ export function TattooStyleSection({ style }: { style: TattooStyle }) {
         <div className="tattoo-style-section__body">
           <p>{style.description}</p>
           <div>
-            <ButtonLink to={`/booking?style=${style.slug}`}>Book this style</ButtonLink>
+            <ButtonLink to={`${SITE_CONFIG.links.booking}?style=${encodeURIComponent(style.slug)}`}>
+              Book this style
+            </ButtonLink>
             <ButtonLink to={`/gallery?style=${style.slug}`} variant="secondary">
               View gallery
             </ButtonLink>

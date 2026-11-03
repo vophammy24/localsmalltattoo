@@ -13,13 +13,12 @@ import { publicPageRouter } from "./routes/page.routes.js";
 import { publicBusinessSettingsRouter } from "./routes/business-settings.routes.js";
 import mongoose from "mongoose";
 import { isDatabaseConnected } from "./config/database.js";
-import {
-  googleReviewAdminRouter,
-  publicGoogleReviewRouter,
-} from "./routes/google-review.routes.js";
+import { adminReviewRouter, publicReviewRouter } from "./routes/testimonial.routes.js";
+import { protectCookieWrites } from "./middlewares/csrf.middleware.js";
 
 export const app = express();
 app.set("trust proxy", 1);
+app.disable("x-powered-by");
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -29,6 +28,8 @@ app.use(
     },
   }),
 );
+app.use(cookieParser());
+app.use("/api/admin", protectCookieWrites);
 app.use(
   cors({
     origin(origin, callback) {
@@ -42,7 +43,6 @@ app.use(
   }),
 );
 app.use(morgan(env.NODE_ENV === "production" ? "combined" : "dev"));
-app.use(cookieParser());
 app.use(express.json({ limit: "100kb" }));
 app.get("/api/health", (_request, response) => {
   const databaseConnected = mongoose.connection.readyState === 1;
@@ -58,7 +58,7 @@ app.use("/api/public/tattoo-styles", publicTattooStyleRouter);
 app.use("/api/public/gallery", publicGalleryRouter);
 app.use("/api/public/pages", publicPageRouter);
 app.use("/api/public/business-settings", publicBusinessSettingsRouter);
-app.use("/api/public/reviews", publicGoogleReviewRouter);
+app.use("/api/public/reviews", publicReviewRouter);
 app.use("/api/admin", (request, response, next) => {
   if (!isDatabaseConnected()) {
     response.status(503).json({
@@ -69,6 +69,6 @@ app.use("/api/admin", (request, response, next) => {
   }
   next();
 });
-app.use("/api/admin", googleReviewAdminRouter);
+app.use("/api/admin/reviews", adminReviewRouter);
 app.use("/api/admin", adminRouter);
 app.use(errorHandler);

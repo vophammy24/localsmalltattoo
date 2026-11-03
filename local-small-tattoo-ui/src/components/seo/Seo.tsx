@@ -1,5 +1,7 @@
-const SITE_URL = "https://localsmalltattoo.com";
-const DEFAULT_IMAGE = `${SITE_URL}/logo.png`;
+import { SITE_CONFIG } from "../../config/siteConfig";
+import { SITE_ASSETS } from "../../config/siteAssets";
+const SITE_URL = SITE_CONFIG.siteUrl;
+const DEFAULT_IMAGE = `${SITE_URL}${SITE_ASSETS.logo}`;
 
 type SeoProps = {
   title: string;

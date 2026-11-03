@@ -1,3 +1,5 @@
+import { SITE_CONFIG } from "../../config/siteConfig";
+import { BrandLogo } from "../common/BrandLogo";
 import { Link } from "react-router";
 import { navigationItems } from "../../data/navigation";
 import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
@@ -12,14 +14,14 @@ import { useTattooStyles } from "../../features/tattooStyles/hooks/useTattooStyl
 export function Footer() {
   const { settings } = useBusinessSettings();
   const { data: styles } = useTattooStyles();
-  const name = settings?.businessName ?? "Local Small Tattoo";
-  const socialLinks = getBusinessSocialLinks(settings);
+  const name = SITE_CONFIG.businessName;
+  const socialLinks = getBusinessSocialLinks();
   return (
     <footer className="site-footer">
       <div className="site-footer__main page-shell">
         <section className="site-footer__brand-column">
           <Link className="site-footer__brand" to="/">
-            {name}
+            <BrandLogo />
           </Link>
           <p>
             {settings?.description ??
@@ -53,15 +55,13 @@ export function Footer() {
           <h2>Contact</h2>
           <address>
             {settings ? (
-              <a href={settings.location.googleMapsUrl} target="_blank" rel="noreferrer">
+              <a href={SITE_CONFIG.links.googleMaps} target="_blank" rel="noreferrer">
                 {formatBusinessAddress(settings.address)}
               </a>
             ) : null}
           </address>
-          <a href={createPhoneHref(settings?.contact.phoneNumber ?? "")}>
-            {settings?.contact.phoneNumber}
-          </a>
-          <a href={`mailto:${settings?.contact.email ?? ""}`}>{settings?.contact.email}</a>
+          <a href={createPhoneHref(SITE_CONFIG.contact.phone)}>{SITE_CONFIG.contact.phone}</a>
+          <a href={`mailto:${SITE_CONFIG.contact.email}`}>{SITE_CONFIG.contact.email}</a>
           <p>{settings ? summarizeHours(settings.openingHours) : ""}</p>
         </section>
       </div>

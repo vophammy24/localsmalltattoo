@@ -1,3 +1,4 @@
+import { SITE_CONFIG } from "../../../config/siteConfig";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router";
@@ -78,7 +79,7 @@ export function GalleryLightbox({
               </Link>
             ))}
           </div>
-          <Link className="button" to="/booking">
+          <Link className="button" to={SITE_CONFIG.links.booking}>
             Book appointment
           </Link>
         </aside>

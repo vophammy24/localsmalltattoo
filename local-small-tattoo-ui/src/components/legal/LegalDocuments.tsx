@@ -1,16 +1,15 @@
+import { SITE_CONFIG } from "../../config/siteConfig";
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { X } from "lucide-react";
-import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
 
 const EFFECTIVE_DATE = "13 August 2026";
 
 export function LegalDocuments() {
   const { hash, pathname } = useLocation();
-  const { settings } = useBusinessSettings();
   const document = hash === "#privacy" ? "privacy" : hash === "#terms" ? "terms" : null;
-  const businessName = settings?.businessName || "Local Small Tattoo";
-  const email = settings?.contact.email;
+  const businessName = SITE_CONFIG.businessName;
+  const email = SITE_CONFIG.contact.email;
   const closeTo = pathname || "/";
 
   useEffect(() => {
@@ -255,7 +254,7 @@ function TermsOfService({ businessName, email }: { businessName: string; email?:
 
       <h2>11. Contact</h2>
       <p>
-        Questions about these Terms can be sent
+        Questions about these Terms can be sent to
         {email ? (
           <>
             {" "}

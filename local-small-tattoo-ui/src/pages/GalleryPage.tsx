@@ -1,3 +1,4 @@
+import { SITE_CONFIG } from "../config/siteConfig";
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { GalleryFilters } from "../features/gallery/components/GalleryFilters";
@@ -82,7 +83,7 @@ export function GalleryPage() {
       <section className="gallery-cta">
         <p>Ready to make it yours?</p>
         <h2>Begin your next piece.</h2>
-        <ButtonLink to="/booking">Book an appointment</ButtonLink>
+        <ButtonLink to={SITE_CONFIG.links.booking}>Book an appointment</ButtonLink>
       </section>
     </main>
   );

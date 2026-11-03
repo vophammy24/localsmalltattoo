@@ -1,6 +1,6 @@
+import { SITE_CONFIG } from "../../config/siteConfig";
 import { useEffect, useId, useState } from "react";
 import { useLocation } from "react-router";
-import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
 import { BrandLogo } from "./BrandLogo";
 
 const INTRO_SESSION_KEY = "lst-home-intro-viewed";
@@ -8,7 +8,6 @@ const INTRO_DURATION = 5_000;
 
 export function WebsiteIntro() {
   const { pathname } = useLocation();
-  const { settings } = useBusinessSettings();
   const pathId = useId().replaceAll(":", "");
   const [isVisible, setIsVisible] = useState(
     () => pathname === "/" && sessionStorage.getItem(INTRO_SESSION_KEY) !== "true",
@@ -34,7 +33,7 @@ export function WebsiteIntro() {
 
   if (!isVisible) return null;
 
-  const businessName = settings?.businessName || "Local Small Tattoo";
+  const businessName = SITE_CONFIG.businessName;
   const orbitText =
     "Local Small Tattoo Danang • Local Small Tattoo Danang • Local Small Tattoo Danang • ";
 

@@ -1,15 +1,14 @@
+import { SITE_CONFIG } from "../../config/siteConfig";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { navigationItems } from "../../data/navigation";
-import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
 import { BrandLogo } from "../common/BrandLogo";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { settings } = useBusinessSettings();
-  const businessName = settings?.businessName ?? "Local Small Tattoo";
-  const phoneNumber = settings?.contact.phoneNumber ?? "+84 123 456 789";
+  const businessName = SITE_CONFIG.businessName;
+  const phoneNumber = SITE_CONFIG.contact.phone;
   const phoneHref = `tel:${phoneNumber.replace(/\s/g, "")}`;
 
   useEffect(() => {
@@ -37,11 +36,7 @@ export function Header() {
       <header className="site-header">
         <div className="site-header__inner page-shell">
           <div className="site-header__identity">
-            <Link
-              className="site-header__brand"
-              to="/"
-              aria-label={`${businessName} home`}
-            >
+            <Link className="site-header__brand" to="/" aria-label={`${businessName} home`}>
               <BrandLogo />
             </Link>
             <span className="site-header__brand-name">{businessName}</span>
@@ -117,10 +112,8 @@ export function Header() {
           </nav>
 
           <div className="mobile-menu__footer">
-            <p>{settings?.description ?? "A private tattoo studio in Da Nang."}</p>
-            <a href={`tel:${settings?.contact.phoneNumber.replace(/\s/g, "") ?? ""}`}>
-              {settings?.contact.phoneNumber ?? ""}
-            </a>
+            <p>{"A private tattoo studio in Da Nang."}</p>
+            <a href={phoneHref}>{phoneNumber}</a>
           </div>
         </div>
       </aside>

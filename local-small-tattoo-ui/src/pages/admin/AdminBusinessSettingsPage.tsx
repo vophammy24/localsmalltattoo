@@ -1,12 +1,11 @@
-import { ExternalLink, Trash2, Upload } from "lucide-react";
+import { SITE_CONFIG } from "../../config/siteConfig";
+import { ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
 import {
-  deleteBusinessLogo,
   extractGoogleMapsEmbedUrl,
   getAdminBusinessSettings,
   saveBusinessSettings,
-  uploadBusinessLogo,
 } from "../../features/businessSettings/api/businessSettingsApi";
 import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
 import {
@@ -50,34 +49,6 @@ export function AdminBusinessSettingsPage() {
       setBusy("");
     }
   }
-  async function logo(file?: File) {
-    if (!file) return;
-    setBusy("logo");
-    try {
-      const data = await uploadBusinessLogo(
-        file,
-        values?.logoAlt ?? values?.businessName ?? "Logo",
-      );
-      setValues(data.settings);
-      await refresh();
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to upload logo.");
-    } finally {
-      setBusy("");
-    }
-  }
-  async function removeLogo() {
-    setBusy("logo");
-    try {
-      const data = await deleteBusinessLogo();
-      setValues(data.settings);
-      await refresh();
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to delete logo.");
-    } finally {
-      setBusy("");
-    }
-  }
   return (
     <>
       <AdminPageHeader
@@ -89,13 +60,7 @@ export function AdminBusinessSettingsPage() {
       <section className="admin-panel business-form">
         <h2>Brand information</h2>
         <div className="admin-about-fields">
-          <label>
-            Business name *
-            <input
-              value={values.businessName}
-              onChange={(e) => patch("businessName", e.target.value)}
-            />
-          </label>
+          <p>Public business name: {SITE_CONFIG.businessName}</p>
           <label>
             Short name
             <input value={values.shortName} onChange={(e) => patch("shortName", e.target.value)} />
@@ -109,58 +74,10 @@ export function AdminBusinessSettingsPage() {
             />
           </label>
         </div>
-        <div className="business-logo">
-          {values.logo ? <img src={values.logo.url} alt={values.logo.alt} /> : null}
-          <label className="admin-secondary">
-            <Upload />
-            Upload logo
-            <input
-              type="file"
-              accept="image/*,.heic,.heif"
-              onChange={(e) => void logo(e.target.files?.[0])}
-            />
-          </label>
-          {values.logo ? (
-            <button className="admin-secondary" onClick={() => void removeLogo()}>
-              <Trash2 />
-              Remove
-            </button>
-          ) : null}
-          <input
-            placeholder="Logo alt text"
-            value={values.logoAlt ?? values.logo?.alt ?? ""}
-            onChange={(e) => patch("logoAlt", e.target.value)}
-          />
-        </div>
-      </section>
-      <section className="admin-panel business-form">
-        <h2>Contact</h2>
-        <div className="admin-about-fields">
-          <label>
-            Phone *
-            <input
-              value={values.contact.phoneNumber}
-              onChange={(e) => patch("contact", { ...values.contact, phoneNumber: e.target.value })}
-            />
-          </label>
-          <label>
-            Secondary phone
-            <input
-              value={values.contact.secondaryPhoneNumber}
-              onChange={(e) =>
-                patch("contact", { ...values.contact, secondaryPhoneNumber: e.target.value })
-              }
-            />
-          </label>
-          <label>
-            Email *
-            <input
-              type="email"
-              value={values.contact.email}
-              onChange={(e) => patch("contact", { ...values.contact, email: e.target.value })}
-            />
-          </label>
-        </div>
+        <p>
+          Logo, public business name, phone, email and social links are managed through
+          src/config/siteAssets.ts and src/config/siteConfig.ts.
+        </p>
       </section>
       <section className="admin-panel business-form">
         <h2>Address</h2>
@@ -181,15 +98,7 @@ export function AdminBusinessSettingsPage() {
       <section className="admin-panel business-form">
         <h2>Google Maps</h2>
         <div className="admin-about-fields">
-          <label className="is-full">
-            Public URL *
-            <input
-              value={values.location.googleMapsUrl}
-              onChange={(e) =>
-                patch("location", { ...values.location, googleMapsUrl: e.target.value })
-              }
-            />
-          </label>
+          <p>Directions URL is managed through SITE_CONFIG.links.googleMaps.</p>
           <label className="is-full">
             Embed URL *
             <input
@@ -229,7 +138,7 @@ export function AdminBusinessSettingsPage() {
         <div>
           <a
             className="admin-secondary"
-            href={values.location.googleMapsUrl}
+            href={SITE_CONFIG.links.googleMaps}
             target="_blank"
             rel="noreferrer"
           >
@@ -299,22 +208,8 @@ export function AdminBusinessSettingsPage() {
         </div>
       </section>
       <section className="admin-panel business-form">
-        <h2>Social media</h2>
+        <h2>Booking notice</h2>
         <div className="admin-about-fields">
-          {(["instagram", "facebook", "tiktok", "messenger", "whatsapp", "zalo"] as const).map(
-            (key) => (
-              <label key={key}>
-                {key}
-                <input
-                  placeholder="https://"
-                  value={values.socialLinks[key] ?? ""}
-                  onChange={(e) =>
-                    patch("socialLinks", { ...values.socialLinks, [key]: e.target.value })
-                  }
-                />
-              </label>
-            ),
-          )}
           <label className="is-full">
             Booking notice
             <textarea

@@ -9,6 +9,7 @@
     "deploy": "npm run build && npx wrangler@4.119.0 deploy",
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty",
+    "test:ui": "playwright test",
     "format": "prettier --ignore-path ../.prettierignore --write . ../apps/api",
     "format:check": "prettier --ignore-path ../.prettierignore --check . ../apps/api"
   },
@@ -23,6 +24,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.4",

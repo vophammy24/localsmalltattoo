@@ -32,17 +32,3 @@ export function saveBusinessSettings(settings: BusinessSettings) {
     }),
   });
 }
-export function uploadBusinessLogo(file: File, alt: string) {
-  const data = new FormData();
-  data.append("logo", file);
-  data.append("alt", alt);
-  return adminRequest<{ settings: BusinessSettings }>("/business-settings/logo", {
-    method: "PATCH",
-    body: data,
-  });
-}
-export function deleteBusinessLogo() {
-  return adminRequest<{ settings: BusinessSettings }>("/business-settings/logo", {
-    method: "DELETE",
-  });
-}

@@ -12,6 +12,7 @@
     "start": "node dist/server.js",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
     "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
     "format": "node ../../local-small-tattoo-ui/node_modules/prettier/bin/prettier.cjs --ignore-path ../../.prettierignore --write .",
     "format:check": "node ../../local-small-tattoo-ui/node_modules/prettier/bin/prettier.cjs --ignore-path ../../.prettierignore --check ."
   },
@@ -22,7 +23,6 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "googleapis": "^174.0.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.17.1",
@@ -38,6 +38,7 @@
     "@types/morgan": "^1.9.10",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.2.1",
+    "mongodb-memory-server-core": "^11.3.0",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   }

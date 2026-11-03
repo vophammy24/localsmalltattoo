@@ -111,15 +111,7 @@ export function AdminHomeContentPage() {
             />
           </label>
         </div>
-        <SectionImageField
-          section="home-hero"
-          label="Fixed hero image"
-          image={home.hero.image}
-          alt="Local Small Tattoo studio"
-          onChange={(image) =>
-            update({ ...content, home: { ...home, hero: { ...home.hero, image } } })
-          }
-        />
+        <p>Hero background is managed in source: public/images/home/hero.webp.</p>
       </section>
       <section className="admin-panel admin-about-section">
         <div className="admin-about-section__header">

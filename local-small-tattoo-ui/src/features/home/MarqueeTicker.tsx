@@ -1,4 +1,5 @@
 import { useBusinessSettings } from "../businessSettings/BusinessSettingsContext";
+import { SITE_CONFIG } from "../../config/siteConfig";
 
 function TickerGroup({ items }: { items: string[] }) {
   return (
@@ -12,7 +13,7 @@ function TickerGroup({ items }: { items: string[] }) {
 
 export function MarqueeTicker() {
   const { settings } = useBusinessSettings();
-  const items = [settings?.businessName, settings?.address.city].filter((item): item is string =>
+  const items = [SITE_CONFIG.businessName, settings?.address.city].filter((item): item is string =>
     Boolean(item),
   );
   if (!items.length) return null;

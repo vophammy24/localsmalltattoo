@@ -1,4 +1,5 @@
 import type { AboutContent } from "../types/about";
+import { SITE_CONFIG } from "../../../config/siteConfig";
 
 export const DEFAULT_FOUNDER_SECTION: AboutContent["founderSection"] = {
   isVisible: true,
@@ -24,7 +25,7 @@ export function withDefaultFounder(content: AboutContent): AboutContent {
       headingLines: ["Local.", "Small."],
       subtitle: "Ink Our Story",
       buttonLabel: "Book an appointment",
-      buttonUrl: "/booking",
+      buttonUrl: SITE_CONFIG.links.booking,
     },
     location: {
       isVisible: true,

@@ -1,3 +1,4 @@
+import { SITE_CONFIG } from "../config/siteConfig";
 import { FounderSection } from "../features/home/FounderSection";
 import { CustomerGallerySection } from "../features/home/CustomerGallerySection";
 import { HeroSection } from "../features/home/HeroSection";
@@ -5,6 +6,7 @@ import { LocationReviewSection } from "../features/home/LocationReviewSection";
 import { MarqueeTicker } from "../features/home/MarqueeTicker";
 import { TattooStylesSection } from "../features/home/TattooStylesSection";
 import { FeaturedGallerySection } from "../features/home/FeaturedGallerySection";
+import { TestimonialsSection } from "../features/reviews/components/TestimonialsSection";
 import { Seo, SITE_URL } from "../components/seo/Seo";
 import { useBusinessSettings } from "../features/businessSettings/BusinessSettingsContext";
 
@@ -14,11 +16,11 @@ export function HomePage() {
     ? {
         "@context": "https://schema.org",
         "@type": "TattooParlor",
-        name: settings.businessName,
+        name: SITE_CONFIG.businessName,
         description: settings.description,
         url: SITE_URL,
-        telephone: settings.contact.phoneNumber,
-        email: settings.contact.email,
+        telephone: SITE_CONFIG.contact.phone,
+        email: SITE_CONFIG.contact.email,
         address: {
           "@type": "PostalAddress",
           streetAddress: settings.address.addressLine,
@@ -36,9 +38,9 @@ export function HomePage() {
             }
           : {}),
         sameAs: [
-          settings.socialLinks.instagram,
-          settings.socialLinks.facebook,
-          settings.socialLinks.tiktok,
+          SITE_CONFIG.social.instagram,
+          SITE_CONFIG.social.facebook,
+          SITE_CONFIG.social.tiktok,
         ].filter(Boolean),
       }
     : undefined;
@@ -55,6 +57,7 @@ export function HomePage() {
       <TattooStylesSection />
       <FounderSection />
       <LocationReviewSection />
+      <TestimonialsSection />
       <FeaturedGallerySection />
       <CustomerGallerySection />
     </>

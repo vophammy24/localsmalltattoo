@@ -1,3 +1,4 @@
+import { SITE_CONFIG } from "../../../config/siteConfig";
 import { useBusinessSettings } from "../../businessSettings/BusinessSettingsContext";
 import { summarizeHours } from "../../businessSettings/components/OpeningHours";
 import {
@@ -13,7 +14,7 @@ export function StudioInformation() {
         <p className="booking-studio__label">Atelier location</p>
         <h2 id="booking-studio-title">{settings.address.city}</h2>
         <address>
-          <a href={settings.location.googleMapsUrl} target="_blank" rel="noreferrer">
+          <a href={SITE_CONFIG.links.googleMaps} target="_blank" rel="noreferrer">
             {formatBusinessAddress(settings.address)}
           </a>
         </address>
@@ -23,15 +24,13 @@ export function StudioInformation() {
         <div>
           <dt>Phone</dt>
           <dd>
-            <a href={createPhoneHref(settings.contact.phoneNumber)}>
-              {settings.contact.phoneNumber}
-            </a>
+            <a href={createPhoneHref(SITE_CONFIG.contact.phone)}>{SITE_CONFIG.contact.phone}</a>
           </dd>
         </div>
         <div>
           <dt>Email</dt>
           <dd>
-            <a href={`mailto:${settings.contact.email}`}>{settings.contact.email}</a>
+            <a href={`mailto:${SITE_CONFIG.contact.email}`}>{SITE_CONFIG.contact.email}</a>
           </dd>
         </div>
         <div>
@@ -42,7 +41,7 @@ export function StudioInformation() {
 
       <a
         className="button button--secondary booking-studio__map-link"
-        href={settings.location.googleMapsUrl}
+        href={SITE_CONFIG.links.googleMaps}
         target="_blank"
         rel="noreferrer"
       >

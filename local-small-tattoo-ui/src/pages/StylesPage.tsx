@@ -1,3 +1,4 @@
+import { SITE_CONFIG } from "../config/siteConfig";
 import { ButtonLink } from "../components/common/ButtonLink";
 import { StyleNavigation } from "../features/tattooStyles/components/StyleNavigation";
 import { TattooStyleSection } from "../features/tattooStyles/components/TattooStyleSection";
@@ -40,7 +41,7 @@ export function StylesPage() {
         <div className="page-shell">
           <p>Have a direction in mind?</p>
           <h2>Begin with a conversation.</h2>
-          <ButtonLink to="/booking">Book An Appointment</ButtonLink>
+          <ButtonLink to={SITE_CONFIG.links.booking}>Book An Appointment</ButtonLink>
         </div>
       </section>
     </div>

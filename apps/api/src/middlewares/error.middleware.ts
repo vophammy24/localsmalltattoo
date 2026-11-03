@@ -4,6 +4,14 @@ import { ZodError } from "zod";
 import { HttpError } from "../utils/http-error.js";
 
 export const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
+  if (error?.type === "entity.too.large") {
+    response.status(413).json({ success: false, message: "Request body is too large." });
+    return;
+  }
+  if (error?.type === "entity.parse.failed") {
+    response.status(400).json({ success: false, message: "Invalid JSON body." });
+    return;
+  }
   if (error instanceof HttpError) {
     response.status(error.statusCode).json({ success: false, message: error.message });
     return;

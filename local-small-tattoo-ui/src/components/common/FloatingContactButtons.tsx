@@ -1,6 +1,6 @@
+import { SITE_CONFIG } from "../../config/siteConfig";
 import { SiFacebook, SiInstagram, SiMessenger, SiWhatsapp, SiZalo } from "react-icons/si";
 import type { IconType } from "react-icons";
-import { useBusinessSettings } from "../../features/businessSettings/BusinessSettingsContext";
 
 type ContactLink = {
   key: string;
@@ -10,8 +10,7 @@ type ContactLink = {
 };
 
 export function FloatingContactButtons() {
-  const { settings } = useBusinessSettings();
-  const socialLinks = settings?.socialLinks;
+  const socialLinks = SITE_CONFIG.social;
   const links: ContactLink[] = [
     { key: "messenger", label: "Messenger", url: socialLinks?.messenger, icon: SiMessenger },
     { key: "facebook", label: "Facebook", url: socialLinks?.facebook, icon: SiFacebook },
