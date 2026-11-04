@@ -35,7 +35,7 @@ export const SITE_CONFIG = {
   },
   links: {
     googleMapsEmbed:
-      "https://www.google.com/maps?q=52-54+Tran+Thanh+Mai+Da+Nang+Vietnam&output=embed",
+      "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3833.8047207592995!2d108.240459!3d16.0756202!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142177a8ed5b05f%3A0xae2354111d3c055!2sLocal%20Small%20Tattoo!5e0!3m2!1sen!2s!4v1793761655261!5m2!1sen!2s",
     booking: "/booking",
     contact: "/contact",
     googleMaps: "https://maps.app.goo.gl/Dz19zWHKMq88qs9FA",
