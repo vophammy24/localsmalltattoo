@@ -8,31 +8,6 @@
   background: var(--color-black);
 }
 
-.home-hero__media,
-.home-hero__overlay {
-  position: absolute;
-  inset: var(--header-height) 0 0;
-}
-
-.home-hero__media {
-  display: grid;
-  place-items: stretch center;
-}
-
-.home-hero__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 58% 42%;
-  filter: var(--filter-image-vintage);
-}
-
-.home-hero__overlay {
-  background:
-    linear-gradient(90deg, #000 0%, transparent 35%, transparent 65%, #000 100%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.42));
-}
-
 .home-hero__content {
   position: relative;
   z-index: 2;
@@ -823,17 +798,6 @@
 
   .home-hero {
     min-height: 43rem;
-  }
-
-  .home-hero__media img {
-    width: 100%;
-    object-position: 57% center;
-  }
-
-  .home-hero__overlay {
-    background:
-      linear-gradient(90deg, rgba(0, 0, 0, 0.52), transparent 45%, rgba(0, 0, 0, 0.3)),
-      linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.68));
   }
 
   .home-hero__title {

@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { SITE_ASSETS } from "../../config/siteAssets";
 import { DEFAULT_FOUNDER_SECTION } from "../about/data/defaultFounder";
 import { useAboutPage } from "../about/hooks/useAboutPage";
 import type { AboutContent } from "../about/types/about";
@@ -7,6 +9,7 @@ export function FounderSection({
 }: {
   content?: AboutContent["founderSection"];
 }) {
+  const [imageFailed, setImageFailed] = useState(false);
   const { data } = useAboutPage();
   const content = suppliedContent ?? data?.founderSection ?? DEFAULT_FOUNDER_SECTION;
 
@@ -14,7 +17,7 @@ export function FounderSection({
 
   return (
     <section className="section founder-section" aria-labelledby="founder-heading">
-      <div className={`founder-section__inner page-shell${content.image ? " has-image" : ""}`}>
+      <div className={`founder-section__inner page-shell${!imageFailed ? " has-image" : ""}`}>
         <div className="founder-section__content">
           <h2 id="founder-heading">{content.heading}</h2>
           <div className="founder-section__copy">
@@ -26,9 +29,16 @@ export function FounderSection({
             <p className="founder-section__signature">{content.signature}</p>
           ) : null}
         </div>
-        {content.image ? (
+        {!imageFailed ? (
           <figure className="founder-section__portrait">
-            <img src={content.image.url} alt={content.image.alt} loading="lazy" />
+            <img
+              src={SITE_ASSETS.founder}
+              alt={content.image?.alt || content.name}
+              width={900}
+              height={1351}
+              loading="lazy"
+              onError={() => setImageFailed(true)}
+            />
             <figcaption>
               <strong>{content.name}</strong>
               {content.role ? <span>{content.role}</span> : null}

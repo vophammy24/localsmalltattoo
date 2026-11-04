@@ -2,7 +2,6 @@ import { SITE_CONFIG } from "../config/siteConfig";
 import { Link } from "react-router";
 import { GoogleMapEmbed } from "../features/businessSettings/components/GoogleMapEmbed";
 import { OpeningHours } from "../features/businessSettings/components/OpeningHours";
-import { useBusinessSettings } from "../features/businessSettings/BusinessSettingsContext";
 import { PageHero } from "../components/common/PageHero";
 import {
   createPhoneHref,
@@ -11,34 +10,10 @@ import {
 } from "../features/businessSettings/utils/businessSettings";
 import { Seo } from "../components/seo/Seo";
 export function ContactPage() {
-  const { settings, isLoading } = useBusinessSettings();
-  const seo = (
-    <Seo
-      title="Contact Local Small Tattoo | Da Nang"
-      description="Contact Local Small Tattoo in Da Nang for studio directions, opening hours, tattoo questions and appointment requests."
-      path="/contact"
-    />
-  );
-  if (isLoading)
-    return (
-      <>
-        {seo}
-        <main className="contact-state page-shell">Loading contact information...</main>
-      </>
-    );
-  if (!settings)
-    return (
-      <>
-        {seo}
-        <main className="contact-state page-shell">
-          Contact information is temporarily unavailable.
-        </main>
-      </>
-    );
-  const address = formatBusinessAddress(settings.address);
+  const address = formatBusinessAddress(SITE_CONFIG.address);
   const socials = getBusinessSocialLinks();
   return (
-    <main className="contact-page">
+    <div className="contact-page">
       <Seo
         title="Contact Local Small Tattoo | Da Nang"
         description="Contact Local Small Tattoo in Da Nang for studio directions, opening hours, tattoo questions and appointment requests."
@@ -61,7 +36,7 @@ export function ContactPage() {
           <a href={createPhoneHref(SITE_CONFIG.contact.phone)}>{SITE_CONFIG.contact.phone}</a>
           <a href={`mailto:${SITE_CONFIG.contact.email}`}>{SITE_CONFIG.contact.email}</a>
           <h3>Opening hours</h3>
-          <OpeningHours hours={settings.openingHours} />
+          <OpeningHours hours={SITE_CONFIG.openingHours} />
           <div className="contact-socials">
             {socials.map(({ name, url }) => (
               <a key={name} href={url} target="_blank" rel="noreferrer">
@@ -88,11 +63,11 @@ export function ContactPage() {
         </div>
         <div className="contact-map-wrap">
           <GoogleMapEmbed
-            url={settings.location.googleMapsEmbedUrl}
+            url={SITE_CONFIG.links.googleMapsEmbed}
             title={SITE_CONFIG.businessName}
           />
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -1,123 +1,151 @@
 # Local Small Tattoo UI
 
 React, TypeScript, Vite and React Router. Public pages: Home, Booking, Styles,
-About, Gallery and Contact. `/admin` contains authenticated studio management.
+About, Gallery, Contact and /reviews. Authenticated management lives at /admin.
 
-## Local development and verification
+## Development and verification
 
-Use a Node version supported by the installed Vite release (Node 24 is used for verification).
+Use Node 24 (or a Node release supported by the installed Vite version).
 
 ```sh
 npm ci
 npm run dev
 npm run build
-npm run preview
 npx playwright install chromium
 npm run test:ui
+npm run format:check
 ```
 
-`VITE_API_URL` points to the API origin, without `/api`, defaulting to
-`http://localhost:5000`. Browser tests use mocked API responses and synthetic test
-fixtures; they never create production testimonials. See `../apps/api` for real
-MongoDB integration tests. No lint script is configured.
+VITE_API_URL is the API origin without /api; default: http://localhost:5000.
+Browser tests mock API responses and map content with synthetic fixtures. API
+integration tests use a disposable local MongoDB instance, never production.
+There is no lint script. Build checks TypeScript; Prettier checks formatting.
 
-## Source structure
+## How to change the logo
 
-```text
-public/brand/logo.png                  Local logo (preserves supplied PNG format)
-public/images/home/hero.png            Supplied original Hero image
-public/images/home/hero.webp           Full-size optimized Hero
-public/images/home/hero-1200.webp      Medium Hero
-public/images/home/hero-800.webp       Small Hero
-src/config/siteAssets.ts              Centralized image paths
-src/config/siteConfig.ts              Fixed identity, contact, social, links, timezone
-src/app/App.tsx                       Public/admin routes and providers
-src/components/                       Common, layout, admin, legal and SEO components
-src/features/reviews/                 Manual testimonial API, types, form and cards
-src/features/{home,about,booking,gallery,tattooStyles,businessSettings,admin}/
-src/pages/                            Public pages and admin pages
-src/styles/                           Shared, page and responsive styles
-tests/testimonials.spec.ts            Browser tests and timezone checks
-```
+The existing approved format is PNG: public/brand/logo.png. Replace that file.
+For SVG, place the approved public/brand/logo.svg and change SITE_ASSETS.logo in
+src/config/siteAssets.ts and the favicon MIME type in src/main.tsx. Header,
+Footer and intro share BrandLogo and fall back to the business name on failure.
 
-## Changing logo and Hero
+## How to change the Hero image
 
-Replace `public/brand/logo.png` with the approved logo. If changing format, update
-`src/config/siteAssets.ts` and the favicon MIME type in `src/main.tsx`.
-Header, Footer and splash screen share `BrandLogo`. Missing images fall back to
-the business name. The old `/logo.png` is no longer referenced.
+Replace public/images/home/hero.webp. The older 800px/1200px variants are retained
+but are not used by the fixed Home background. The original source is
+public/images/home/hero.png (1620 x 1073). Paths live in
+src/config/siteAssets.ts. HomeSharedBackground preloads and displays one source,
+hero.webp, at every viewport size. Missing images leave
+the dark fallback and readable foreground content. Hero text remains in CMS.
 
-Replace the Hero at `public/images/home/hero.webp` and its 800px/1200px variants.
-Keep the aspect ratio and width descriptors in `HeroSection.tsx` synchronized if
-the source dimensions change. Current original: 1620 × 1073. The Hero uses
-`srcset`, high fetch priority and reserved layout space; it does not lazy-load.
-If an asset is missing, the dark background, overlay, heading and CTA remain.
+## How to change the Founder image
 
-Hero text, visibility, subtitle and CTA remain editable in Home CMS. Home and
-About still share the existing versioned `PageContent` document and publication
-snapshot. Home Hero background and logo are no longer editable via CMS.
+Replace public/images/about/founder.webp. The supplied public/about/founder.jpg
+was converted to a 900 x 1351 WebP, approximately 115 KB. SITE_ASSETS.founder is
+shared by Home and About. Preserve the image's proportions or update its width,
+height and CSS aspect ratio in FounderSection/testimonials.css. Missing portraits
+fall back to text. CMS name, biography, heading, signature and visibility remain
+editable; the obsolete image upload control is replaced by local-file guidance.
 
-## Changing fixed public information
+## How to edit business information
 
-Edit `src/config/siteConfig.ts`, then rebuild and redeploy. The phone
-`+84 946 752 336`, email `booking.localsmalltattoo@gmail.com` and directions URL
-were copied from existing API defaults. Verify these values before deployment.
+Edit src/config/siteConfig.ts for identity, phone, email, social URLs, map URLs,
+address and all seven days of opening hours. Current address/hours were copied
+from the repository's API DEFAULT_SETTINGS: 52-54 Tran Thanh Mai, An Hai, Son Tra,
+Da Nang, Vietnam; daily 10:00-20:00, Asia/Ho_Chi_Minh. No production database was
+read or modified. Confirm these repository values before deployment if the live
+CMS differs. Production canonical origin follows the supplied .com.vn domain.
 
-Social URLs, secondary phone, Google review-list URL and write-review URL were
-not present in repository configuration. They remain empty. Add only real URLs;
-empty social/review actions stay hidden. The directions URL is a business map
-search, not a direct review URL.
+Home, Contact, Footer, Booking, marquee and Home JSON-LD use this configuration.
+Address and hours are read-only in Admin Business Settings. Historical MongoDB
+fields remain intact. Description, coordinates and booking notice remain dynamic;
+the provider still fetches for these fields. Contact renders fixed details even
+if that API is unavailable. Directions/review-list/write-review links retain the
+existing configured URLs; use a specific authorized source URL on each review.
 
-Business Settings still manages address, hours, description, map embed,
-coordinates and booking notice. Its old documents and fields are retained.
-Header, splash, floating contacts and legal contacts no longer need the Business
-Settings context. The global provider still fetches once because address/hours
-are used by the public layout and pages.
+## How to manage reviews
 
-## Managing testimonials at `/admin/reviews`
+Visit /admin/reviews. Enter original customer wording, rating and reviewDate.
+Confirm permission and enable Public. Optionally enable Featured, set Display
+order (smaller first), and schedule Display from / Display until in studio time.
+Withdrawing permission unpublishes the entry. No review content, rating or date
+is changed automatically, and featured flags are never changed by public reads.
 
-1. Sign in and choose **Add testimonial**.
-2. Enter the authorized customer name, original wording, 1–5 stars and original
-   review date. Use plain text; no HTML.
-3. Select Direct customer or Customer authorized. Optionally enter an accurate
-   HTTPS Google Maps source URL. Do not use a generic business map URL as though
-   it identified a specific review.
-4. Confirm permission to publish. A draft can be saved without permission.
-5. Enable Public and optionally Featured. Use **Save changes** to persist.
-6. Optionally set Display from / Display until in `Asia/Ho_Chi_Minh`. The UI
-   converts these studio wall-clock values into UTC, independently of browser
-   timezone. The original review date is separate and displayed on the card.
-7. Change Display order to reorder (smaller first). Use list status/search/sort
-   controls and pagination to manage any number of entries.
-8. Preview uses the same card as Home. Hide unpublishes immediately; deleting
-   requires confirmation. Withdrawing permission unpublishes and removes Featured.
+Eligibility is Public + confirmed permission + active publication window.
+The start is inclusive; the end is exclusive. Empty boundaries are unrestricted.
+Sorting is featured first, displayOrder ascending, reviewDate descending, stable
+ID ascending. Mobile Home requests at most three entries using this ordering:
+featured entries first, then public non-featured entries to fill remaining slots.
 
-Public visibility requires Public + confirmed permission + a currently active
-schedule. Start is inclusive, end is exclusive. Empty start means immediate;
-empty end means no expiration. End must be after start. No cron is required.
-Public requests are not cached so each fetch reevaluates the current schedule;
-an already-open page refreshes its data when reloaded or paginated.
+Desktop Home shows three equal-width cards at >=1200px; tablet shows two at
+768-1199px. Cards have independent content heights with max-height: 256.7px.
+CSS clamps to four lines; ResizeObserver and font readiness determine whether
+Read More is needed. All cards open the complete original text in a dialog.
+The Google Maps link opens independently in a new tab with noopener noreferrer.
 
-Home requests 12 testimonials per page and exposes Previous/Next. Featured comes
-first, then display order, then original review date descending, then stable ID.
-Empty collections hide the section. Source links open a new tab with
-`noopener noreferrer`; entries without sources remain regular readable cards.
+The native dialog has explicit focus wrapping, Escape, overlay, X and Close
+controls, focus restoration, viewport-constrained internal scrolling and body
+scroll locking. It appears in the browser top layer above floating contacts.
 
-This is a manual CMS. It does not synchronize Google Reviews, require Google
-OAuth/Places/Billing, or display an official Google average. No old Google review
-text is imported. Test fixtures are restricted to automated tests.
+Desktop arrows, focused keyboard arrows and horizontal swipes advance one
+review. A modulo window and one temporary entering item animate via transform;
+a navigation lock prevents overlapping transitions. No cloned collection is
+created. Small collections show unique cards with no unnecessary controls.
+Reduced-motion users get immediate navigation. Twelve-item API pages load on
+demand, with at most three cached pages per mounted carousel. There is no autoplay.
+
+/reviews displays all eligible reviews, 12 per page, with the same cards/dialog.
+It has its own title, description, canonical, Open Graph and sitemap entry.
+View All Reviews links from Home; Header navigation is unchanged.
+
+Relative dates use reviewDate only, never createdAt. Date-only values mean
+midnight in Asia/Ho_Chi_Minh. Invalid, timezone-less or future dates are omitted.
+Minutes, hours, days, weeks, months and years use Intl.RelativeTimeFormat.
+The original value remains in time[datetime]; one shared one-minute timer updates
+all mounted dates and is cleaned up when no dates remain mounted.
+
+GET /api/public/reviews retains data.items and data.pagination and adds
+data.summary = { averageRating: number | null, totalReviews: number }.
+The backend averages only eligible ratings, across all pages, independently of
+the featured filter. Empty collections return null/zero and no fake rating UI.
+The label is Based on X customer reviews; this is a manual CMS statistic.
+There is no Google API integration or curated AggregateRating structured data.
+
+Responses use no-store so a new request reevaluates publication eligibility.
+Carousel page caching lasts for the mounted component; reload or revisit for
+fresh CMS/schedule changes. About CMS reads share a 30-second request cache;
+publishing invalidates it. Individual review cards never fetch data.
+
+## Shared background and responsive controls
+
+HomeSharedBackground wraps Hero, marquee, Styles, Founder, Location and Reviews
+in their original order, ending before Featured Gallery. One decorative layer
+uses one viewport-fixed collage with cover sizing, center positioning and no
+repetition. Foreground content scrolls over the stationary image. The region's
+clip-path: inset(0) clips even the fixed descendant at its exact boundaries while
+preserving the viewport as the image's containing block. No scroll handlers,
+background-attachment, sticky substitute or repeated section images are used.
+Do not add transform, filter, perspective or containment to the region/ancestors;
+those can change the containing block of a fixed descendant.
+
+Section background alphas and card alpha are in src/styles/testimonials.css.
+Hero, Styles, Founder, Location and Reviews share --home-section-overlay
+(black at 70% opacity) for consistent brightness. The fixed layer ignores pointer events, so the lazy
+map iframe stays interactive. Gallery and
+Footer retain their own backgrounds. Mobile contact actions collapse behind a
+44px toggle, with safe-area positioning; all original contact links remain.
+
+See [fixed background verification](../docs/home-fixed-background-report.md) for
+real scrolling, image landmark comparisons and Gallery-boundary tests.
 
 ## Deployment
 
-Cloudflare Pages: root `local-small-tattoo-ui`, build `npm ci && npm run build`,
-output `dist`, set `VITE_API_URL` to the Render API origin. Include `public`
-assets; Pages serves these via `dist`. Keep SPA fallback behavior for deep links.
-The repository also retains its existing Wrangler static-assets deployment
-(`npm run deploy`); no hosting migration is performed by this refactor.
+Deploy the API with summary support before/alongside the frontend. No database
+migration, collection deletion, seed data or Google API credentials are required.
+Cloudflare uses root local-small-tattoo-ui, build npm ci && npm run build, output
+dist; set VITE_API_URL to the API origin and preserve SPA fallback for /reviews.
+The existing Wrangler deployment script is retained. Include local static assets
+and confirm the supplied production domain/DNS before deploying. Nothing is
+automatically published by this change.
 
-Deploy the API before or alongside the UI because the public review response
-now uses `{ items, pagination }`. Existing robots, sitemap, canonical and Open
-Graph behavior are retained; no curated aggregate rating is added.
-
-See [the refactor report](../docs/refactor-report.md) for the file inventory,
-API/schema details, checks and remaining operational steps.
+See [UI refinement report](../docs/ui-refinement-report.md) for the implementation
+inventory and validation details.

@@ -7,15 +7,14 @@ import {
 } from "../../businessSettings/utils/businessSettings";
 export function StudioInformation() {
   const { settings } = useBusinessSettings();
-  if (!settings) return null;
   return (
     <aside className="booking-studio" aria-labelledby="booking-studio-title">
       <div>
         <p className="booking-studio__label">Atelier location</p>
-        <h2 id="booking-studio-title">{settings.address.city}</h2>
+        <h2 id="booking-studio-title">{SITE_CONFIG.address.city}</h2>
         <address>
           <a href={SITE_CONFIG.links.googleMaps} target="_blank" rel="noreferrer">
-            {formatBusinessAddress(settings.address)}
+            {formatBusinessAddress(SITE_CONFIG.address)}
           </a>
         </address>
       </div>
@@ -35,7 +34,7 @@ export function StudioInformation() {
         </div>
         <div>
           <dt>Studio hours</dt>
-          <dd>{summarizeHours(settings.openingHours)}</dd>
+          <dd>{summarizeHours(SITE_CONFIG.openingHours)}</dd>
         </div>
       </dl>
 
@@ -47,7 +46,7 @@ export function StudioInformation() {
       >
         Get Directions
       </a>
-      {settings.bookingNotice ? (
+      {settings?.bookingNotice ? (
         <p className="booking-studio__notice">{settings.bookingNotice}</p>
       ) : null}
     </aside>

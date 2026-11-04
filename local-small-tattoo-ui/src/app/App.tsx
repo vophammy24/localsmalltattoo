@@ -27,6 +27,8 @@ import { AdminNotificationProvider } from "../features/admin/notifications/Admin
 import { AdminReviewsPage } from "../pages/admin/AdminReviewsPage";
 import { AdminSeo } from "../components/seo/AdminSeo";
 
+import { ReviewsPage } from "../pages/ReviewsPage";
+
 export function App() {
   return (
     <BusinessSettingsProvider>
@@ -39,6 +41,7 @@ export function App() {
               <Route path="styles" element={<StylesPage />} />
               <Route path="about" element={<AboutPage />} />
               <Route path="gallery" element={<GalleryPage />} />
+              <Route path="reviews" element={<ReviewsPage />} />
               <Route path="contact" element={<ContactPage />} />
               <Route path="*" element={<ComingSoonPage />} />
             </Route>

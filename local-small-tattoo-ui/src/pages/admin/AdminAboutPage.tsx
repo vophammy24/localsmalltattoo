@@ -468,13 +468,10 @@ export function AdminAboutPage() {
           Add paragraph
         </button>
         <h3>Founder image</h3>
-        <SectionImageField
-          section="founder"
-          label="Fixed founder image"
-          image={content.founderSection.image}
-          alt={content.founderSection.name}
-          onChange={(image) => section("founderSection", { ...content.founderSection, image })}
-        />
+        <p>
+          The public portrait is a local asset: public/images/about/founder.webp. Replace that file
+          to update the photo. Founder text remains editable here.
+        </p>
       </section>
       <section className="admin-panel admin-about-section">
         <div className="admin-about-section__header">

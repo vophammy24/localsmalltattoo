@@ -21,6 +21,9 @@ export type ReviewResult<T = Testimonial> = {
   items: T[];
   pagination: { page: number; limit: number; total: number; totalPages: number };
 };
+export type PublicReviewResult = ReviewResult & {
+  summary: { averageRating: number | null; totalReviews: number };
+};
 export type AdminReviewResult = ReviewResult<AdminTestimonial> & {
   counts: { total: number; published: number; draft: number; scheduled: number; expired: number };
 };

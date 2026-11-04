@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { SITE_CONFIG } from "../../config/siteConfig";
 import { SiFacebook, SiInstagram, SiMessenger, SiWhatsapp, SiZalo } from "react-icons/si";
 import type { IconType } from "react-icons";
@@ -10,6 +11,7 @@ type ContactLink = {
 };
 
 export function FloatingContactButtons() {
+  const [open, setOpen] = useState(false);
   const socialLinks = SITE_CONFIG.social;
   const links: ContactLink[] = [
     { key: "messenger", label: "Messenger", url: socialLinks?.messenger, icon: SiMessenger },
@@ -22,7 +24,22 @@ export function FloatingContactButtons() {
   if (!links.length) return null;
 
   return (
-    <nav className="floating-contacts" aria-label="Contact us">
+    <nav
+      className={"floating-contacts" + (open ? " is-open" : "")}
+      aria-label="Contact us"
+      onKeyDown={(event) => {
+        if (event.key === "Escape") setOpen(false);
+      }}
+    >
+      <button
+        type="button"
+        className="floating-contacts__toggle"
+        aria-label={open ? "Close contact options" : "Open contact options"}
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        {open ? "\u00d7" : "+"}
+      </button>
       {links.map(({ key, label, url, icon: Icon }) => (
         <a
           className={`floating-contacts__link floating-contacts__link--${key}`}

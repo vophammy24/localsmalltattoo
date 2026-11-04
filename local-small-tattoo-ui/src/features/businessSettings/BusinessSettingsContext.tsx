@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { getBusinessSettings } from "./api/businessSettingsApi";
 import type { BusinessSettings } from "./types/businessSettings";
+import { SITE_CONFIG } from "../../config/siteConfig";
 const Context = createContext<{
   settings?: BusinessSettings;
   isLoading: boolean;
@@ -11,7 +12,17 @@ export function BusinessSettingsProvider({ children }: { children: ReactNode }) 
   const [isLoading, setIsLoading] = useState(true);
   async function refresh() {
     try {
-      setSettings(await getBusinessSettings());
+      const dynamic = await getBusinessSettings();
+      setSettings({
+        ...dynamic,
+        address: SITE_CONFIG.address,
+        openingHours: SITE_CONFIG.openingHours,
+        location: {
+          ...dynamic.location,
+          googleMapsUrl: SITE_CONFIG.links.googleMaps,
+          googleMapsEmbedUrl: SITE_CONFIG.links.googleMapsEmbed,
+        },
+      });
     } catch (error) {
       console.warn(
         "Business settings are temporarily unavailable.",

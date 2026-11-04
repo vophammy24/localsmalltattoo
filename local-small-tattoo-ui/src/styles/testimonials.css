@@ -1,49 +1,253 @@
-.testimonials-section > h2 {
+/* Cards use their content height; only the carousel reserves its maximum height. */
+.testimonials-section__inner > h2,
+.testimonials-section__inner > h1 {
   font-family: var(--font-brand);
+  font-weight: 400;
   font-size: var(--font-size-heading-md);
+  margin-bottom: 1.5rem;
+}
+.reviews-summary {
   margin-bottom: 2rem;
+}
+.reviews-summary p:first-child {
+  font-size: 1.25rem;
+}
+.reviews-summary p + p {
+  color: var(--color-text-soft);
+  margin-top: 0.35rem;
 }
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+  align-items: start;
 }
+.review-slide {
+  min-width: 0;
+}
+.review-card,
 .testimonials-grid .review-card,
 .testimonial-editor .review-card {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.45rem;
+  height: auto;
+  max-height: 256.7px;
+  min-height: 0;
   min-width: 0;
-  padding: 1.5rem;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  align-self: start;
+  padding: 1rem;
+  overflow: hidden;
   color: var(--color-text);
-  text-decoration: none;
+  border: 1px solid rgba(220, 200, 170, 0.24);
+  background: rgba(12, 12, 12, 0.86);
 }
-.testimonials-grid .review-card p,
-.testimonial-editor .review-card p {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+.review-card + .review-card {
+  border: 1px solid rgba(220, 200, 170, 0.24);
 }
-.testimonials-grid .review-card time {
-  margin-top: auto;
+.review-card__detail {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 .review-card__header {
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  overflow-wrap: anywhere;
+  display: grid;
+  gap: 0.25rem;
 }
-a.review-card:hover,
-a.review-card:focus-visible {
-  border-color: var(--color-border-hover);
+.review-card__header strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+.review-card__header > span {
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+.review-card .review-card__content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  max-height: 80px;
+  overflow: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0.6rem 0 0;
+  font-size: 13px;
+  line-height: 20px;
+}
+.review-card__more {
+  display: block;
+  text-decoration: underline;
+  font-size: 0.8rem;
+  line-height: 20px;
+  margin-top: 0.25rem;
+}
+.review-card time {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 18px;
+  color: var(--color-text-soft);
 }
 .review-card__source {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 18px;
   text-decoration: underline;
-  font-size: 0.875rem;
 }
-.testimonials-section > .location-review__buttons {
+.review-card__detail:focus-visible,
+.reviews-controls button:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+.reviews-carousel {
+  --review-columns: 3;
+  --review-step: calc((100% + 1rem) / var(--review-columns));
+  min-width: 0;
+}
+.reviews-carousel__viewport {
+  overflow: hidden;
+}
+.reviews-carousel .reviews-carousel__viewport {
+  min-height: 256.7px;
+}
+.reviews-track {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.reviews-track > .review-slide {
+  flex: 0 0 calc((100% - (var(--review-columns) - 1) * 1rem) / var(--review-columns));
+}
+.reviews-track--next {
+  animation: reviews-next 280ms ease both;
+}
+.reviews-track--previous {
+  animation: reviews-previous 280ms ease both;
+}
+@keyframes reviews-next {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-1 * var(--review-step)));
+  }
+}
+@keyframes reviews-previous {
+  from {
+    transform: translateX(calc(-1 * var(--review-step)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.reviews-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.reviews-controls .styles-carousel__control {
+  position: static;
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+.reviews-controls svg {
+  width: 1rem;
+}
+.reviews-controls span {
+  font-size: 0.8rem;
+}
+.testimonials-section__inner > .location-review__buttons {
   margin-top: 2rem;
   flex-wrap: wrap;
+}
+.reviews-page {
+  padding-top: var(--header-height);
+}
+.review-dialog {
+  box-sizing: border-box;
+  width: min(40rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: clamp(1rem, 4vw, 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: #10100f;
+  color: var(--color-text);
+}
+.review-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.8);
+}
+.review-dialog__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.review-dialog__heading h2 {
+  font-family: var(--font-brand);
+  font-size: 1.4rem;
+}
+.review-dialog__heading button {
+  flex: 0 0 44px;
+  height: 44px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid var(--color-border);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+.review-dialog h3,
+.review-dialog__body {
+  overflow-wrap: anywhere;
+}
+.review-dialog__body {
+  white-space: pre-wrap;
+  margin-block: 1rem;
+  line-height: 1.7;
+}
+.review-dialog time,
+.review-dialog > a {
+  display: block;
+  margin-bottom: 1rem;
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .testimonials-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .reviews-carousel {
+    --review-columns: 2;
+  }
+}
+@media (max-width: 767px) {
+  .testimonials-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .testimonials-section__inner > .location-review__buttons .button {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reviews-track--next,
+  .reviews-track--previous {
+    animation-duration: 1ms;
+  }
 }
 .admin-testimonial-list {
   display: grid;
@@ -91,12 +295,23 @@ a.review-card:focus-visible {
   margin-top: 1rem;
 }
 .site-footer__brand img {
-  width: 4rem;
-  height: 4rem;
+  width: 6rem;
+  height: 6rem;
   object-fit: contain;
 }
+.site-header__brand {
+  flex-shrink: 0;
+}
 .site-header__brand img {
+  width: 3.5rem;
+  height: 3.5rem;
   object-fit: contain;
+}
+@media (max-width: 767px) {
+  .site-header__brand img {
+    width: 3rem;
+    height: 3rem;
+  }
 }
 @media (max-width: 1000px) {
   .testimonials-grid {
@@ -109,5 +324,133 @@ a.review-card:focus-visible {
   }
   .testimonial-actions button {
     flex: 1 1 auto;
+  }
+}
+
+/* clip-path clips fixed descendants to this region without changing their
+   viewport containing block. Do not add transform/filter/contain to ancestors. */
+.home-shared-background {
+  --home-section-overlay: rgba(0, 0, 0, 0.7);
+  position: relative;
+  isolation: isolate;
+  clip-path: inset(0);
+  background: #0b0b0a;
+}
+/* Outside the clipped region so the line also covers its antialiased edge. */
+.home-background-seam {
+  position: relative;
+  z-index: 1;
+  height: 0;
+  pointer-events: none;
+}
+.home-background-seam::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  top: -1px;
+  height: 2px;
+  background: #000;
+  pointer-events: none;
+}
+.home-shared-background > .section:not(.home-hero),
+.home-featured-gallery,
+.customer-gallery-section {
+  padding-block: clamp(1rem, 2vw, 1.5rem);
+}
+.home-shared-background > section,
+.home-shared-background > .marquee {
+  border-block: 0;
+}
+.home-shared-background__media {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  pointer-events: none;
+  background-image: var(--home-photo);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.home-shared-background .home-hero,
+.home-shared-background .styles-section,
+.home-shared-background .founder-section,
+.home-shared-background .location-review-section,
+.home-shared-background .testimonials-section {
+  background: var(--home-section-overlay);
+}
+.home-shared-background .home-hero {
+  min-height: 100svh;
+  padding-block: calc(var(--header-height) + 3rem) 3rem;
+}
+.home-hero__title {
+  font-size: clamp(3.75rem, 16vw, 11rem);
+  line-height: 0.92;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.location-review__visual {
+  min-height: 0;
+}
+.location-review__visual .business-map,
+.location-review__visual iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 28rem;
+  border: 0;
+  display: block;
+}
+.founder-section__portrait img {
+  height: auto;
+  aspect-ratio: 900 / 1351;
+}
+.location-review__visual .google-map {
+  height: 100%;
+}
+.floating-contacts__toggle {
+  display: none;
+}
+@media (max-width: 767px), (max-height: 600px) and (pointer: coarse) {
+  .home-shared-background .home-hero {
+    min-height: min(48rem, 100svh);
+  }
+  .home-hero__title {
+    font-size: clamp(3.5rem, 22vw, 6.5rem);
+    line-height: 0.94;
+  }
+  .location-review__visual iframe {
+    min-height: 22rem;
+  }
+  .floating-contacts {
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .floating-contacts__link,
+  .floating-contacts__toggle {
+    width: 44px;
+    height: 44px;
+  }
+  .floating-contacts__toggle {
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    background: #0c0c0c;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .floating-contacts:not(.is-open) .floating-contacts__link {
+    display: none;
+  }
+  .back-to-top {
+    width: 44px;
+    height: 44px;
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: calc(0.75rem + env(safe-area-inset-bottom));
   }
 }

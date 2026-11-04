@@ -31,11 +31,12 @@ function statusFilter(status: string, now: Date): Record<string, unknown> {
 export const listPublicReviews: RequestHandler = async (req, res, next) => {
   try {
     const query = reviewQuerySchema.parse(req.query);
+    const eligible = publicReviewFilter();
     const filter = {
-      ...publicReviewFilter(),
+      ...eligible,
       ...(query.featured ? { isFeatured: query.featured === "true" } : {}),
     };
-    const [items, total] = await Promise.all([
+    const [items, total, summary] = await Promise.all([
       TestimonialModel.find(filter)
         .select(
           "customerName rating content reviewDate sourceUrl sourceType isFeatured displayOrder",
@@ -45,12 +46,18 @@ export const listPublicReviews: RequestHandler = async (req, res, next) => {
         .limit(query.limit)
         .lean(),
       TestimonialModel.countDocuments(filter),
+      TestimonialModel.aggregate([
+        { $match: eligible },
+        { $group: { _id: null, averageRating: { $avg: "$rating" }, totalReviews: { $sum: 1 } } },
+        { $project: { _id: 0, averageRating: 1, totalReviews: 1 } },
+      ]),
     ]);
     res.set("Cache-Control", "no-store");
     res.json({
       success: true,
       data: {
         items,
+        summary: summary[0] ?? { averageRating: null, totalReviews: 0 },
         pagination: {
           page: query.page,
           limit: query.limit,

@@ -10,40 +10,46 @@ import { TestimonialsSection } from "../features/reviews/components/Testimonials
 import { Seo, SITE_URL } from "../components/seo/Seo";
 import { useBusinessSettings } from "../features/businessSettings/BusinessSettingsContext";
 
+import { HomeSharedBackground } from "../features/home/HomeSharedBackground";
+
 export function HomePage() {
   const { settings } = useBusinessSettings();
-  const structuredData = settings
-    ? {
-        "@context": "https://schema.org",
-        "@type": "TattooParlor",
-        name: SITE_CONFIG.businessName,
-        description: settings.description,
-        url: SITE_URL,
-        telephone: SITE_CONFIG.contact.phone,
-        email: SITE_CONFIG.contact.email,
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: settings.address.addressLine,
-          addressLocality: settings.address.city,
-          postalCode: settings.address.postalCode,
-          addressCountry: "VN",
-        },
-        ...(settings.location.latitude != null && settings.location.longitude != null
-          ? {
-              geo: {
-                "@type": "GeoCoordinates",
-                latitude: settings.location.latitude,
-                longitude: settings.location.longitude,
-              },
-            }
-          : {}),
-        sameAs: [
-          SITE_CONFIG.social.instagram,
-          SITE_CONFIG.social.facebook,
-          SITE_CONFIG.social.tiktok,
-        ].filter(Boolean),
-      }
-    : undefined;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "TattooParlor",
+    name: SITE_CONFIG.businessName,
+    description: settings?.description ?? "A private tattoo studio in Da Nang.",
+    url: SITE_URL,
+    telephone: SITE_CONFIG.contact.phone,
+    email: SITE_CONFIG.contact.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: SITE_CONFIG.address.addressLine,
+      addressLocality: SITE_CONFIG.address.city,
+      postalCode: SITE_CONFIG.address.postalCode,
+      addressCountry: "VN",
+    },
+    ...(settings?.location.latitude != null && settings.location.longitude != null
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: settings.location.latitude,
+            longitude: settings.location.longitude,
+          },
+        }
+      : {}),
+    openingHoursSpecification: SITE_CONFIG.openingHours.map((item) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: item.day.charAt(0) + item.day.slice(1).toLowerCase(),
+      opens: item.openTime,
+      closes: item.closeTime,
+    })),
+    sameAs: [
+      SITE_CONFIG.social.instagram,
+      SITE_CONFIG.social.facebook,
+      SITE_CONFIG.social.tiktok,
+    ].filter(Boolean),
+  };
   return (
     <>
       <Seo
@@ -52,12 +58,14 @@ export function HomePage() {
         path="/"
         structuredData={structuredData}
       />
-      <HeroSection />
-      <MarqueeTicker />
-      <TattooStylesSection />
-      <FounderSection />
-      <LocationReviewSection />
-      <TestimonialsSection />
+      <HomeSharedBackground>
+        <HeroSection />
+        <MarqueeTicker />
+        <TattooStylesSection />
+        <FounderSection />
+        <LocationReviewSection />
+        <TestimonialsSection />
+      </HomeSharedBackground>
       <FeaturedGallerySection />
       <CustomerGallerySection />
     </>

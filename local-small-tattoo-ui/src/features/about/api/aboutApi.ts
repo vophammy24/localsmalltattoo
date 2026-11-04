@@ -3,7 +3,19 @@ import type { AboutContent } from "../types/about";
 import { withDefaultFounder } from "../data/defaultFounder";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5000";
-export async function getAbout() {
+let publicAboutRequest: Promise<AboutContent> | undefined;
+let publicAboutExpires = 0;
+export function getAbout() {
+  if (!publicAboutRequest || Date.now() >= publicAboutExpires) {
+    publicAboutExpires = Date.now() + 30000;
+    publicAboutRequest = fetchPublicAbout().catch((error) => {
+      publicAboutRequest = undefined;
+      throw error;
+    });
+  }
+  return publicAboutRequest;
+}
+async function fetchPublicAbout() {
   const response = await fetch(`${API_URL}/api/public/pages/about`);
   const result = (await response.json().catch(() => null)) as {
     message?: string;
@@ -24,6 +36,7 @@ export async function saveAdminAbout(content: AboutContent) {
   return { ...result, content: withDefaultFounder(result.content) };
 }
 export async function publishAdminAbout() {
+  publicAboutRequest = undefined;
   const result = await adminRequest<{ content: AboutContent }>("/pages/about/publish", {
     method: "PATCH",
     body: JSON.stringify({}),

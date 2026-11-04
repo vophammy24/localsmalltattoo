@@ -1,4 +1,3 @@
-import { useBusinessSettings } from "../businessSettings/BusinessSettingsContext";
 import { SITE_CONFIG } from "../../config/siteConfig";
 
 function TickerGroup({ items }: { items: string[] }) {
@@ -12,10 +11,7 @@ function TickerGroup({ items }: { items: string[] }) {
 }
 
 export function MarqueeTicker() {
-  const { settings } = useBusinessSettings();
-  const items = [SITE_CONFIG.businessName, settings?.address.city].filter((item): item is string =>
-    Boolean(item),
-  );
+  const items = [SITE_CONFIG.businessName, SITE_CONFIG.address.city];
   if (!items.length) return null;
   return (
     <div className="marquee" aria-label="Tattoo styles available at the studio">

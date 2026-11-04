@@ -44,8 +44,8 @@ body.website-intro-open {
   position: relative;
   z-index: 1;
   display: grid;
-  width: 50%;
-  height: 50%;
+  width: 60%;
+  height: 60%;
   place-items: center;
   border-radius: 50%;
   background: transparent;

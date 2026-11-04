@@ -7,7 +7,6 @@ import { summarizeHours } from "../../features/businessSettings/components/Openi
 import {
   createPhoneHref,
   formatBusinessAddress,
-  getBusinessSocialLinks,
 } from "../../features/businessSettings/utils/businessSettings";
 import { useTattooStyles } from "../../features/tattooStyles/hooks/useTattooStyles";
 
@@ -15,7 +14,6 @@ export function Footer() {
   const { settings } = useBusinessSettings();
   const { data: styles } = useTattooStyles();
   const name = SITE_CONFIG.businessName;
-  const socialLinks = getBusinessSocialLinks();
   return (
     <footer className="site-footer">
       <div className="site-footer__main page-shell">
@@ -54,15 +52,13 @@ export function Footer() {
         <section className="site-footer__column site-footer__contact">
           <h2>Contact</h2>
           <address>
-            {settings ? (
-              <a href={SITE_CONFIG.links.googleMaps} target="_blank" rel="noreferrer">
-                {formatBusinessAddress(settings.address)}
-              </a>
-            ) : null}
+            <a href={SITE_CONFIG.links.googleMaps} target="_blank" rel="noreferrer">
+              {formatBusinessAddress(SITE_CONFIG.address)}
+            </a>
           </address>
           <a href={createPhoneHref(SITE_CONFIG.contact.phone)}>{SITE_CONFIG.contact.phone}</a>
           <a href={`mailto:${SITE_CONFIG.contact.email}`}>{SITE_CONFIG.contact.email}</a>
-          <p>{settings ? summarizeHours(settings.openingHours) : ""}</p>
+          <p>{summarizeHours(SITE_CONFIG.openingHours)}</p>
         </section>
       </div>
 
@@ -73,11 +69,6 @@ export function Footer() {
         <div>
           <Link to="/#privacy">Privacy</Link>
           <Link to="/#terms">Terms</Link>
-          {socialLinks.map(({ name: socialName, url }) => (
-            <a href={url} key={socialName} target="_blank" rel="noreferrer">
-              {socialName}
-            </a>
-          ))}
         </div>
       </div>
     </footer>

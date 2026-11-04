@@ -254,6 +254,7 @@ test("time-aware publication boundaries, >5 reviews, pagination, privacy and sor
   for (let i = 0; i < 15; i++)
     await create({
       customerName: `Visible fixture ${i}`,
+      rating: (i % 5) + 1,
       isPublic: true,
       permissionConfirmed: true,
       isFeatured: i < 2,
@@ -264,6 +265,14 @@ test("time-aware publication boundaries, >5 reviews, pagination, privacy and sor
   const first = await request("/api/public/reviews?limit=12", {}, false);
   assert.equal(first.body.data.items.length, 12);
   assert.equal(first.body.data.pagination.total, 15);
+  assert.deepEqual(first.body.data.summary, { averageRating: 3, totalReviews: 15 });
+  const featuredSummary = await request("/api/public/reviews?featured=true&limit=1", {}, false);
+  assert.deepEqual(featuredSummary.body.data.summary, { averageRating: 3, totalReviews: 15 });
+  const mobile = await request("/api/public/reviews?limit=3", {}, false);
+  assert.deepEqual(
+    mobile.body.data.items.map((entry: Item) => entry.customerName),
+    ["Visible fixture 0", "Visible fixture 1", "Visible fixture 2"],
+  );
   assert.equal(first.body.data.items[0].customerName, "Visible fixture 0");
   assert.equal(first.body.data.items[1].customerName, "Visible fixture 1");
   const second = await request("/api/public/reviews?limit=12&page=2", {}, false);

@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://localsmalltattoo.com/sitemap.xml
+Sitemap: https://localsmalltattoo.com.vn/sitemap.xml

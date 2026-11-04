@@ -2,12 +2,16 @@ import { adminRequest } from "../../admin/adminApi";
 import type {
   AdminReviewResult,
   AdminTestimonial,
-  ReviewResult,
+  PublicReviewResult,
   TestimonialValues,
 } from "../types/testimonial";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5000";
-export async function getPublicReviews(page = 1, signal?: AbortSignal): Promise<ReviewResult> {
-  const response = await fetch(`${API_URL}/api/public/reviews?limit=12&page=${page}`, {
+export async function getPublicReviews(
+  page = 1,
+  signal?: AbortSignal,
+  limit = 12,
+): Promise<PublicReviewResult> {
+  const response = await fetch(`${API_URL}/api/public/reviews?limit=${limit}&page=${page}`, {
     signal,
     cache: "no-store",
   });

@@ -81,28 +81,39 @@ export function AdminBusinessSettingsPage() {
       </section>
       <section className="admin-panel business-form">
         <h2>Address</h2>
-        <div className="admin-about-fields">
-          {(["addressLine", "ward", "district", "city", "country", "postalCode"] as const).map(
-            (key) => (
-              <label key={key}>
-                {key.replace(/([A-Z])/g, " $1")}
-                <input
-                  value={values.address[key]}
-                  onChange={(e) => patch("address", { ...values.address, [key]: e.target.value })}
-                />
-              </label>
-            ),
-          )}
-        </div>
+        <p>
+          Public address is fixed in src/config/siteConfig.ts. These stored historical fields are
+          read-only.
+        </p>
+        <p>{Object.values(SITE_CONFIG.address).filter(Boolean).join(", ")}</p>
+        <fieldset disabled>
+          <div className="admin-about-fields">
+            {(["addressLine", "ward", "district", "city", "country", "postalCode"] as const).map(
+              (key) => (
+                <label key={key}>
+                  {key.replace(/([A-Z])/g, " $1")}
+                  <input
+                    value={values.address[key]}
+                    onChange={(e) => patch("address", { ...values.address, [key]: e.target.value })}
+                  />
+                </label>
+              ),
+            )}
+          </div>
+        </fieldset>
       </section>
       <section className="admin-panel business-form">
         <h2>Google Maps</h2>
         <div className="admin-about-fields">
-          <p>Directions URL is managed through SITE_CONFIG.links.googleMaps.</p>
+          <p>
+            Directions and embed URLs are managed through SITE_CONFIG.links.googleMaps and
+            googleMapsEmbed.
+          </p>
           <label className="is-full">
             Embed URL *
             <input
-              value={values.location.googleMapsEmbedUrl}
+              readOnly
+              value={SITE_CONFIG.links.googleMapsEmbed}
               onChange={(e) =>
                 patch("location", { ...values.location, googleMapsEmbedUrl: e.target.value })
               }
@@ -147,7 +158,7 @@ export function AdminBusinessSettingsPage() {
         </div>
         <iframe
           className="business-map-preview"
-          src={extractGoogleMapsEmbedUrl(values.location.googleMapsEmbedUrl)}
+          src={extractGoogleMapsEmbedUrl(SITE_CONFIG.links.googleMapsEmbed)}
           title="Map preview"
           loading="lazy"
           allowFullScreen
@@ -156,56 +167,62 @@ export function AdminBusinessSettingsPage() {
       </section>
       <section className="admin-panel business-form">
         <h2>Opening hours</h2>
-        <div className="business-hours-editor">
-          {BUSINESS_DAYS.map((day) => {
-            const item = values.openingHours.find((hour) => hour.day === day) ?? {
-              day,
-              isOpen: false,
-              openTime: "",
-              closeTime: "",
-            };
-            const update = (next: typeof item) =>
-              patch(
-                "openingHours",
-                BUSINESS_DAYS.map((value) =>
-                  value === day
-                    ? next
-                    : (values.openingHours.find((hour) => hour.day === value) ?? {
-                        day: value,
-                        isOpen: false,
-                        openTime: "",
-                        closeTime: "",
-                      }),
-                ),
-              );
-            return (
-              <div key={day}>
-                <strong>{dayNames[day]}</strong>
-                <label>
+        <p>
+          Public hours: 10:00-20:00 daily, managed in src/config/siteConfig.ts. Stored hours below
+          are read-only.
+        </p>
+        <fieldset disabled>
+          <div className="business-hours-editor">
+            {BUSINESS_DAYS.map((day) => {
+              const item = values.openingHours.find((hour) => hour.day === day) ?? {
+                day,
+                isOpen: false,
+                openTime: "",
+                closeTime: "",
+              };
+              const update = (next: typeof item) =>
+                patch(
+                  "openingHours",
+                  BUSINESS_DAYS.map((value) =>
+                    value === day
+                      ? next
+                      : (values.openingHours.find((hour) => hour.day === value) ?? {
+                          day: value,
+                          isOpen: false,
+                          openTime: "",
+                          closeTime: "",
+                        }),
+                  ),
+                );
+              return (
+                <div key={day}>
+                  <strong>{dayNames[day]}</strong>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={item.isOpen}
+                      onChange={(e) => update({ ...item, isOpen: e.target.checked })}
+                    />
+                    Open
+                  </label>
                   <input
-                    type="checkbox"
-                    checked={item.isOpen}
-                    onChange={(e) => update({ ...item, isOpen: e.target.checked })}
+                    type="time"
+                    disabled={!item.isOpen}
+                    value={item.openTime}
+                    onChange={(e) => update({ ...item, openTime: e.target.value })}
                   />
-                  Open
-                </label>
-                <input
-                  type="time"
-                  disabled={!item.isOpen}
-                  value={item.openTime}
-                  onChange={(e) => update({ ...item, openTime: e.target.value })}
-                />
-                <span>-</span>
-                <input
-                  type="time"
-                  disabled={!item.isOpen}
-                  value={item.closeTime}
-                  onChange={(e) => update({ ...item, closeTime: e.target.value })}
-                />
-              </div>
-            );
-          })}
-        </div>
+                  <span>-</span>
+                  <input
+                    type="time"
+                    disabled={!item.isOpen}
+                    value={item.closeTime}
+                    onChange={(e) => update({ ...item, closeTime: e.target.value })}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </fieldset>
       </section>
       <section className="admin-panel business-form">
         <h2>Booking notice</h2>
