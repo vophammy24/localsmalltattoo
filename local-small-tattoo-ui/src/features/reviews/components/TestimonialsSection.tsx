@@ -250,7 +250,7 @@ export function TestimonialsSection({ all = false }: { all?: boolean }) {
             </button>
           </nav>
         ) : null}
-        <div className="location-review__buttons">
+        <div className="location-review__buttons ">
           {!all ? (
             <Link className="button button--secondary" to="/reviews">
               View All Reviews

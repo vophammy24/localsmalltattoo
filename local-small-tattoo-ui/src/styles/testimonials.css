@@ -173,6 +173,7 @@
 .testimonials-section__inner > .location-review__buttons {
   margin-top: 2rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 .reviews-page {
   padding-top: var(--header-height);
