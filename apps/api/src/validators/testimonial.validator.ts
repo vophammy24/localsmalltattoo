@@ -1,5 +1,22 @@
 import { z } from "zod";
 
+export const googleReviewSummarySchema = z
+  .object({
+    enabled: z.boolean(),
+    averageRating: z.number().min(1).max(5).multipleOf(0.1).nullable(),
+    totalReviews: z.number().int().min(0).max(2147483647),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.enabled && (value.averageRating === null || value.totalReviews === 0)) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "Enter the Google Maps rating and a positive review count before enabling the summary.",
+      });
+    }
+  });
+
 export function isGoogleMapsSource(value: string) {
   try {
     const url = new URL(value);

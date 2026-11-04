@@ -106,7 +106,9 @@ export function TestimonialsSection({ all = false }: { all?: boolean }) {
     setMotion(undefined);
     locked.current = false;
   }
-  if (!all && !loading && !error && !result?.items.length) return null;
+  const googleSummary = result?.googleMapsSummary;
+  const displayedSummary = googleSummary ?? result?.summary;
+  if (!all && !loading && !error && !result?.items.length && !googleSummary) return null;
   const carousel = !all && size > 1;
   const rendered = motion?.items ?? items;
   return (
@@ -122,16 +124,31 @@ export function TestimonialsSection({ all = false }: { all?: boolean }) {
         ) : (
           <h2 id="testimonials-heading">What Our Clients Say</h2>
         )}
-        {result?.summary?.totalReviews ? (
+        {displayedSummary?.totalReviews ? (
           <div className="reviews-summary">
             <p>
-              <span aria-hidden="true">{"\u2605".repeat(5)}</span>{" "}
-              {result.summary.averageRating?.toFixed(1)} / 5
+              <span className="reviews-summary__stars" aria-hidden="true">
+                {"\u2606".repeat(5)}
+                <span
+                  style={{
+                    width: `${Math.min(5, Math.max(0, displayedSummary.averageRating ?? 0)) * 20}%`,
+                  }}
+                >
+                  {"\u2605".repeat(5)}
+                </span>
+              </span>{" "}
+              {displayedSummary.averageRating?.toFixed(1)} / 5
             </p>
             <p>
-              Based on {result.summary.totalReviews} customer{" "}
-              {result.summary.totalReviews === 1 ? "review" : "reviews"}
+              Based on {displayedSummary.totalReviews} {googleSummary ? "Google Maps" : "customer"}{" "}
+              {displayedSummary.totalReviews === 1 ? "review" : "reviews"}
             </p>
+            {googleSummary ? (
+              <p className="reviews-summary__source">
+                <a href={SITE_CONFIG.links.googleReviews} target="_blank" rel="noopener noreferrer">
+                </a>
+              </p>
+            ) : null}
           </div>
         ) : null}
         {loading ? (

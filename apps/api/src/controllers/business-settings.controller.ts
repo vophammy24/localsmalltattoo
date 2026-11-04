@@ -62,7 +62,12 @@ async function getSettings() {
 }
 export const getPublicBusinessSettings: RequestHandler = async (_req, res, next) => {
   try {
-    res.json({ success: true, data: { settings: await getSettings() } });
+    // This snapshot is managed by its own admin endpoint and published only
+    // through the reviews API when enabled.
+    res.json({
+      success: true,
+      data: { settings: { ...(await getSettings()), googleReviewSummary: undefined } },
+    });
   } catch (error) {
     next(error);
   }

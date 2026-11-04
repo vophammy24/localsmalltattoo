@@ -1,12 +1,62 @@
 import type { RequestHandler } from "express";
 import { isValidObjectId } from "mongoose";
 import { TestimonialModel } from "../models/testimonial.model.js";
+import { BusinessSettingsModel } from "../models/business-settings.model.js";
+import { DEFAULT_SETTINGS } from "./business-settings.controller.js";
 import {
   createTestimonialSchema,
   patchTestimonialSchema,
   reviewQuerySchema,
+  googleReviewSummarySchema,
 } from "../validators/testimonial.validator.js";
 import { HttpError } from "../utils/http-error.js";
+
+const emptyGoogleSummary = {
+  enabled: false,
+  averageRating: null,
+  totalReviews: 0,
+  updatedAt: null,
+};
+export const getAdminGoogleReviewSummary: RequestHandler = async (_req, res, next) => {
+  try {
+    const settings = await BusinessSettingsModel.findOne({ settingsKey: "business" })
+      .select("googleReviewSummary")
+      .lean();
+    res.set("Cache-Control", "no-store");
+    res.json({
+      success: true,
+      data: { summary: settings?.googleReviewSummary ?? emptyGoogleSummary },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const updateAdminGoogleReviewSummary: RequestHandler = async (req, res, next) => {
+  try {
+    const fields = googleReviewSummarySchema.parse(req.body);
+    const settings = await BusinessSettingsModel.findOneAndUpdate(
+      { settingsKey: "business" },
+      {
+        $set: {
+          googleReviewSummary: { ...fields, updatedAt: new Date() },
+          updatedBy: req.admin!.id,
+        },
+        $setOnInsert: DEFAULT_SETTINGS,
+      },
+      { upsert: true, new: true, runValidators: true },
+    )
+      .select("googleReviewSummary")
+      .lean();
+    res.set("Cache-Control", "no-store");
+    res.json({
+      success: true,
+      message: "Google Maps rating summary saved.",
+      data: { summary: settings!.googleReviewSummary },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export function publicReviewFilter(now = new Date()) {
   return {
@@ -36,7 +86,7 @@ export const listPublicReviews: RequestHandler = async (req, res, next) => {
       ...eligible,
       ...(query.featured ? { isFeatured: query.featured === "true" } : {}),
     };
-    const [items, total, summary] = await Promise.all([
+    const [items, total, summary, settings] = await Promise.all([
       TestimonialModel.find(filter)
         .select(
           "customerName rating content reviewDate sourceUrl sourceType isFeatured displayOrder",
@@ -51,13 +101,31 @@ export const listPublicReviews: RequestHandler = async (req, res, next) => {
         { $group: { _id: null, averageRating: { $avg: "$rating" }, totalReviews: { $sum: 1 } } },
         { $project: { _id: 0, averageRating: 1, totalReviews: 1 } },
       ]),
+      BusinessSettingsModel.findOne({ settingsKey: "business" })
+        .select("googleReviewSummary")
+        .lean(),
     ]);
+    const google = settings?.googleReviewSummary;
+    const googleMapsSummary =
+      google?.enabled &&
+      google.averageRating != null &&
+      google.averageRating >= 1 &&
+      google.averageRating <= 5 &&
+      Number.isInteger(google.totalReviews) &&
+      google.totalReviews > 0
+        ? {
+            averageRating: google.averageRating,
+            totalReviews: google.totalReviews,
+            updatedAt: google.updatedAt ?? null,
+          }
+        : null;
     res.set("Cache-Control", "no-store");
     res.json({
       success: true,
       data: {
         items,
         summary: summary[0] ?? { averageRating: null, totalReviews: 0 },
+        googleMapsSummary,
         pagination: {
           page: query.page,
           limit: query.limit,

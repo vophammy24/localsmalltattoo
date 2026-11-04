@@ -56,6 +56,8 @@ async function mock(page: Page, empty = false) {
           socialLinks: { instagram: "https://invalid.example/old-social" },
         },
       };
+    else if (url.pathname === "/api/admin/reviews/google-summary")
+      data = { summary: { enabled: false, averageRating: null, totalReviews: 0, updatedAt: null } };
     else if (url.pathname === "/api/admin/reviews")
       data = {
         items: [fixture(1)],
@@ -95,6 +97,102 @@ test("studio wall-clock conversion is independent of browser timezone", () => {
   expect(studioTimeToUtc("2026-10-20")).toBe("2026-10-19T17:00:00.000Z");
   expect(studioDateTime("2026-11-30T16:59:00Z")).toBe("2026-11-30T23:59");
   expect(() => studioTimeToUtc("2026-02-30")).toThrow();
+});
+
+test("admin can publish Google Maps totals without individual reviews, reload them, and disable the override", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await mock(page, true);
+  let saved = {
+    enabled: false,
+    averageRating: null as number | null,
+    totalReviews: 0,
+    updatedAt: null as string | null,
+  };
+  let writes = 0;
+  await page.route("**/api/admin/reviews/google-summary", async (route) => {
+    if (route.request().method() === "PATCH") {
+      writes++;
+      saved = { ...route.request().postDataJSON(), updatedAt: "2026-11-04T01:00:00.000Z" };
+    }
+    await route.fulfill({ json: { success: true, data: { summary: saved } } });
+  });
+  await page.route("**/api/public/reviews?**", (route) =>
+    route.fulfill({
+      json: {
+        success: true,
+        data: {
+          items: [],
+          summary: { averageRating: null, totalReviews: 0 },
+          googleMapsSummary: saved.enabled
+            ? {
+                averageRating: saved.averageRating,
+                totalReviews: saved.totalReviews,
+                updatedAt: saved.updatedAt,
+              }
+            : null,
+          pagination: { page: 1, limit: 12, total: 0, totalPages: 1 },
+        },
+      },
+    }),
+  );
+  await page.goto("/admin/reviews");
+  const form = page.getByRole("region", { name: "Google Maps rating summary" });
+  await form.getByLabel("Show Google Maps rating summary").check();
+  await form.getByRole("button", { name: "Save Google Maps summary" }).click();
+  expect(writes).toBe(0);
+  await form.getByLabel("Average Google Maps rating").fill("4.8");
+  await form.getByLabel("Total Google Maps reviews").fill("128");
+  await form.getByRole("button", { name: "Save Google Maps summary" }).click();
+  await expect.poll(() => writes).toBe(1);
+  expect(saved).toMatchObject({ enabled: true, averageRating: 4.8, totalReviews: 128 });
+  await page.getByRole("alertdialog").getByRole("button", { name: "Close" }).click();
+  await page.reload();
+  await expect(form.getByLabel("Average Google Maps rating")).toHaveValue("4.8");
+  await expect(form.getByLabel("Total Google Maps reviews")).toHaveValue("128");
+  await expect(form.getByText("Last updated:")).toBeVisible();
+  await page.goto("/");
+  await expect(page.locator("#customer-reviews")).toBeVisible();
+  await expect(page.locator(".reviews-summary")).toContainText("4.8 / 5");
+  await expect(page.locator(".reviews-summary")).toContainText("Based on 128 Google Maps reviews");
+  await expect(page.locator(".reviews-summary")).toContainText("Updated manually by the studio");
+  await expect(page.locator(".review-card")).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "View reviews on Google Maps", exact: true }),
+  ).toHaveAttribute("target", "_blank");
+  await page.getByRole("link", { name: "View All Reviews", exact: true }).click();
+  await expect(page.locator(".reviews-summary")).toContainText("128 Google Maps reviews");
+  await page.goto("/admin/reviews");
+  await form.getByLabel("Show Google Maps rating summary").uncheck();
+  await form.getByRole("button", { name: "Save Google Maps summary" }).click();
+  await expect.poll(() => writes).toBe(2);
+  await page.getByRole("alertdialog").getByRole("button", { name: "Close" }).click();
+  await page.goto("/");
+  await expect(page.locator("#customer-reviews")).toHaveCount(0);
+});
+
+test("Google Maps summary failure keeps entered values available for retry", async ({ page }) => {
+  await mock(page);
+  await page.route("**/api/admin/reviews/google-summary", async (route) => {
+    if (route.request().method() === "PATCH")
+      await route.fulfill({
+        status: 503,
+        json: { success: false, message: "Test storage unavailable" },
+      });
+    else await route.fallback();
+  });
+  await page.goto("/admin/reviews");
+  const form = page.getByRole("region", { name: "Google Maps rating summary" });
+  await form.getByLabel("Average Google Maps rating").fill("4.7");
+  await form.getByLabel("Total Google Maps reviews").fill("89");
+  await form.getByLabel("Show Google Maps rating summary").check();
+  await form.getByRole("button", { name: "Save Google Maps summary" }).click();
+  await page.getByRole("alertdialog").getByRole("button", { name: "Close" }).click();
+  await expect(form.getByRole("alert")).toHaveText("Test storage unavailable");
+  await expect(form.getByLabel("Average Google Maps rating")).toHaveValue("4.7");
+  await expect(form.getByLabel("Total Google Maps reviews")).toHaveValue("89");
+  await expect(form.getByRole("button", { name: "Save Google Maps summary" })).toBeEnabled();
 });
 for (const width of [320, 360, 375, 390, 414, 430, 768, 820, 1024, 1280, 1366, 1440, 1536, 1920])
   test("Home responsive cards and local assets at " + width + "px", async ({ page }) => {

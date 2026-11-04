@@ -78,6 +78,26 @@ accuracy and permission. No redirect endpoint or network scraping is introduced.
 
 ## Tests and scope
 
+### Manually maintained Google Maps rating summary
+
+Authenticated `GET /api/admin/reviews/google-summary` reads the stored summary.
+`PATCH` accepts `{ enabled, averageRating, totalReviews }`: rating is 1-5 with
+one decimal place (or null while disabled), count is a non-negative integer,
+and enabling requires a rating and positive count. The server records updatedAt
+and the editing admin. Cookie authentication keeps the existing CSRF checks.
+
+The optional `BusinessSettings.googleReviewSummary` subdocument stores this
+snapshot. Old records remain unchanged and default to disabled; no migration,
+Google API, synchronization, scraping or individual-review import is needed.
+Updating other Business Settings preserves the snapshot.
+
+Public reviews add `data.googleMapsSummary`: `{ averageRating, totalReviews,
+updatedAt }` when enabled and valid, otherwise null. Existing `data.summary`
+still reports only eligible CMS testimonials, and pagination counts only actual
+testimonials. The frontend prefers the Google Maps snapshot when present,
+identifies it as manually updated, and can show it with an empty testimonial
+collection. Neither set of ratings is added to structured AggregateRating data.
+
 `npm test` runs Node's test runner via tsx against a temporary local MongoDB
 managed by mongodb-memory-server-core. The first run downloads a MongoDB test
 binary. Configuration is overridden before importing the app: no Atlas, real

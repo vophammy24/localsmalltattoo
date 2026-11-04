@@ -16,6 +16,40 @@
   color: var(--color-text-soft);
   margin-top: 0.35rem;
 }
+.reviews-summary__stars {
+  position: relative;
+  display: inline-block;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.reviews-summary__stars > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+  color: var(--color-text);
+}
+.reviews-summary__source small {
+  display: block;
+  margin-top: 0.25rem;
+}
+.google-review-summary-fields {
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+  border: 0;
+}
+.google-review-summary-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.google-review-summary-toggle input {
+  position: static;
+  width: 1.1rem;
+  height: 1.1rem;
+  opacity: 1;
+  accent-color: var(--color-text);
+}
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -53,6 +53,18 @@ const businessSettingsSchema = new Schema(
       zalo: String,
     },
     bookingNotice: { type: String, maxlength: 1000 },
+    googleReviewSummary: {
+      type: new Schema(
+        {
+          enabled: { type: Boolean, default: false },
+          averageRating: { type: Number, min: 1, max: 5, default: null },
+          totalReviews: { type: Number, min: 0, validate: Number.isInteger, default: 0 },
+          updatedAt: { type: Date, default: null },
+        },
+        { _id: false },
+      ),
+      default: undefined,
+    },
     updatedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
   },
   { timestamps: true },

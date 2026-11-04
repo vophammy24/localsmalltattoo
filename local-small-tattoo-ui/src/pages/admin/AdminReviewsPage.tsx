@@ -9,6 +9,7 @@ import type { AdminReviewResult, AdminTestimonial } from "../../features/reviews
 import { TestimonialForm } from "../../features/reviews/components/TestimonialForm";
 import { TestimonialCard } from "../../features/reviews/components/TestimonialCard";
 import { formatReviewDate, publicationStatus } from "../../features/reviews/utils/testimonialTime";
+import { GoogleReviewSummaryForm } from "../../features/reviews/components/GoogleReviewSummaryForm";
 
 export function AdminReviewsPage() {
   const [result, setResult] = useState<AdminReviewResult>();
@@ -70,6 +71,7 @@ export function AdminReviewsPage() {
           </button>
         }
       />
+      <GoogleReviewSummaryForm />
       {editor ? (
         <TestimonialForm
           key={editor === "new" ? "new" : editor._id}

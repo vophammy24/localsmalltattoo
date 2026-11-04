@@ -23,6 +23,17 @@ export type ReviewResult<T = Testimonial> = {
 };
 export type PublicReviewResult = ReviewResult & {
   summary: { averageRating: number | null; totalReviews: number };
+  googleMapsSummary?: {
+    averageRating: number;
+    totalReviews: number;
+    updatedAt: string | null;
+  } | null;
+};
+export type AdminGoogleReviewSummary = {
+  enabled: boolean;
+  averageRating: number | null;
+  totalReviews: number;
+  updatedAt: string | null;
 };
 export type AdminReviewResult = ReviewResult<AdminTestimonial> & {
   counts: { total: number; published: number; draft: number; scheduled: number; expired: number };

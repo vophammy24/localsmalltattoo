@@ -64,6 +64,15 @@ existing configured URLs; use a specific authorized source URL on each review.
 
 ## How to manage reviews
 
+The **Google Maps rating summary** panel in /admin/reviews accepts the average
+rating (1-5, one decimal place) and the actual total count shown on Google Maps.
+Enable **Show Google Maps rating summary** and save to publish these values on
+Home and /reviews, even if no individual testimonials have been entered. The
+public label identifies Google Maps and says the studio updates it manually.
+These values do not synchronize automatically; update them when Google changes.
+Disable the switch to return to the calculated customer-testimonial summary.
+The summary does not create review cards or change pagination counts.
+
 Visit /admin/reviews. Enter original customer wording, rating and reviewDate.
 Confirm permission and enable Public. Optionally enable Featured, set Display
 order (smaller first), and schedule Display from / Display until in studio time.
@@ -107,7 +116,12 @@ GET /api/public/reviews retains data.items and data.pagination and adds
 data.summary = { averageRating: number | null, totalReviews: number }.
 The backend averages only eligible ratings, across all pages, independently of
 the featured filter. Empty collections return null/zero and no fake rating UI.
-The label is Based on X customer reviews; this is a manual CMS statistic.
+The fallback label is Based on X customer reviews; this is a manual CMS statistic.
+The optional data.googleMapsSummary contains the separately entered Google Maps
+averageRating, totalReviews and server-recorded updatedAt, or null when disabled.
+Protected GET/PATCH /api/admin/reviews/google-summary manages this snapshot in
+the existing BusinessSettings document. Existing documents default to disabled;
+no migration or review import is required. Other Business Settings saves retain it.
 There is no Google API integration or curated AggregateRating structured data.
 
 Responses use no-store so a new request reevaluates publication eligibility.

@@ -106,6 +106,80 @@ after(async () => {
   await mongo?.stop();
 });
 
+test("Google Maps summary is validated, protected, persistent and separate from testimonials", async () => {
+  const path = "/api/admin/reviews/google-summary";
+  assert.equal((await request(path, {}, false)).response.status, 401);
+  assert.equal(
+    (await request(path, { method: "PATCH", body: JSON.stringify({}) }, false)).response.status,
+    401,
+  );
+  assert.equal(
+    (
+      await request(
+        path,
+        {
+          method: "PATCH",
+          headers: { Cookie: cookie, Origin: "https://untrusted.example" },
+          body: JSON.stringify({ enabled: false, averageRating: null, totalReviews: 0 }),
+        },
+        false,
+      )
+    ).response.status,
+    403,
+  );
+  const initial = await request(path);
+  assert.equal(initial.body.data.summary.enabled, false);
+  const baseline = (await request("/api/public/reviews", {}, false)).body.data;
+  const { TestimonialModel } = await import("../src/models/testimonial.model.js");
+  const count = await TestimonialModel.countDocuments();
+  assert.equal(count, 0);
+  const fields = { enabled: true, averageRating: 4.8, totalReviews: 128 };
+  for (const invalid of [
+    { averageRating: 0 },
+    { averageRating: 5.1 },
+    { averageRating: 4.85 },
+    { averageRating: null },
+    { averageRating: "4.8" },
+    { totalReviews: 0 },
+    { totalReviews: -1 },
+    { totalReviews: 2.5 },
+    { totalReviews: 2147483648 },
+    { updatedAt: "2026-11-04T00:00:00Z" },
+  ]) {
+    const result = await request(path, {
+      method: "PATCH",
+      body: JSON.stringify({ ...fields, ...invalid }),
+    });
+    assert.equal(result.response.status, 400, JSON.stringify(invalid));
+  }
+  const saved = await request(path, { method: "PATCH", body: JSON.stringify(fields) });
+  assert.equal(saved.response.status, 200, JSON.stringify(saved.body));
+  assert.ok(Number.isFinite(Date.parse(saved.body.data.summary.updatedAt)));
+  assert.equal((await request(path)).body.data.summary.totalReviews, 128);
+  const publicSettings = (await request("/api/public/business-settings", {}, false)).body.data
+    .settings;
+  assert.equal("googleReviewSummary" in publicSettings, false);
+  const visible = (await request("/api/public/reviews?limit=1&featured=true", {}, false)).body.data;
+  assert.equal(visible.googleMapsSummary.averageRating, 4.8);
+  assert.equal(visible.googleMapsSummary.totalReviews, 128);
+  assert.deepEqual(visible.items, []);
+  assert.deepEqual(visible.summary, baseline.summary);
+  assert.deepEqual(Object.keys(visible.googleMapsSummary).sort(), [
+    "averageRating",
+    "totalReviews",
+    "updatedAt",
+  ]);
+  assert.equal(await TestimonialModel.countDocuments(), count);
+  const disabled = await request(path, {
+    method: "PATCH",
+    body: JSON.stringify({ ...fields, enabled: false }),
+  });
+  assert.equal(disabled.response.status, 200);
+  const fallback = (await request("/api/public/reviews", {}, false)).body.data;
+  assert.equal(fallback.googleMapsSummary, null);
+  assert.deepEqual(fallback.summary, baseline.summary);
+});
+
 test("admin authentication, CSRF guard and obsolete endpoints", async () => {
   for (const [path, method] of [
     ["/api/admin/reviews", "GET"],
@@ -511,5 +585,33 @@ test("booking image submission/management, Styles, Gallery, About CMS and settin
   } finally {
     cloudinary.uploader.upload_stream = originalUpload;
     cloudinary.uploader.destroy = originalDestroy;
+  }
+});
+
+test("saving other Business Settings preserves the Google Maps snapshot", async () => {
+  const path = "/api/admin/reviews/google-summary";
+  const saved = await request(path, {
+    method: "PATCH",
+    body: JSON.stringify({ enabled: true, averageRating: 4.6, totalReviews: 57 }),
+  });
+  assert.equal(saved.response.status, 200);
+  try {
+    const business = (await request("/api/admin/business-settings")).body.data.settings;
+    business.bookingNotice = "Synthetic settings preservation test";
+    business.location.googleMapsEmbedUrl = "https://www.google.com/maps/embed?pb=test-fixture";
+    delete business.googleReviewSummary;
+    const edited = await request("/api/admin/business-settings", {
+      method: "PATCH",
+      body: JSON.stringify(business),
+    });
+    assert.equal(edited.response.status, 200, JSON.stringify(edited.body));
+    assert.deepEqual((await request(path)).body.data.summary, saved.body.data.summary);
+    const publicData = (await request("/api/public/reviews", {}, false)).body.data;
+    assert.equal(publicData.googleMapsSummary.totalReviews, 57);
+  } finally {
+    await request(path, {
+      method: "PATCH",
+      body: JSON.stringify({ enabled: false, averageRating: 4.6, totalReviews: 57 }),
+    });
   }
 });
