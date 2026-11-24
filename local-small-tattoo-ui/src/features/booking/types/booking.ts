@@ -1,20 +1,23 @@
-export type BookingTimePeriod = "morning" | "noon" | "afternoon" | "evening";
+import type { CountryCode } from "libphonenumber-js";
 
+export type ContactMethod = "whatsapp" | "zalo";
 export type BookingFormValues = {
   fullName: string;
   phoneNumber: string;
+  country: CountryCode;
   email: string;
+  instagram: string;
   preferredDate: string;
-  preferredTimePeriods: BookingTimePeriod[];
   description: string;
   consent: boolean;
+  contactMethods: ContactMethod[];
   referenceImages: File[];
+  website: string;
 };
-
-export type BookingFieldName = keyof BookingFormValues;
-
-export type BookingFormErrors = Partial<
-  Record<Exclude<BookingFieldName, "referenceImages"> | "referenceImages", string>
->;
-
-export type BookingSubmission = BookingFormValues;
+export type BookingFieldName =
+  Exclude<keyof BookingFormValues, "country" | "website"> | "verification";
+export type BookingFormErrors = Partial<Record<BookingFieldName, string>>;
+export type BookingSubmission = Omit<BookingFormValues, "country"> & {
+  verification: string;
+  idempotencyKey: string;
+};

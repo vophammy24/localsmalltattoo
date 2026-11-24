@@ -1,5 +1,4 @@
 import type { ChangeEvent } from "react";
-import { BOOKING_IMAGE_RULES } from "../data/bookingOptions";
 import { IMAGE_INPUT_ACCEPT } from "../../../utils/imageUpload";
 
 type ReferenceImageFieldProps = {
@@ -33,31 +32,30 @@ export function ReferenceImageField({
         multiple
         onChange={onChange}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? "referenceImages-error" : undefined}
+        aria-describedby="referenceImages-help referenceImages-error"
       />
 
       <label className={`booking-upload ${error ? "has-error" : ""}`} htmlFor="referenceImages">
-        <span className="booking-upload__symbol" aria-hidden="true">
-          +
-        </span>
-        <strong>Choose reference images</strong>
-        <small>
-          JPG, JPEG, PNG, WebP, HEIC or HEIF · Up to {BOOKING_IMAGE_RULES.maxFiles} images · Under
-          20 MB each
-        </small>
+        <strong>Choose images</strong>
+        <small id="referenceImages-help">Up to 5 images · 20 MB each</small>
       </label>
 
-      {error ? (
-        <p className="booking-field__error" id="referenceImages-error">
-          {error}
-        </p>
-      ) : null}
+      <p className="booking-field__error" id="referenceImages-error" aria-live="polite">
+        {error}
+      </p>
 
       {previews.length > 0 ? (
         <ul className="booking-upload__previews" aria-label="Selected images">
           {previews.map(({ file, url }, index) => (
-            <li key={`${file.name}-${file.lastModified}`}>
-              <img src={url} alt={`Selected reference ${index + 1}`} />
+            <li key={url}>
+              <span className="booking-upload__filename">{file.name}</span>
+              <img
+                src={url}
+                alt=""
+                onError={(event) => {
+                  event.currentTarget.hidden = true;
+                }}
+              />
               <button
                 type="button"
                 onClick={() => onRemove(index)}

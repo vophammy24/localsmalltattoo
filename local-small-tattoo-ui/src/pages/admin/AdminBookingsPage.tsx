@@ -4,6 +4,7 @@ import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
 import { StatusBadge } from "../../components/admin/StatusBadge";
 import { adminRequest } from "../../features/admin/adminApi";
 import type { Booking } from "../../features/admin/types";
+import { formatBookingDate } from "../../features/admin/formatBookingDate";
 type Result = {
   items: Booking[];
   pagination: { page: number; limit: number; totalItems: number; totalPages: number };
@@ -99,8 +100,8 @@ export function AdminBookingsPage() {
                   <td>
                     <a href={`tel:${b.phoneNumber}`}>{b.phoneNumber}</a>
                   </td>
-                  <td>{new Date(b.preferredDate).toLocaleDateString()}</td>
-                  <td>{b.preferredTimePeriods.join(", ")}</td>
+                  <td>{formatBookingDate(b)}</td>
+                  <td>{b.preferredTimePeriods?.join(", ") || "—"}</td>
                   <td>{new Date(b.createdAt).toLocaleDateString()}</td>
                   <td>
                     <StatusBadge status={b.status} />

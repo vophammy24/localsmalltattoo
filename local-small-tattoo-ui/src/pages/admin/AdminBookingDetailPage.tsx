@@ -4,6 +4,7 @@ import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
 import { StatusBadge } from "../../components/admin/StatusBadge";
 import { adminAction, adminRequest } from "../../features/admin/adminApi";
 import type { Booking, BookingStatus, TimePeriods } from "../../features/admin/types";
+import { formatBookingDate } from "../../features/admin/formatBookingDate";
 
 const nextStatuses: Record<BookingStatus, BookingStatus[]> = {
   PENDING: ["CONTACTED", "CANCELLED"],
@@ -129,16 +130,18 @@ export function AdminBookingDetailPage() {
             </div>
             <div>
               <span>Preferred date</span>
-              <strong>{new Date(booking.preferredDate).toLocaleDateString()}</strong>
+              <strong>{formatBookingDate(booking)}</strong>
             </div>
-            <div>
-              <span>Preferred periods</span>
-              <strong>
-                {booking.preferredTimePeriods
-                  .map((p) => `${p} ${periods[p]?.startTime ?? ""}-${periods[p]?.endTime ?? ""}`)
-                  .join(", ")}
-              </strong>
-            </div>
+            {booking.preferredTimePeriods?.length ? (
+              <div>
+                <span>Preferred periods</span>
+                <strong>
+                  {booking.preferredTimePeriods
+                    .map((p) => `${p} ${periods[p]?.startTime ?? ""}-${periods[p]?.endTime ?? ""}`)
+                    .join(", ")}
+                </strong>
+              </div>
+            ) : null}
             <div>
               <span>Source style</span>
               <strong>{booking.sourceStyle?.name ?? "Direct booking"}</strong>
@@ -155,6 +158,31 @@ export function AdminBookingDetailPage() {
                 <dt>Phone</dt>
                 <dd>
                   <a href={`tel:${booking.phoneNumber}`}>{booking.phoneNumber}</a>
+                  {booking.contactMethods?.length ? (
+                    <span>
+                      {" "}
+                      · Self-reported:{" "}
+                      {booking.contactMethods
+                        .map((method) => (method === "whatsapp" ? "WhatsApp" : "Zalo"))
+                        .join(", ")}
+                    </span>
+                  ) : null}
+                </dd>
+              </div>
+              {booking.instagram ? (
+                <div>
+                  <dt>Instagram</dt>
+                  <dd>@{booking.instagram}</dd>
+                </div>
+              ) : null}
+              <div>
+                <dt>Booking consent</dt>
+                <dd>
+                  {booking.consentAt
+                    ? new Date(booking.consentAt).toLocaleString()
+                    : booking.consent
+                      ? "Recorded (no timestamp)"
+                      : "Not recorded"}
                 </dd>
               </div>
               <div>
@@ -175,7 +203,7 @@ export function AdminBookingDetailPage() {
           </section>
           <section className="admin-panel">
             <h2>Tattoo description</h2>
-            <p className="admin-description">{booking.description}</p>
+            <p className="admin-description">{booking.description || "No description provided."}</p>
           </section>
           <section className="admin-panel">
             <h2>Reference images</h2>

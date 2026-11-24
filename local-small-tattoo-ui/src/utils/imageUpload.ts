@@ -14,7 +14,7 @@ export const IMAGE_INPUT_ACCEPT = [
   ".heif",
 ].join(",");
 
-export function getImageFileError(file: File): string | null {
+export function isSupportedImageFile(file: File): boolean {
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   const hasAcceptedType = (IMAGE_UPLOAD_RULES.acceptedTypes as readonly string[]).includes(
     file.type.toLowerCase(),
@@ -23,7 +23,11 @@ export function getImageFileError(file: File): string | null {
     IMAGE_UPLOAD_RULES.acceptedExtensions as readonly string[]
   ).includes(extension);
 
-  if (!hasAcceptedType && !hasAcceptedExtension) {
+  return hasAcceptedType || hasAcceptedExtension;
+}
+
+export function getImageFileError(file: File): string | null {
+  if (!isSupportedImageFile(file)) {
     return "Only JPG, JPEG, PNG, WebP, HEIC, and HEIF images are accepted.";
   }
   if (file.size >= IMAGE_UPLOAD_RULES.maxFileSizeBytes) {

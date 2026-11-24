@@ -7,10 +7,14 @@ export type Booking = {
   fullName: string;
   phoneNumber: string;
   email: string;
-  preferredDate: string;
-  preferredTimePeriods: string[];
-  description: string;
+  preferredDate?: string;
+  preferredDateLocal?: string;
+  preferredTimePeriods?: string[];
+  description?: string;
+  instagram?: string;
+  contactMethods?: ("whatsapp" | "zalo")[];
   consent: boolean;
+  consentAt?: string;
   status: BookingStatus;
   createdAt: string;
   updatedAt: string;

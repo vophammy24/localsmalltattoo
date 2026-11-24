@@ -4,6 +4,7 @@ import { AdminPageHeader } from "../../components/admin/AdminPageHeader";
 import { StatusBadge } from "../../components/admin/StatusBadge";
 import { adminRequest } from "../../features/admin/adminApi";
 import type { Booking } from "../../features/admin/types";
+import { formatBookingDate } from "../../features/admin/formatBookingDate";
 type Summary = {
   pending: number;
   contacted: number;
@@ -73,7 +74,7 @@ export function AdminDashboardPage() {
                         <Link to={`/admin/bookings/${booking._id}`}>{booking.bookingCode}</Link>
                       </td>
                       <td>{booking.fullName}</td>
-                      <td>{new Date(booking.preferredDate).toLocaleDateString()}</td>
+                      <td>{formatBookingDate(booking)}</td>
                       <td>
                         <StatusBadge status={booking.status} />
                       </td>

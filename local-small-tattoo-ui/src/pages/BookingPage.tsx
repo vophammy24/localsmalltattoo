@@ -1,9 +1,15 @@
-import { BookingForm } from "../features/booking/components/BookingForm";
+import { lazy, Suspense } from "react";
 import { StudioInformation } from "../features/booking/components/StudioInformation";
 import { createBooking } from "../features/booking/services/bookingService";
 import { useSearchParams } from "react-router";
 import { PageHero } from "../components/common/PageHero";
 import { Seo } from "../components/seo/Seo";
+
+const BookingForm = lazy(() =>
+  import("../features/booking/components/BookingForm").then((module) => ({
+    default: module.BookingForm,
+  })),
+);
 
 export function BookingPage() {
   const [searchParams] = useSearchParams();
@@ -23,7 +29,9 @@ export function BookingPage() {
       <section className="booking-content" aria-label="Booking request form">
         <div className="page-shell booking-content__grid">
           <StudioInformation />
-          <BookingForm onSubmit={(submission) => createBooking(submission, sourceStyleSlug)} />
+          <Suspense fallback={<p role="status">Loading booking form…</p>}>
+            <BookingForm onSubmit={(submission) => createBooking(submission, sourceStyleSlug)} />
+          </Suspense>
         </div>
       </section>
     </div>
