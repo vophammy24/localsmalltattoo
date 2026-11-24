@@ -3,7 +3,7 @@ import multer from "multer";
 import { ZodError } from "zod";
 import { HttpError } from "../utils/http-error.js";
 
-export const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
+export const errorHandler: ErrorRequestHandler = (error, request, response, _next) => {
   if (error?.type === "entity.too.large") {
     response.status(413).json({ success: false, message: "Request body is too large." });
     return;
@@ -13,7 +13,12 @@ export const errorHandler: ErrorRequestHandler = (error, _request, response, _ne
     return;
   }
   if (error instanceof HttpError) {
-    response.status(error.statusCode).json({ success: false, message: error.message });
+    if (error.retryAfter) response.set("Retry-After", String(error.retryAfter));
+    response.status(error.statusCode).json({
+      success: false,
+      message: error.message,
+      ...(error.field ? { errors: { [error.field]: [error.message] } } : {}),
+    });
     return;
   }
   if (error instanceof ZodError) {
@@ -40,13 +45,17 @@ export const errorHandler: ErrorRequestHandler = (error, _request, response, _ne
       error.name,
     )
   ) {
-    console.error("Database unavailable.", error.message);
+    console.error("Database unavailable.");
     response.status(503).json({
       success: false,
       message: "Database is temporarily unavailable. Please try again shortly.",
     });
     return;
   }
-  console.error(error);
+  if (/^\/api\/(?:public|admin)\/bookings(?:\/|$)/i.test(request.path)) {
+    console.error("Booking request failed.");
+  } else {
+    console.error(error);
+  }
   response.status(500).json({ success: false, message: "An unexpected server error occurred." });
 };

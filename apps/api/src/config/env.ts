@@ -16,6 +16,17 @@ const envSchema = z.object({
   ADMIN_NAME: z.string().min(1).optional(),
   ADMIN_EMAIL: z.email().optional(),
   ADMIN_PASSWORD: z.string().min(10).optional(),
+  TURNSTILE_SECRET_KEY: z.string().trim().min(1).optional(),
+  TURNSTILE_HOSTNAMES: z
+    .string()
+    .default("localsmalltattoo.com.vn,www.localsmalltattoo.com.vn,localhost,127.0.0.1"),
+  BOOKING_IP_LIMIT: z.coerce.number().int().positive().default(20),
+  BOOKING_CONTACT_LIMIT: z.coerce.number().int().positive().default(4),
+  BOOKING_RATE_WINDOW_MINUTES: z.coerce.number().int().positive().max(1440).default(15),
+  BOOKING_DUPLICATE_WINDOW_MINUTES: z.coerce.number().int().positive().max(1440).default(15),
+  BOOKING_EMAIL_API_KEY: z.string().min(1).optional(),
+  BOOKING_EMAIL_FROM: z.string().min(1).optional(),
+  BOOKING_EMAIL_TO: z.email().optional(),
 });
 
 const parsedEnv = envSchema.parse(process.env);
@@ -27,6 +38,8 @@ export const env = {
       "http://localhost:5173",
       "https://localsmalltattoo.com",
       "https://www.localsmalltattoo.com",
+      "https://localsmalltattoo.com.vn",
+      "https://www.localsmalltattoo.com.vn",
       ...parsedEnv.CLIENT_URL.split(",").map((origin) => origin.trim()),
     ]),
   ).filter(Boolean),

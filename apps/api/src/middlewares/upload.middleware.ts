@@ -20,7 +20,7 @@ function acceptImage(file: Express.Multer.File) {
 
 export const bookingImageUpload = multer({
   storage: multer.memoryStorage(),
-  limits: { files: 5, fileSize: MAX_IMAGE_SIZE_BYTES },
+  limits: { files: 5, fileSize: 20 * 1024 * 1024 + 1, fields: 12, fieldSize: 8192, parts: 18 },
   fileFilter: (_request, file, callback) => {
     if (acceptImage(file)) {
       callback(null, true);

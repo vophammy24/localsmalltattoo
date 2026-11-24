@@ -6,6 +6,8 @@ const referenceImageSchema = new Schema(
     url: { type: String, required: true },
     publicId: { type: String, required: true },
     originalName: { type: String, required: true },
+    format: String,
+    deliveryType: { type: String, enum: ["authenticated"] },
   },
   { _id: false },
 );
@@ -28,22 +30,43 @@ const adminNoteSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+const bookingEmailSchema = new Schema(
+  {
+    state: { type: String, enum: ["queued", "sending", "accepted", "failed"], required: true },
+    payload: String,
+    attempts: { type: Number, required: true },
+    nextAttemptAt: Date,
+    expiresAt: Date,
+    acceptedAt: Date,
+    resendId: String,
+    failure: String,
+  },
+  { _id: false },
+);
+
 const bookingSchema = new Schema(
   {
     bookingCode: { type: String, required: true, unique: true, index: true },
     fullName: { type: String, required: true, trim: true },
     phoneNumber: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true, lowercase: true },
-    preferredDate: { type: Date, required: true },
+    preferredDate: Date, // Historical bookings only.
+    preferredDateLocal: String,
     preferredTimePeriods: [{ type: String, enum: BOOKING_TIME_PERIOD_KEYS, required: true }],
     referenceImages: { type: [referenceImageSchema], default: [] },
-    description: { type: String, required: true, trim: true },
+    description: { type: String, trim: true },
+    instagram: String,
+    contactMethods: { type: [String], enum: ["whatsapp", "zalo"], default: undefined },
     sourceStyle: {
       id: { type: Schema.Types.ObjectId, ref: "TattooStyle" },
       name: String,
       slug: String,
     },
     consent: { type: Boolean, required: true },
+    consentAt: Date,
+    submissionKey: { type: String, unique: true, sparse: true, select: false },
+    submissionFingerprint: { type: String, select: false },
+    bookingEmail: { type: bookingEmailSchema, select: false },
     status: { type: String, enum: BOOKING_STATUSES, default: "PENDING", index: true },
     scheduledAppointment: {
       startAt: Date,
@@ -55,4 +78,14 @@ const bookingSchema = new Schema(
   { timestamps: true },
 );
 
+bookingSchema.index(
+  { submissionFingerprint: 1, createdAt: -1 },
+  {
+    partialFilterExpression: { submissionFingerprint: { $exists: true } },
+  },
+);
+bookingSchema.index(
+  { "bookingEmail.state": 1, "bookingEmail.nextAttemptAt": 1 },
+  { partialFilterExpression: { "bookingEmail.nextAttemptAt": { $exists: true } } },
+);
 export const BookingModel = model("Booking", bookingSchema);

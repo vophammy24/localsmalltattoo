@@ -19,10 +19,71 @@ npm start
 
 Default origin: `http://localhost:5000`. `CLIENT_URL` is a comma-separated list of
 trusted frontend origins. Health: `GET /api/health`. Cookie admin writes require
-a trusted Origin; non-browser clients can use Bearer JWT authentication. Public
-booking still accepts `multipart/form-data` at `POST /api/public/bookings`, with
-up to 5 reference images and repeated `preferredTimePeriods` values (`MORNING`,
-`NOON`, `AFTERNOON`, `EVENING`).
+a trusted Origin. Non-browser admin clients can use Bearer JWT authentication.
+
+## Booking setup
+
+Create a Cloudflare Turnstile widget in **Managed** mode for the public site.
+Set `VITE_TURNSTILE_SITE_KEY` in the frontend build environment and set
+`TURNSTILE_SECRET_KEY` in the API runtime environment. Configure
+`TURNSTILE_HOSTNAMES` for that deployment. Use a separate real widget for a
+full local or staging integration check. Cloudflare's dummy keys do not return
+the hostname and action needed by this API's checks. Automated tests mock
+these checks. Missing server configuration blocks booking submissions. If a frontend
+CSP is configured on the hosting platform, allow
+`https://challenges.cloudflare.com` for scripts and frames.
+
+`POST /api/public/bookings` accepts length-delimited `multipart/form-data`.
+Send a fresh Turnstile token in `X-Turnstile-Token` and a client-generated UUID
+in `Idempotency-Key`. On an uncertain failure, retry the same payload with
+the same key and a fresh token. A replay returns 200 with the original booking
+reference. New bookings return 201. Validation responses use
+`errors: { fieldName: [message] }`. Limits return 429 with `Retry-After`.
+
+The API uses the existing MongoDB connection for shared counters and duplicate
+claims. Defaults are 20 attempts per IP and four per normalized phone or email
+per 15-minute window, plus 15 minutes of duplicate detection. See
+`.env.example` for the overrides. IP limiting uses Express's existing one-hop
+trusted-proxy setting. In other topologies, configure the trusted proxy for
+the deployment before relying on the forwarded address.
+
+MongoDB must allow the application to create the `bookingrates` and
+`bookingclaims` collections and their TTL/unique indexes, plus the sparse
+unique submission key and fingerprint index on `bookings`. No backfill or
+deletion is required. New requests store a date-only `preferredDateLocal` and
+`consentAt`. Historical preferred dates, time periods and existing reference
+image URLs remain readable. New private Cloudinary references are delivered
+to authorized Admin users via signed, 30-minute URLs. Reopen or refresh the
+booking detail if an image link expires.
+
+### Resend studio notifications
+
+Set `BOOKING_EMAIL_API_KEY`, `BOOKING_EMAIL_FROM` (a verified Resend sender),
+and `BOOKING_EMAIL_TO` (the studio administrator). These are server-side
+settings. Only bookings created with all three settings are queued. Previously
+saved bookings are unaffected and are not emailed.
+
+The booking insert also saves the email job. The API worker polls MongoDB
+every 15 seconds and only sends jobs for saved bookings. The HTML and text
+email includes the booking reference, submission time in Asia/Ho_Chi_Minh,
+customer and request details, and a link to
+`https://localsmalltattoo.com.vn/admin/bookings/<id>` that requires admin login.
+Restrict the recipient inbox to staff authorized to view booking information.
+Reference images are represented by a count.
+
+MongoDB atomically claims each email job. On a temporary failure the worker
+uses the same serialized body and Resend idempotency key for up to four total
+attempts. Retries are scheduled after 1, 5, and 20 minutes, respecting a
+longer `Retry-After` up to the 23-hour job expiry. Expired claims can be
+recovered after a worker restart. Terminal state and the Resend message ID
+are retained, while the queued email body is removed. `accepted` means the
+Resend API accepted the send, and inbox delivery can be checked in Resend.
+Delivery errors leave the saved booking available in Admin.
+
+The API must stay running to process pending jobs. MongoDB needs permission to
+create the booking email queue index. No backfill is needed. Local automated
+tests mock Resend. Use a separate staging sender and inbox for a live check
+before rollout.
 
 ## Manual testimonial API
 

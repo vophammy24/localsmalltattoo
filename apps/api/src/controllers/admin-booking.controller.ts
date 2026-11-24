@@ -3,6 +3,7 @@ import { BOOKING_TIME_PERIODS } from "../constants/booking.js";
 import { BookingModel } from "../models/booking.model.js";
 import { changeBookingStatus, scheduleBooking } from "../services/admin-booking.service.js";
 import { HttpError } from "../utils/http-error.js";
+import { bookingImageUrl } from "../services/image.service.js";
 import {
   bookingQuerySchema,
   noteSchema,
@@ -27,7 +28,14 @@ export const listBookings: RequestHandler = async (request, response, next) => {
       const start = new Date(`${query.preferredDate}T00:00:00`);
       const end = new Date(start);
       end.setDate(end.getDate() + 1);
-      filter.preferredDate = { $gte: start, $lt: end };
+      filter.$and = [
+        {
+          $or: [
+            { preferredDateLocal: query.preferredDate },
+            { preferredDate: { $gte: start, $lt: end } },
+          ],
+        },
+      ];
     }
     const [items, totalItems] = await Promise.all([
       BookingModel.find(filter)
@@ -62,7 +70,20 @@ export const getBooking: RequestHandler = async (request, response, next) => {
       .populate("statusHistory.changedBy", "fullName")
       .lean();
     if (!booking) throw new HttpError(404, "Booking not found.");
-    response.json({ success: true, data: { booking, timePeriods: BOOKING_TIME_PERIODS } });
+    response.set("Cache-Control", "private, no-store");
+    response.json({
+      success: true,
+      data: {
+        booking: {
+          ...booking,
+          referenceImages: (booking.referenceImages ?? []).map((image) => ({
+            ...image,
+            url: bookingImageUrl(image),
+          })),
+        },
+        timePeriods: BOOKING_TIME_PERIODS,
+      },
+    });
   } catch (error) {
     next(error);
   }

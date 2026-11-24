@@ -5,6 +5,7 @@ import type { Server } from "node:http";
 import { MongoMemoryServer } from "mongodb-memory-server-core";
 import mongoose from "mongoose";
 import { Writable } from "node:stream";
+import { randomUUID } from "node:crypto";
 
 // Override all required configuration before importing the application. Never use Atlas.
 Object.assign(process.env, {
@@ -17,6 +18,8 @@ Object.assign(process.env, {
   CLIENT_URL: "http://localhost:5173",
   COOKIE_NAME: "test_admin",
   COOKIE_SAME_SITE: "lax",
+  TURNSTILE_SECRET_KEY: "test-only-secret",
+  TURNSTILE_HOSTNAMES: "localhost",
 });
 let mongo: MongoMemoryServer;
 let server: Server;
@@ -421,6 +424,11 @@ test("booking image submission/management, Styles, Gallery, About CMS and settin
   const { cloudinary } = await import("../src/config/cloudinary.js");
   const originalUpload = cloudinary.uploader.upload_stream;
   const originalDestroy = cloudinary.uploader.destroy;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = (input, init) =>
+    String(input) === "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+      ? Promise.resolve(Response.json({ success: true, hostname: "localhost", action: "booking" }))
+      : originalFetch(input, init);
   let uploadedBytes = 0;
   let sequence = 0;
   // Exercise the real multipart middleware and service pipeline; replace only external I/O.
@@ -437,14 +445,23 @@ test("booking image submission/management, Styles, Gallery, About CMS and settin
           public_id: `test/fixture-${sequence}`,
           width: 1,
           height: 1,
+          format: "png",
         });
         done();
       },
     })) as typeof originalUpload;
   cloudinary.uploader.destroy = (async () => ({ result: "ok" })) as typeof originalDestroy;
-  const image = new Blob([Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB", "base64")], {
-    type: "image/png",
-  });
+  const image = new Blob(
+    [
+      Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+kYuoAAAAASUVORK5CYII=",
+        "base64",
+      ),
+    ],
+    {
+      type: "image/png",
+    },
+  );
   const json = (method: string, body: unknown) => ({ method, body: JSON.stringify(body) });
   try {
     const booking = new FormData();
@@ -454,7 +471,6 @@ test("booking image submission/management, Styles, Gallery, About CMS and settin
       phoneNumber: "+84946752336",
       email: "fixture@example.test",
       preferredDate: tomorrow,
-      preferredTimePeriods: "MORNING",
       description: "Synthetic booking fixture",
       consent: "true",
     }))
@@ -462,7 +478,14 @@ test("booking image submission/management, Styles, Gallery, About CMS and settin
     booking.append("referenceImages", image, "fixture.png");
     const submitted = await request(
       "/api/public/bookings",
-      { method: "POST", body: booking },
+      {
+        method: "POST",
+        body: booking,
+        headers: {
+          "X-Turnstile-Token": "test-token",
+          "Idempotency-Key": randomUUID(),
+        },
+      },
       false,
     );
     assert.equal(submitted.response.status, 201, JSON.stringify(submitted.body));
@@ -470,6 +493,11 @@ test("booking image submission/management, Styles, Gallery, About CMS and settin
     const stored = await BookingModel.findOne({ bookingCode: submitted.body.data.bookingCode });
     assert.ok(stored);
     assert.equal(stored.referenceImages.length, 1);
+    const detail = await request(`/api/admin/bookings/${stored._id}`);
+    assert.equal(detail.response.status, 200);
+    assert.match(detail.body.data.booking.referenceImages[0].url, /signature=/);
+    const filtered = await request(`/api/admin/bookings?preferredDate=${tomorrow}`);
+    assert.equal(filtered.body.data.items[0].preferredDateLocal, tomorrow);
     for (const status of ["CONTACTED", "CONFIRMED"])
       assert.equal(
         (
@@ -583,6 +611,7 @@ test("booking image submission/management, Styles, Gallery, About CMS and settin
     );
     assert.ok(uploadedBytes > 0);
   } finally {
+    globalThis.fetch = originalFetch;
     cloudinary.uploader.upload_stream = originalUpload;
     cloudinary.uploader.destroy = originalDestroy;
   }

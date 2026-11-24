@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { app } from "./app.js";
 import { connectDatabase } from "./config/database.js";
 import { env } from "./config/env.js";
+import { startBookingEmailWorker } from "./services/booking-notification.service.js";
 
 const host = "0.0.0.0";
 
@@ -13,6 +14,7 @@ async function startServer(): Promise<void> {
     const server = createServer(app);
     server.listen(env.PORT, host, () => {
       console.info(`API is running on ${host}:${env.PORT}`);
+      startBookingEmailWorker();
     });
   } catch (error) {
     console.error("Unable to start API:", error);

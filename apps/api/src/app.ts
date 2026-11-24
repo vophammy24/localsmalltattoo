@@ -42,7 +42,12 @@ app.use(
     credentials: true,
   }),
 );
-app.use(morgan(env.NODE_ENV === "production" ? "combined" : "dev"));
+app.use(
+  morgan(env.NODE_ENV === "production" ? "combined" : "dev", {
+    skip: (request) => /^\/api\/(?:public|admin)\/bookings(?:[/?]|$)/i.test(request.originalUrl),
+  }),
+);
+app.use("/api/public/bookings", bookingRouter);
 app.use(express.json({ limit: "100kb" }));
 app.get("/api/health", (_request, response) => {
   const databaseConnected = mongoose.connection.readyState === 1;
@@ -53,7 +58,6 @@ app.get("/api/health", (_request, response) => {
     data: { database: databaseConnected ? "connected" : "unavailable" },
   });
 });
-app.use("/api/public/bookings", bookingRouter);
 app.use("/api/public/tattoo-styles", publicTattooStyleRouter);
 app.use("/api/public/gallery", publicGalleryRouter);
 app.use("/api/public/pages", publicPageRouter);
