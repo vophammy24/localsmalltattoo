@@ -15,10 +15,6 @@
   padding-block: 4rem 2.75rem;
 }
 
-.about-cms-hero.page-hero {
-  padding-block: 4rem 2.75rem;
-}
-
 .page-hero__inner {
   gap: var(--spacing-content);
 }
@@ -110,10 +106,6 @@
     padding-block: 3rem 2.5rem;
   }
 
-  .about-cms-hero.page-hero {
-    padding-block: 3rem 2.5rem;
-  }
-
   .about-story,
   .about-mission,
   .about-space,
@@ -137,5 +129,33 @@
 
   .site-footer__main {
     padding-block: var(--spacing-section);
+  }
+}
+
+.page-hero:is(.styles-page__hero, .gallery-hero, .artists-hero, .about-cms-hero, .contact-hero),
+.page-hero:is(.styles-page__hero, .gallery-hero, .artists-hero, .about-cms-hero, .contact-hero)
+  .page-hero__inner {
+  padding-top: 0;
+}
+
+@media (max-width: 800px) {
+  .page-hero:is(.styles-page__hero, .gallery-hero, .artists-hero, .about-cms-hero, .contact-hero) {
+    .page-hero__inner {
+      padding-bottom: 0;
+      gap: var(--space-2);
+    }
+
+    .page-hero__title h1 {
+      font-size: clamp(1.75rem, 7vw, 3rem);
+    }
+
+    .page-hero__aside {
+      gap: var(--space-2);
+    }
+
+    .page-hero__aside > p {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
   }
 }

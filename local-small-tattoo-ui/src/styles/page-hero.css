@@ -43,18 +43,21 @@
 .page-hero--media {
   background-position: center;
   background-size: cover;
-  min-height: 520px;
-}
-.page-hero--media .page-hero__inner {
-  width: min(calc(100% - (var(--page-margin) * 2)), var(--container-max));
 }
 .page-hero--media .page-hero__aside > p {
   color: #d0cec8;
 }
-.about-cms-hero .page-hero__inner {
-  border-left: 0;
-  padding-left: 0;
-  width: min(calc(100% - (var(--page-margin) * 2)), var(--container-max));
+.artists-hero .page-hero__aside > p {
+  color: var(--color-text-soft);
+}
+.page-hero:is(.styles-page__hero, .gallery-hero, .artists-hero, .about-cms-hero, .contact-hero)
+  .page-hero__aside > p {
+  text-transform: uppercase;
+}
+@media (min-width: 801px) {
+  .page-hero:is(.styles-page__hero, .gallery-hero, .artists-hero, .about-cms-hero, .contact-hero) h1 {
+    font-size: clamp(3rem, 6vw, 5rem);
+  }
 }
 @media (max-width: 800px) {
   .page-hero {
@@ -71,9 +74,6 @@
   .page-hero__aside > p {
     font-size: 15px;
   }
-  .page-hero--media {
-    min-height: 440px;
-  }
 }
 @media (max-width: 480px) {
   .page-hero {
@@ -82,8 +82,5 @@
   }
   .page-hero h1 {
     font-size: 42px;
-  }
-  .page-hero--media {
-    min-height: 400px;
   }
 }

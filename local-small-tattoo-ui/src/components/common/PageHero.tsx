@@ -5,18 +5,24 @@ export function PageHero({
   children,
   className = "",
   style,
+  titleId,
 }: {
   title: string;
   description?: string;
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
+  titleId?: string;
 }) {
   return (
-    <section className={`page-hero${className ? ` ${className}` : ""}`} style={style}>
+    <section
+      className={`page-hero${className ? ` ${className}` : ""}`}
+      style={style}
+      aria-labelledby={titleId}
+    >
       <div className="page-shell page-hero__inner">
         <div className="page-hero__title">
-          <h1>{title}</h1>
+          <h1 id={titleId}>{title}</h1>
         </div>
         {description || children ? (
           <div className="page-hero__aside">

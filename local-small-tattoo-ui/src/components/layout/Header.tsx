@@ -4,6 +4,10 @@ import { Link, NavLink, useLocation } from "react-router";
 import { navigationItems } from "../../data/navigation";
 import { BrandLogo } from "../common/BrandLogo";
 
+const headerNavigationItems = navigationItems.flatMap((item) =>
+  item.href === "/gallery" ? [item, { label: "Artist", href: "/artists" }] : [item],
+);
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -46,7 +50,7 @@ export function Header() {
           </div>
 
           <nav className="site-header__desktop-nav" aria-label="Primary navigation">
-            {navigationItems
+            {headerNavigationItems
               .filter((item) => item.href !== "/booking")
               .map((item) => (
                 <NavLink
@@ -95,7 +99,7 @@ export function Header() {
       >
         <div className="mobile-menu__inner page-shell">
           <nav className="mobile-menu__nav" aria-label="Mobile navigation">
-            {navigationItems.map((item, index) => (
+            {headerNavigationItems.map((item, index) => (
               <NavLink
                 key={item.href}
                 className={({ isActive }: { isActive: boolean }) =>
@@ -104,6 +108,7 @@ export function Header() {
                 end={item.href === "/"}
                 tabIndex={isMenuOpen ? 0 : -1}
                 to={item.href}
+                onClick={item.href === "/artists" ? () => setIsMenuOpen(false) : undefined}
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 {item.label}

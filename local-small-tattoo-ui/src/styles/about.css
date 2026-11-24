@@ -1,4 +1,5 @@
 .about-page {
+  padding-top: var(--header-height);
   background: #050505;
   color: var(--color-text);
 }
@@ -7,40 +8,14 @@
   padding-block: 8rem;
 }
 .about-cms-hero {
-  align-items: end;
   background-position: center;
   background-size: cover;
   border-bottom: 1px solid #292929;
-  display: flex;
-  min-height: min(78vh, 52rem);
-  padding: 6rem 0;
 }
-.about-cms-hero .page-shell {
-  margin: 0 auto;
-  width: 100%;
-}
-.about-cms-hero p,
 .about-story__copy > p {
   color: #aaa;
   font-size: 0.7rem;
   text-transform: uppercase;
-}
-.about-cms-hero h1 {
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 9vw, 9rem);
-  font-weight: 400;
-  line-height: 0.88;
-  margin: 1rem 0;
-  max-width: 12ch;
-}
-.about-cms-hero span {
-  display: block;
-  font-size: 1.1rem;
-  line-height: 1.7;
-  max-width: 42rem;
-}
-.about-cms-hero .button {
-  margin-top: 2rem;
 }
 .about-story {
   display: grid;
@@ -266,10 +241,6 @@
   padding: 1rem;
 }
 @media (max-width: 800px) {
-  .about-cms-hero {
-    min-height: 70vh;
-    padding: 4rem 0;
-  }
   .about-story {
     gap: 2rem;
     grid-template-columns: 1fr;
@@ -325,33 +296,12 @@
 }
 
 /* About CMS editorial layout */
-.about-page .page-shell {
+.about-page .page-shell:not(.page-hero__inner) {
   max-width: 1280px;
   width: calc(100% - 96px);
 }
-.about-cms-hero {
-  min-height: 620px;
-  padding: 88px 0 72px;
-}
 .about-cms-hero:not(.has-image) {
   background: #090909;
-}
-.about-cms-hero .page-shell {
-  align-content: end;
-  border-left: 1px solid #343434;
-  padding-left: 48px;
-}
-.about-cms-hero h1 {
-  font-size: 88px;
-  letter-spacing: 0;
-  line-height: 0.94;
-  max-width: 900px;
-}
-.about-cms-hero span {
-  color: #c4c1bb;
-  font-family: var(--font-body);
-  font-size: 18px;
-  max-width: 620px;
 }
 .about-story {
   display: block;
@@ -483,17 +433,8 @@
   transform: translateX(1.1rem);
 }
 @media (max-width: 900px) {
-  .about-page .page-shell {
+  .about-page .page-shell:not(.page-hero__inner) {
     width: calc(100% - 48px);
-  }
-  .about-cms-hero {
-    min-height: 540px;
-  }
-  .about-cms-hero .page-shell {
-    padding-left: 28px;
-  }
-  .about-cms-hero h1 {
-    font-size: 64px;
   }
   .about-story.has-images,
   .about-mission__intro {
@@ -512,22 +453,8 @@
   }
 }
 @media (max-width: 560px) {
-  .about-page .page-shell {
+  .about-page .page-shell:not(.page-hero__inner) {
     width: calc(100% - 32px);
-  }
-  .about-cms-hero {
-    min-height: 480px;
-    padding: 64px 0 48px;
-  }
-  .about-cms-hero .page-shell {
-    border-left: 0;
-    padding-left: 0;
-  }
-  .about-cms-hero h1 {
-    font-size: 46px;
-  }
-  .about-cms-hero span {
-    font-size: 16px;
   }
   .about-story__copy h2,
   .about-mission h2,

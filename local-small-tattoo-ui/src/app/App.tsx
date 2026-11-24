@@ -15,6 +15,7 @@ import { AdminStylesPage } from "../pages/admin/AdminStylesPage";
 import { AdminStyleFormPage } from "../pages/admin/AdminStyleFormPage";
 import { AboutPage } from "../pages/AboutPage";
 import { GalleryPage } from "../pages/GalleryPage";
+import { ArtistsPage } from "../pages/ArtistsPage";
 import { AdminGalleryPage } from "../pages/admin/AdminGalleryPage";
 import { AdminGalleryUploadPage } from "../pages/admin/AdminGalleryUploadPage";
 import { AdminGalleryEditPage } from "../pages/admin/AdminGalleryEditPage";
@@ -41,6 +42,7 @@ export function App() {
               <Route path="styles" element={<StylesPage />} />
               <Route path="about" element={<AboutPage />} />
               <Route path="gallery" element={<GalleryPage />} />
+              <Route path="artists" element={<ArtistsPage />} />
               <Route path="reviews" element={<ReviewsPage />} />
               <Route path="contact" element={<ContactPage />} />
               <Route path="*" element={<ComingSoonPage />} />

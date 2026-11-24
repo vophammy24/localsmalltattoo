@@ -1,0 +1,114 @@
+.artists-page {
+  padding-top: var(--header-height);
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+.artist-profile,
+.artists-page__booking,
+.artists-page__empty {
+  padding-block: var(--spacing-section);
+}
+
+.artist-profile,
+.artists-page__booking {
+  border-top: 1px solid var(--color-border);
+}
+
+.artists-page h2 {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.artists-page h2 {
+  font-size: var(--font-size-heading-lg);
+}
+
+.artists-page__empty,
+.artist-profile__bio {
+  max-inline-size: 60ch;
+  color: var(--color-text-soft);
+  line-height: 1.75;
+}
+
+.artist-profile__inner {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2rem, 6vw, 6rem);
+  grid-template-columns: minmax(0, 29rem) minmax(0, 34rem);
+}
+
+@media (min-width: 768px) {
+  .artist-profile--reversed .artist-profile__inner {
+    grid-template-columns: minmax(0, 34rem) minmax(0, 29rem);
+  }
+
+  .artist-profile--reversed .artist-profile__portrait {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .artist-profile--reversed .artist-profile__copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
+
+.artist-profile__portrait {
+  position: relative;
+  display: grid;
+  aspect-ratio: 3 / 4;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text-soft);
+}
+
+.artist-profile__portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.artist-profile__experience {
+  margin-block: 0.75rem 1.5rem;
+  color: var(--color-text-soft);
+}
+
+.artist-profile__bio {
+  white-space: pre-line;
+}
+
+.artist-profile__specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.artist-profile__specialties li {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--color-border);
+}
+
+.artists-page__booking {
+  text-align: center;
+}
+
+.artists-page__booking .button {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .artist-profile__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

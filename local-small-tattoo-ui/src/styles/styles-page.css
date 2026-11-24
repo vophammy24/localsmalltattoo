@@ -2,33 +2,6 @@
   padding-top: var(--header-height);
   background: var(--color-black);
 }
-.styles-page__hero {
-  display: grid;
-  min-height: clamp(30rem, 68vh, 48rem);
-  align-items: end;
-  border-bottom: 1px solid var(--color-border);
-  padding-block: clamp(6rem, 12vw, 10rem);
-}
-.styles-page__hero p {
-  color: var(--color-muted);
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.styles-page__hero h1 {
-  max-width: 65rem;
-  margin-block: 1.5rem;
-  color: var(--color-white);
-  font-family: var(--font-brand);
-  font-size: var(--font-size-display-lg);
-  font-weight: 400;
-  line-height: 1;
-}
-.styles-page__hero span {
-  display: block;
-  max-width: 36rem;
-  color: var(--color-muted);
-}
 .styles-page__state {
   min-height: 20rem;
   padding-block: 6rem;
@@ -350,9 +323,6 @@
   width: 1rem;
 }
 @media (max-width: 767px) {
-  .styles-page__hero {
-    min-height: 30rem;
-  }
   .style-navigation a {
     padding-inline: 0.9rem;
   }
